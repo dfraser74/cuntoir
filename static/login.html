@@ -1,0 +1,25 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" type="text/css" href="style.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="scripts.js"></script>
+<title>Fin</title>
+</head>
+<body>
+    <div id="header">
+        <div id="mainTitle"><a href="index.html">Fin</a></div>
+    </div>
+    <div id="task">
+    <form>
+        Username:<br>
+        <input type="text" id="username"><br>
+        Password:<br>
+        <input type="password" id="pass">
+        <input type="button"  value="Login" onclick="loginPost(document.getElementById('username').value, document.getElementById('pass').value)"><br>
+        Don't have an account? <a href="createUser.html">Sign up</a>
+    </form>
+    <p id="info" style="text-align:center;"></p>
+    </div>
+</body>
+<html>

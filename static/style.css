@@ -1,0 +1,126 @@
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0px;
+    background-color: #f1f1f1;
+    font-family: 'Source Sans Pro', sans-serif;
+}
+#task {
+    background-color: white;
+    padding: 20px;
+    margin: 10px;
+    border: solid 1px #d9d9d9;
+    border-radius: 20px;
+    font-size: 20px;
+    text-overflow: ellipsis;
+}
+#taskTitle {
+    text-align: center;
+    font-size: 40px;
+    margin: 10px 0px 0px 0px;
+}
+#header {
+    background-color: white;
+    border: 3px #666666;
+    border-bottom-style: solid;
+    padding: 10px;
+    margin: 0px;
+    display: block;
+}
+#mainTitle {
+    text-align: center;
+    font-size: 40px;
+}
+img {
+    max-height: 500px;
+    max-width: 750px;
+    display: block;
+    margin: auto;
+}
+a {
+    border-radius: 4px;
+    color: black;
+    text-decoration: underline;
+}
+a:hover {
+    background-color: #666666;
+}
+#dueTime {
+    text-align: right;
+}
+
+input, textarea {
+    width: 100%;
+    margin: 4px;
+    border: 1px solid #555;
+    border-radius: 4px;
+    box-sizing: border-box;
+    outline-width: 0;
+    resize: none;
+    padding: 5px;
+}
+input:focus, textarea:focus {
+    border: 2px solid #555;
+}
+
+input[type=button] {
+    height: 50px;
+    font-size: 40px;
+}
+
+input[type=button]:hover{
+    background-color: #666666;
+}
+
+#nav {
+    height: 100%; /* 100% Full-height */
+    width: 0; /* 0 width - change this with JavaScript */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Stay on top */
+    top: 0;
+    left: 0;
+    background-color: #111; /* Black*/
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 60px; /* Place content 60px from the top */
+    transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+    text-align: center;
+}
+
+/* Position and style the close button (top right corner) */
+#nav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+#nav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s
+}
+#navButtons {
+    text-align: center;
+    font-size: 40px;
+}
+
+i {
+    padding:3px;
+    margin: 2px;
+    border-radius: 4px;
+}
+
+i:hover {
+    background-color: #666666;
+}
+
+#addButton {
+    border-radius: 400px;
+}
