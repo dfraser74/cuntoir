@@ -63,7 +63,7 @@ input, textarea {
     padding: 5px;
 }
 input:focus, textarea:focus {
-    border: 2px solid #555;
+    border: 2px solid #aaaaaa;
 }
 
 input[type=button] {
@@ -71,13 +71,30 @@ input[type=button] {
     font-size: 40px;
 }
 
-input[type=button]:hover{
+input[type=button]:hover {
     background-color: #666666;
 }
 
-#nav {
+input[type=button]:focus {
+    background-color: #666666;
+}
+
+input[type=submit] {
+    height: 50px;
+    font-size: 40px;
+}
+
+input[type=submit]:hover {
+    background-color: #666666;
+}
+
+input[type=submit]:focus {
+    background-color: #666666;
+}
+
+.sidebar {
     height: 100%; /* 100% Full-height */
-    width: 0; /* 0 width - change this with JavaScript */
+    width: 0px; /* 0 width - change this with JavaScript */
     position: fixed; /* Stay in place */
     z-index: 1; /* Stay on top */
     top: 0;
@@ -89,20 +106,24 @@ input[type=button]:hover{
     text-align: center;
 }
 
-/* Position and style the close button (top right corner) */
-#nav .closebtn {
-    position: absolute;
-    top: 0;
-    right: 25px;
-    font-size: 36px;
-    margin-left: 50px;
+#main{
+    transition: 0.5s;
 }
 
-#nav a {
-    padding: 8px 8px 8px 32px;
+/* Position and style the close button (top right corner) */
+.sidebar .closebtn {
+    position: absolute;
+    top: 0;
+    right: 20px;
+    font-size: 36px;
+    margin-left: 0px;
+}
+
+.sidebar a {
+    padding: 8px 8px 8px 8px;
     text-decoration: none;
     font-size: 25px;
-    color: #818181;
+    color: #eeeeee;
     display: block;
     transition: 0.3s
 }
@@ -124,3 +145,22 @@ i:hover {
 #addButton {
     border-radius: 400px;
 }
+
+.sidebar form{
+    color: #eeeeee;
+    margin: 8px 8px 8px 0px;
+    padding:8px;
+    border-color: #818181;
+    font-size: 15px;
+}
+.sidebar input, textarea{
+    color: #eeeeee;
+    background-color: #666666;
+    font-size: 15px;
+}
+
+.sidebar p{
+    color: #eeeeee;
+    font-size: 25px;
+}
+

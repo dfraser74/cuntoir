@@ -105,11 +105,12 @@ function addTaskPost(title, description, dueTime){
     var authCode = getCookie("authCode");
     if(title == ""){
         document.getElementById("info").innerHTML = "Your task needs a title";
-        return;
+    }else{
+        if(dueTime != 0){
+            var data = {"method":"addTask", "username":username, "authCode":authCode, "dueTime":dueTime, "description":description, "title":title};
+            makePostRequest("/", data, "addTaskPost");
+        }
     }
-    if(dueTime == 0){return}
-    var data = {"method":"addTask", "username":username, "authCode":authCode, "dueTime":dueTime, "description":description, "title":title};
-    makePostRequest("/", data, "addTaskPost");
 }
 
 function handleAddTaskPostReturn(data){
@@ -212,6 +213,13 @@ function logout(){
 
 /* Set the width of the side navigation to 250px and the left margin of the page content to 250px */
 function openNav() {
+    if(document.getElementById("add").style.width != "0px"){
+        closeAdd();
+    }
+    if(document.getElementById("nav").style.width != "0px"){
+        closeNav();
+        return;
+    }
     if(window.screen.availWidth < 500){
         document.getElementById("nav").style.width = "100%";
     }else{
@@ -223,5 +231,30 @@ function openNav() {
 /* Set the width of the side navigation to 0 and the left margin of the page content to 0 */
 function closeNav() {
     document.getElementById("nav").style.width = "0px";
+    document.getElementById("main").style.marginLeft = "0px";
+}
+
+function openAdd(){
+    if(document.getElementById("nav").style.width != "0px"){
+        closeNav();
+    }
+    if(document.getElementById("add").style.width != "0px"){
+        closeAdd();
+        return;
+    }
+    if(window.screen.availWidth < 500){
+        document.getElementById("add").style.width = "100%";
+        document.getElementById("title").focus();
+    }else{
+        document.getElementById("title").focus();
+        document.getElementById("add").style.width = "300px";
+        document.getElementById("main").style.marginLeft = "300px";
+    }
+    document.getElementById('dateString').value = getCurrDateString();
+    document.getElementById('timeString').value = getCurrTimeString();
+}
+
+function closeAdd(){
+    document.getElementById("add").style.width = "0px";
     document.getElementById("main").style.marginLeft = "0px";
 }

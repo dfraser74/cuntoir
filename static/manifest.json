@@ -1,0 +1,11 @@
+{
+    "short_name": "Cúntóir", 
+    "name": "Cúntóir", 
+    "Description": "You do things. Cúntóir helps",
+    "start_url": "https://pihome.zapto.org/dev/index.html" ,
+    "scope":"https://pihome.zapto.org/" ,
+    "display": "standalone" ,
+    "orientation": "portrait" ,
+    "theme_color": "#666666" ,
+    "background_color": "#666666"
+}
