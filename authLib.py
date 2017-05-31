@@ -28,7 +28,6 @@ def authUser(username, userPass):
     for user in users:
         if(username == user[0] and userPass == user[1]):
             db.close()
-            print("auth success")
             return(1)
     db.close()
     return(0)
@@ -54,7 +53,6 @@ def createUser(dataDict):
     with open("invite.conf", "r") as inviteFile:
         invite = inviteFile.read().strip()
     if(invite != "" and inviteCode != invite):
-        print(invite)
         return(0)
     db = mysql.connect(host="localhost", db="fin", user="fin", passwd=open("pass.conf","r").read().strip())
     c = db.cursor()
@@ -68,7 +66,6 @@ def createUser(dataDict):
             return(2)
     command = "INSERT INTO users (username, pass) VALUES (%s, %s);"
     c.execute(command, [username, userPass])
-    print("user created")
     db.commit()
     db.close()
     return(1)

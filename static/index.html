@@ -18,30 +18,48 @@
 </div>
 <div id="add" class="sidebar" style="width:0px;">
     <a href="javascript:void(0)" class="closebtn" onclick="closeAdd();">&times;</a>
+    <p>Add A New Task</p>
     <form>
         Task Title:
         <input type="text" id="title">
         Description:
-        <textarea id="description" rows=5></textarea>
+        <textarea id="description" rows=3></textarea>
         Due:
         <input type="text" id="dateString"><input type="text" id="timeString">
-        <input type="submit"  value="Add Task" onclick="addTaskPost(document.getElementById('title').value, document.getElementById('description').value, getDateTime(document.getElementById('dateString').value, document.getElementById('timeString').value)); return false;" />
+        Comma Separated Tags:
+        <input type="text" id="tags">
+        <input type="submit"  value="Add Task" onclick="addTaskPost(document.getElementById('title').value, document.getElementById('description').value, getDateTime(document.getElementById('dateString').value, document.getElementById('timeString').value), document.getElementById('tags').value); return false;" />
     </form>
     <p id="info"></p>
 </div>
+<div id="edit" class="sidebar" style="width:0px;">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeEdit();">&times;</a>
+    <p>Edit Task</p>
+    <form>
+        Task Title:
+        <input type="text" id="editTitle">
+        Description:
+        <textarea id="editDescription" rows=3></textarea>
+        Due:
+        <input type="text" id="editDateString"><input type="text" id="editTimeString">
+        Comma Separated Tags:
+        <input type="test" id="editTags">
+        <input type="submit"  value="Update Task" onclick="editTaskPost(document.getElementById('editTitle').value, document.getElementById('editDescription').value, getDateTime(document.getElementById('editDateString').value, document.getElementById('editTimeString').value), document.getElementById('editTags').value); return false;" />
+    </form>
+    <p id="editCreateTime" style="display:none;"></p>
+    <p id="editInfo"></p>
+</div>
 <div id="main">
     <div id="header">
-        <div id="mainTitle"><a href="index.html">Cúntóir</a></div>
+        <div id="mainTitle"><a href="javascript:void(0)" onclick="getAll();">Cúntóir</a></div>
         <div id="navButtons">
             <i class="fa fa-bars" id="navButton" onclick="openNav();"></i>
             <i class="fa fa-plus" id="addButton" onclick="openAdd();"></i>
         </div>
-    </div><br>
+    </div>
     <div id="tasks"></div>
     <script type="text/javascript">
         getAll();
-        document.getElementById('dateString').value = getCurrDateString();
-        document.getElementById('timeString').value = getCurrTimeString();
     </script>
 </div>
 </body>

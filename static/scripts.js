@@ -57,6 +57,12 @@ function handleRequestReturn(data, method){
     if(method == "completeTask"){
         handleCompleteTaskPostReturn(data);
     }
+    if(method == "editTaskPost"){
+        handleEditTaskPostReturn(data);
+    }
+    if(method == "getTaggedPost"){
+        handleGetTaggedReturn(data);
+    }
 }
 
 function getAll(){
@@ -100,14 +106,14 @@ function handleLoginPostReturn(data){
     }
 }
 
-function addTaskPost(title, description, dueTime){
+function addTaskPost(title, description, dueTime, tags){
     var username = getCookie("username");
     var authCode = getCookie("authCode");
     if(title == ""){
         document.getElementById("info").innerHTML = "Your task needs a title";
     }else{
         if(dueTime != 0){
-            var data = {"method":"addTask", "username":username, "authCode":authCode, "dueTime":dueTime, "description":description, "title":title};
+            var data = {"method":"addTask", "username":username, "authCode":authCode, "dueTime":dueTime, "description":description, "title":title, "tags":tags};
             makePostRequest("/", data, "addTaskPost");
         }
     }
@@ -115,14 +121,11 @@ function addTaskPost(title, description, dueTime){
 
 function handleAddTaskPostReturn(data){
     if(data == 1){
-        window.location = "index.html";
+        closeAdd();
+        getAll();
     }else{
         window.location = "login.html";
     }
-}
-
-function addTaskGet(){
-    window.location = "addTask.html"
 }
 
 function getDateTime(dateString, timeString){
@@ -181,7 +184,6 @@ function createUser(username, pass, pass2, inviteCode){
 
 function handleCreateUserReturn(data){
     if(data == 1){
-        console.log(data);
         window.location = "login.html";
     }
     if(data == 0){
@@ -195,6 +197,7 @@ function handleCreateUserReturn(data){
 function completeTaskPost(title, createTime){
     var username = getCookie("username");
     var authCode = getCookie("authCode");
+    document.getElementById(title).style.display = "none";
     var data = {"method":"completeTask", "title":title, "createTime":createTime, "username":username, "authCode":authCode};
     makePostRequest("/", data, "completeTask");
 }
@@ -213,9 +216,8 @@ function logout(){
 
 /* Set the width of the side navigation to 250px and the left margin of the page content to 250px */
 function openNav() {
-    if(document.getElementById("add").style.width != "0px"){
-        closeAdd();
-    }
+    closeAdd();
+    closeEdit();
     if(document.getElementById("nav").style.width != "0px"){
         closeNav();
         return;
@@ -235,9 +237,12 @@ function closeNav() {
 }
 
 function openAdd(){
-    if(document.getElementById("nav").style.width != "0px"){
-        closeNav();
-    }
+    closeNav();
+    closeEdit();
+    document.getElementById("title").value = "";
+    document.getElementById("description").value = "";
+    document.getElementById("tags").value = "";
+    document.getElementById("info").value = "";
     if(document.getElementById("add").style.width != "0px"){
         closeAdd();
         return;
@@ -250,11 +255,95 @@ function openAdd(){
         document.getElementById("add").style.width = "300px";
         document.getElementById("main").style.marginLeft = "300px";
     }
-    document.getElementById('dateString').value = getCurrDateString();
-    document.getElementById('timeString').value = getCurrTimeString();
+    document.getElementById("dateString").value = getCurrDateString();
+    document.getElementById("timeString").value = getCurrTimeString();
 }
 
 function closeAdd(){
     document.getElementById("add").style.width = "0px";
     document.getElementById("main").style.marginLeft = "0px";
+}
+
+function openEdit(title, description, dueTimeString, createTime, tags){
+    closeNav();
+    closeAdd();
+    console.log(title)
+    if(document.getElementById("edit").style.width != "0px" && document.getElementById("editTitle").value == title){
+        closeEdit();
+        return;
+    }
+    if(window.screen.availWidth < 500){
+        document.getElementById("edit").style.width = "100%";
+        document.getElementById("editTitle").focus();
+    }else{
+        document.getElementById("editTitle").focus();
+        document.getElementById("edit").style.width = "300px";
+        document.getElementById("main").style.marginLeft = "300px";
+    }
+    updateEditFields(title, description, dueTimeString, createTime, tags);
+}
+
+function closeEdit(){
+    document.getElementById("edit").style.width = "0px";
+    document.getElementById("main").style.marginLeft = "0px";
+}
+
+function updateEditFields(title, description, timeString, createTime, tags){
+    var date = timeString.split(" ")[0]
+    var time = timeString.split(" ")[1]
+    document.getElementById("editTitle").value = title;
+    document.getElementById("editDescription").value = description;
+    document.getElementById("editDateString").value = date;
+    document.getElementById("editTimeString").value = time;
+    document.getElementById("editInfo").innerHTML = "";
+    document.getElementById("editCreateTime").innerHTML = createTime;
+    document.getElementById("editTags").value = tags;
+}
+
+function editTaskPost(title, description, dueTime, tags){
+    var username = getCookie("username");
+    var authCode = getCookie("authCode");
+    var createTime = document.getElementById("editCreateTime").innerHTML;
+    if(title == ""){
+        document.getElementById("editInfo").innerHTML = "Your task needs a title";
+    }else{
+        if(dueTime != 0){
+            var data = {"method":"editTask", "username":username,"dueTime":dueTime, "authCode":authCode, "createTime":createTime, "description":description, "title":title, "tags":tags};
+            makePostRequest("/", data, "editTaskPost");
+        }
+    }
+}
+function handleEditTaskPostReturn(data){
+    if(data == 1){
+        closeEdit();
+        getAll();
+    }
+    if(data == 0){
+        window.location = "login.html";
+    }
+}
+
+function getTagged(tag){
+    var username = getCookie("username");
+    var authCode = getCookie("authCode");
+    if(username == 0 || authCode == 0){
+        window.location = "login.html"
+    }else{
+        var data = {"username":username, "authCode":authCode, "method":"getTagged", "sort":"default", "tag":tag};
+        makePostRequest("/", data, "getTaggedPost");
+    }
+}
+
+function handleGetTaggedReturn(data){
+    if(data == 0){
+        window.location = "login.html"
+    }
+    if(data == 2){
+        document.getElementById("tasks").innerHTML = "<div id='task'><h2 id='taskTitle'>There are no tasks with that tag</h2></div>";
+        scroll(0,0);
+    }
+    if(data != 0 && data != 2){
+        document.getElementById("tasks").innerHTML = data;
+        scroll(0,0);
+    }
 }
