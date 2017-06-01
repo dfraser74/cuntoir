@@ -23,6 +23,8 @@ def handlePostRequest(dataDict):
         returnCode = taskLib.editTask(dataDict)
     if(method == "getTagged"):
         returnCode = getLib.getTagged(dataDict)
+    if(method == "search"):
+        returnCode = getLib.search(dataDict)
     return(returnCode)
 
 def handleGetRequest(dataDict):

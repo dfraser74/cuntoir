@@ -63,6 +63,9 @@ function handleRequestReturn(data, method){
     if(method == "getTaggedPost"){
         handleGetTaggedReturn(data);
     }
+    if(method = "search"){
+        handleSearchPostReturn(data);
+    }
 }
 
 function getAll(){
@@ -81,7 +84,7 @@ function handleGetAllReturn(data){
         window.location = "login.html"
     }
     if(data == 2){
-        document.getElementById("tasks").innerHTML = "<div id='task'><h2 id='taskTitle'>You're all done, congrats!!</h2></div>";
+        document.getElementById("tasks").innerHTML = "<div class='task'><h2 class='taskTitle'>You're all done, congrats!!</h2></div>";
     }
     if(data != 0 && data != 2){
         document.getElementById("tasks").innerHTML = data;
@@ -139,6 +142,7 @@ function getDateTime(dateString, timeString){
     time = time/1000;
     if(isNaN(time)){
         document.getElementById("info").innerHTML = "Sorry, date format incorrect. It should be dd/mm/yyyy and hh/mm/ss";
+        document.getElementById("editInfo").innerHTML = "Sorry, date format incorrect. It should be dd/mm/yyyy and hh/mm/ss";
         return(0)
     }
     return(time)
@@ -218,6 +222,9 @@ function logout(){
 function openNav() {
     closeAdd();
     closeEdit();
+    document.getElementById("navInfo").innerHTML = "";
+    document.getElementById("searchInput").value = "";
+    document.getElementById("searchInput").focus();
     if(document.getElementById("nav").style.width != "0px"){
         closeNav();
         return;
@@ -267,7 +274,8 @@ function closeAdd(){
 function openEdit(title, description, dueTimeString, createTime, tags){
     closeNav();
     closeAdd();
-    console.log(title)
+
+    document.getElementById("editInfo").innerHTML = "";
     if(document.getElementById("edit").style.width != "0px" && document.getElementById("editTitle").value == title){
         closeEdit();
         return;
@@ -339,7 +347,38 @@ function handleGetTaggedReturn(data){
         window.location = "login.html"
     }
     if(data == 2){
-        document.getElementById("tasks").innerHTML = "<div id='task'><h2 id='taskTitle'>There are no tasks with that tag</h2></div>";
+        document.getElementById("tasks").innerHTML = "<div class='task'><h2 class='taskTitle'>There are no tasks with that tag, sorry</h2><input type='button' value='Go Back' onclick='getAll();'></div>";
+        scroll(0,0);
+    }
+    if(data != 0 && data != 2){
+        document.getElementById("tasks").innerHTML = data;
+        scroll(0,0);
+    }
+}
+
+function searchPost(searchString){
+    var username = getCookie("username");
+    var authCode = getCookie("authCode");
+    if(searchString.length < 1){
+        document.getElementById("navInfo").innerHTML = "You need to search for something!";
+        return;
+    }
+    closeNav();
+    if(username == 0 || authCode == 0){
+        window.location = "login.html"
+    }else{
+        var data = {"username":username, "authCode":authCode, "method":"search", "sort":"default", "searchString":searchString};
+        makePostRequest("/", data, "search");
+    }
+}
+
+function handleSearchPostReturn(data){
+    console.log(data);
+    if(data == 0){
+        window.location = "login.html"
+    }
+    if(data == 2){
+        document.getElementById("tasks").innerHTML = "<div class='task'><h2 class='taskTitle'>Nothing matches that search</h2><input type='button' value='Go Back' onclick='getAll();'></div>";
         scroll(0,0);
     }
     if(data != 0 && data != 2){

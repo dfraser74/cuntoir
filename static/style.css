@@ -50,7 +50,7 @@ a {
     color: black;
     text-decoration: underline;
 }
-a:hover {
+a:hover{
     background-color: #666666;
 }
 .dueTime {
@@ -109,7 +109,7 @@ input[type=submit]:focus {
     left: 0;
     background-color: #111; /* Black*/
     overflow-x: hidden; /* Disable horizontal scroll */
-    padding-top: 40px; /* Place content 60px from the top */
+    padding-top: 60px; /* Place content 60px from the top */
     transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
     text-align: center;
 }
@@ -134,6 +134,10 @@ input[type=submit]:focus {
     color: #eeeeee;
     display: block;
     transition: 0.3s
+}
+
+.sidebar a:hover{
+    background-color: #666666;
 }
 #navButtons {
     text-align: center;
@@ -172,6 +176,21 @@ i:hover {
     font-size: 25px;
 }
 
+#searchInput{
+    display: inline-block;
+    width: auto;
+}
+
+#searchButton{
+    display: none;
+    width: auto;
+}
+
+#searchForm {
+    margin: 0px;
+    padding: 0px;
+}
+
 .taskTag {
     display: inline-block;
     background-color: #cccccc;
@@ -184,4 +203,11 @@ i:hover {
 
 .taskTag:hover {
     background-color: #666666;
+}
+
+.topbar {
+    display: block;
+    line-height:0;
+    height: 0;
+    overflow: hidden;
 }
