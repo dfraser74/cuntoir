@@ -106,7 +106,7 @@ def getTagged(dataDict):
 def search(dataDict):
     username = dataDict["username"].strip()
     authCode = dataDict["authCode"].strip()
-    searchString = dataDict["searchString"].strip()
+    searchString = dataDict["searchString"].strip().lower()
     sort = dataDict["sort"]
     auth = authLib.checkAuthCode(dataDict)
     if(auth != 1):
@@ -133,7 +133,7 @@ def search(dataDict):
         text = task[4]
         title = task[6]
         tags = task[7]
-        if(searchString not in tags.split(",") and searchString not in title and searchString not in text and task[5] != "true"):
+        if(searchString not in tags.lower().split(",") and searchString not in title.lower() and searchString not in text.lower() and task[5] != "true"):
             continue
         timeString = time.strftime("%d/%m/%Y %H:%M", time.localtime(dueTime))
         returnString += "<div class='task' id='"+title+"'><h2 class='taskTitle' onclick='openEdit(\""+title +"\",\""+text+"\",\""+timeString+"\",\""+str(createTime)+"\",\""+tags+"\");'>" + title + "</h2>"
