@@ -25,6 +25,10 @@ def handlePostRequest(dataDict):
         returnCode = getLib.getTagged(dataDict)
     if(method == "search"):
         returnCode = getLib.search(dataDict)
+    if(method == "dateSearch"):
+        returnCode = getLib.dateSearch(dataDict)
+    if(method == "getTaskDates"):
+        returnCode = getLib.getTaskDates(dataDict)
     return(returnCode)
 
 def handleGetRequest(dataDict):

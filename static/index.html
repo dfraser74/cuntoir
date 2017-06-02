@@ -2,7 +2,8 @@
 <head>
 <meta charset="UTF-8">
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" type="text/css" href="style.css">
+<link rel='stylesheet' media='screen and (min-width: 500px)' href='wide-style.css' />
+<link rel='stylesheet' media='screen and (min-width: 0px) and (max-width: 499px)' href='narrow-style.css' />
 <meta name="theme_color" content="#666666">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -11,6 +12,16 @@
 <title>Cúntóir</title>
 </head>
 <body>
+<div id="calBar" class="sidebar" style="width:0px;">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeCalBar();">&times;</a>
+    <div id="cal">
+        <div id="calHead"></div>
+        <div id="calBodyDiv">
+            <table id="calBody">
+            </table>
+        </div>
+    </div>
+</div>
 <div id="nav" class="sidebar" style="width:0px;">
     <form id="searchForm">
     <input type="text" id="searchInput" placeholder="Search..."><input type="submit" id="searchButton" href="javascript:void(0)" onclick="searchPost(document.getElementById('searchInput').value);return false" value="Search">
@@ -22,14 +33,24 @@
 </div>
 <div id="add" class="sidebar" style="width:0px;">
     <a href="javascript:void(0)" class="closebtn" onclick="closeAdd();">&times;</a>
-    <p>Add A New Task</p>
+    <p>Add Task</p>
     <form>
         Task Title:
         <input type="text" id="title">
         Details:
         <textarea id="description" rows=3></textarea>
         Due:
-        <input type="text" id="dateString"><input type="text" id="timeString">
+        <div>
+            <input type="text" class='dateField' id="dateString" onfocus="renderDatePicker(new Date().getMonth(), 'addDatePicker', 'addDatePickerTable', 'addDatePickerHead', 'dateString')";>
+            <div class="datePickerDiv" id="addDatePicker" style='display:none;'>
+                <div id="addDatePickerHead" class="datePickerHead"></div>
+                <div id="addDatePickerBody">
+                    <table class="datePickerTable" id="addDatePickerTable">
+                    </table>
+                </div>
+            </div>
+        </div>
+        <input type="text" id="timeString">
         Comma Separated Tags:
         <input type="text" id="tags">
         <input type="submit"  value="Add Task" onclick="addTaskPost(document.getElementById('title').value, document.getElementById('description').value, getDateTime(document.getElementById('dateString').value, document.getElementById('timeString').value), document.getElementById('tags').value); return false;" />
@@ -45,7 +66,17 @@
         Details:
         <textarea id="editDescription" rows=3></textarea>
         Due:
-        <input type="text" id="editDateString"><input type="text" id="editTimeString">
+        <div>
+            <input type="text" class='dateField' id="editDateString" onfocus="renderDatePicker(new Date().getMonth(), 'editDatePicker', 'editDatePickerTable', 'editDatePickerHead', 'editDateString')";>
+            <div class="datePickerDiv" id="editDatePicker" style='display:none;'>
+                <div id="editDatePickerHead" class="datePickerHead"></div>
+                <div id="editDatePickerBody">
+                    <table class="datePickerTable" id="editDatePickerTable">
+                    </table>
+                </div>
+            </div>
+        </div>
+        <input type="text" id="editTimeString">
         Comma Separated Tags:
         <input type="test" id="editTags">
         <input type="submit"  value="Update Task" onclick="editTaskPost(document.getElementById('editTitle').value, document.getElementById('editDescription').value, getDateTime(document.getElementById('editDateString').value, document.getElementById('editTimeString').value), document.getElementById('editTags').value); return false;" />
@@ -56,9 +87,10 @@
 <div id="main">
     <div id="header">
         <div id="mainTitle"><a href="javascript:void(0)" onclick="getAll();">Cúntóir</a></div>
-        <div id="navButtons">
+        <div class="navButtons">
             <i class="fa fa-bars" id="navButton" onclick="openNav();"></i>
             <i class="fa fa-plus" id="addButton" onclick="openAdd();"></i>
+            <i class="fa fa-calendar" id="calButton" onclick="openCalBar();"></i>
         </div>
     </div>
     <div id="tasks"></div>

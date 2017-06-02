@@ -63,8 +63,14 @@ function handleRequestReturn(data, method){
     if(method == "getTaggedPost"){
         handleGetTaggedReturn(data);
     }
-    if(method = "search"){
+    if(method == "search"){
         handleSearchPostReturn(data);
+    }
+    if(method == "dateSearch"){
+        handleDateSearchPostReturn(data);
+    }
+    if(method == "getTaskDates"){
+        renderCal(data);
     }
 }
 
@@ -222,6 +228,7 @@ function logout(){
 function openNav() {
     closeAdd();
     closeEdit();
+    closeCalBar();
     document.getElementById("navInfo").innerHTML = "";
     document.getElementById("searchInput").value = "";
     document.getElementById("searchInput").focus();
@@ -246,6 +253,7 @@ function closeNav() {
 function openAdd(){
     closeNav();
     closeEdit();
+    closeCalBar();
     document.getElementById("title").value = "";
     document.getElementById("description").value = "";
     document.getElementById("tags").value = "";
@@ -269,12 +277,13 @@ function openAdd(){
 function closeAdd(){
     document.getElementById("add").style.width = "0px";
     document.getElementById("main").style.marginLeft = "0px";
+    hideDatePicker("addDatePicker");
 }
 
 function openEdit(title, description, dueTimeString, createTime, tags){
     closeNav();
     closeAdd();
-
+    closeCalBar();
     document.getElementById("editInfo").innerHTML = "";
     if(document.getElementById("edit").style.width != "0px" && document.getElementById("editTitle").value == title){
         closeEdit();
@@ -294,6 +303,7 @@ function openEdit(title, description, dueTimeString, createTime, tags){
 function closeEdit(){
     document.getElementById("edit").style.width = "0px";
     document.getElementById("main").style.marginLeft = "0px";
+    hideDatePicker("editDatePicker");
 }
 
 function updateEditFields(title, description, timeString, createTime, tags){
@@ -347,7 +357,7 @@ function handleGetTaggedReturn(data){
         window.location = "login.html"
     }
     if(data == 2){
-        document.getElementById("tasks").innerHTML = "<div class='task'><h2 class='taskTitle'>There are no tasks with that tag, sorry</h2><input type='button' value='Go Back' onclick='getAll();'></div>";
+        document.getElementById("tasks").innerHTML = "<div class='task'><h2 class='taskTitle'>No tasks with that tag</h2><input type='button' value='Go Back' onclick='getAll();'></div>";
         scroll(0,0);
     }
     if(data != 0 && data != 2){
@@ -373,16 +383,232 @@ function searchPost(searchString){
 }
 
 function handleSearchPostReturn(data){
-    console.log(data);
     if(data == 0){
         window.location = "login.html"
     }
     if(data == 2){
-        document.getElementById("tasks").innerHTML = "<div class='task'><h2 class='taskTitle'>Nothing matches that search</h2><input type='button' value='Go Back' onclick='getAll();'></div>";
+        document.getElementById("tasks").innerHTML = "<div class='task' style='height:auto;'><h2 class='taskTitle'>No matches</h2><input type='button' value='Go Back' onclick='getAll();'></div>";
         scroll(0,0);
     }
     if(data != 0 && data != 2){
         document.getElementById("tasks").innerHTML = data;
         scroll(0,0);
     }
+}
+
+function openCalBar(){
+    closeAdd();
+    closeEdit();
+    closeNav();
+    var month = new Date().getMonth();
+    if(document.getElementById("calBar").style.width != "0px"){
+        closeCalBar();
+        return;
+    }
+    if(window.screen.availWidth < 500){
+        document.getElementById("calBar").style.width = "100%";
+    }else{
+        document.getElementById("calBar").style.width = "300px";
+        document.getElementById("main").style.marginLeft = "300px";
+    }
+    renderCalPost(month);
+}
+
+/* Set the width of the side navigation to 0 and the left margin of the page content to 0 */
+function closeCalBar() {
+    document.getElementById("calBar").style.width = "0px";
+    document.getElementById("main").style.marginLeft = "0px";
+}
+
+function renderCalPost(monthInt){
+    var username = getCookie("username");
+    var authCode = getCookie("authCode");
+    if(navigator.onLine == true){
+        if(username == 0 || authCode == 0){
+            window.location = "login.html"
+        }else{
+            var data = {"username":username, "authCode":authCode, "method":"getTaskDates", "sort":"default", "month":monthInt};
+            makePostRequest("/", data, "getTaskDates");
+        }
+    }
+    else{
+        dueTimeList = document.getElementsByClassName("dueTime")
+        var i = 0;
+        var datesString = "";
+        while(i < dueTimeList.length){
+            datesList = dueTimeList[i].innerHTML.split(" ")[0].split("/").slice(0, 2);
+            datesString += datesList[0] + "/" + datesList[1] + ",";
+            i += 1;
+        }
+        console.log(monthInt + ";" + datesString);
+        renderCal(monthInt + ";" + datesString);
+    }
+}
+
+function renderCal(data){
+    if(data == 0){
+        window.location = "login.html";
+        return;
+    }
+    else{
+        var monthInt = parseInt(data.split(";")[0]);
+        var datesList = data.split(";")[1].split(",");
+        var ii = 0;
+        var parsedDatesList = "";
+        while(ii < datesList.length){
+            day = parseInt(datesList[ii].split("/")[0]);
+            month = parseInt(datesList[ii].split("/")[1])-1;
+            parsedDatesList += day+"/"+month;
+            ii += 1;
+        }
+        console.log(parsedDatesList);
+        console.log(datesList);
+    }
+    while(monthInt > 11){
+        monthInt -= 12;
+    }
+    while(monthInt < 0){
+        monthInt += 12
+    }
+    var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    var dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    var monthName = monthNames[monthInt];
+    var year = new Date().getFullYear();
+    var firstDay = new Date(year, monthInt, 1).getDay();
+    var lastDate = new Date(year, monthInt + 1, 0).getDate();
+    var i = 0;
+    var n = 0;
+    document.getElementById("calHead").innerHTML = "<i class='fa fa-arrow-left' onclick='renderCalPost(" + (monthInt-1) + ");'></i>" + monthName + " " + year + "<i class='fa fa-arrow-right' onclick='renderCalPost(" + (monthInt+1) + ");'></i>";
+    var innerHTML = "<tbody><tr id='dayNamesRow'>";
+    while(i < 7){
+        innerHTML += "<th class='dayName'>" + dayNames[i] + "</th>"
+        i += 1;
+    }
+    innerHTML += "</tr>"
+    startDay = firstDay;
+    i = 1;
+    innerHTML += "<tr>";
+    while(i < startDay+1){
+        innerHTML += "<td class='noDate'></td>"
+        i += 1;
+    }
+    i = 1;
+    while(i < 8-startDay){
+        console.log(i+"/"+monthInt + " : " + parsedDatesList + " : " + parsedDatesList.indexOf(i+"/"+monthInt));
+        if(parsedDatesList.indexOf(i+"/"+monthInt) >= 0){
+            innerHTML += "<td class='activeDate' onclick='dateSearch(" + i + ", " + monthInt + ");'>" + i + "</td>";
+        }
+        else{
+            innerHTML += "<td onclick='dateSearch(" + i + ", " + monthInt + ");'>" + i + "</td>";
+        }
+        i += 1;
+    }
+    innerHTML += "</tr>";
+    while(i <= lastDate){
+        innerHTML += "<tr>";
+        n = 0;
+        while(n < 7 && i <= lastDate){
+            if(parsedDatesList.indexOf(i+"/"+monthInt) >= 0){
+                innerHTML += "<td class='activeDate' onclick='dateSearch(" + i + ", " + monthInt + ");'>" + i + "</td>";
+            }
+            else{
+                innerHTML += "<td onclick='dateSearch(" + i + ", " + monthInt + ");'>" + i + "</td>";
+            }
+            n += 1;
+            i += 1;
+        }
+        innerHTML += "</tr>";
+    }
+    innerHTML += "<tbody>";
+    document.getElementById("calBody").innerHTML = innerHTML;
+}
+
+function dateSearch(dateInt, monthInt){
+    var username = getCookie("username");
+    var authCode = getCookie("authCode");
+    closeCalBar();
+    var year = new Date().getFullYear();
+    var lowerTime = new Date(year, monthInt, dateInt, 0, 0, 0, 0).getTime()
+    lowerTime = lowerTime/1000;
+    var upperTime = new Date(year, monthInt, dateInt+1, 0, 0, 0, 0).getTime()
+    upperTime = upperTime/1000;
+    if(username == 0 || authCode == 0){
+        window.location = "login.html"
+    }else{
+        var data = {"username":username, "authCode":authCode, "method":"dateSearch", "sort":"default", "lowerTime":lowerTime, "upperTime":upperTime};
+        makePostRequest("/", data, "dateSearch");
+    }
+}
+
+function handleDateSearchPostReturn(data){
+    if(data == 0){
+        window.location = "login.html"
+    }
+    if(data == 2){
+        document.getElementById("tasks").innerHTML = data;
+        scroll(0,0);
+    }
+    if(data != 0 && data != 2){
+        document.getElementById("tasks").innerHTML = data;
+        scroll(0,0);
+    }
+}
+function renderDatePicker(monthInt, divId, tableId, headId, inputId){
+    document.getElementById(divId).style.display = "inline-block";
+//    document.getElementById(divId).style.position = "absolute";
+    document.getElementById(divId).style.height = "80%";
+    while(monthInt > 11){
+        monthInt -= 12;
+    }
+    while(monthInt < 0){
+        monthInt += 12
+    }
+    var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    var dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    var monthName = monthNames[monthInt];
+    var year = new Date().getFullYear();
+    var firstDay = new Date(year, monthInt, 1).getDay();
+    var lastDate = new Date(year, monthInt + 1, 0).getDate();
+    var i = 0;
+    var n = 0;
+    document.getElementById(headId).innerHTML = "<i class='fa fa-arrow-left' onclick='renderDatePicker("+(monthInt-1)+",\""+divId+"\",\""+tableId+"\",\""+headId+"\",\""+inputId+"\");'></i>" + monthName + " " + year + "<i class='fa fa-arrow-right' onclick='renderDatePicker(" + (monthInt+1) + ",\""+divId+"\",\""+tableId+"\",\""+headId+"\",\""+inputId+"\");'></i>";
+    var innerHTML = "<tbody><tr id='dayNamesRow'>";
+    while(i < 7){
+        innerHTML += "<th class='dayName'>" + dayNames[i] + "</th>"
+        i += 1;
+    }
+    innerHTML += "</tr>"
+    startDay = firstDay;
+    i = 1;
+    innerHTML += "<tr>";
+    while(i < startDay+1){
+        innerHTML += "<td class='noDate'></td>"
+        i += 1;
+    }
+    i = 1;
+    while(i < 8-startDay){
+        innerHTML += "<td onclick='updateDateInput(\""+inputId+"\","+i+","+(monthInt+1)+",\""+year+"\");'>" + i + "</td>";
+        i += 1;
+    }
+    innerHTML += "</tr>";
+    while(i <= lastDate){
+        innerHTML += "<tr>";
+        n = 0;
+        while(n < 7 && i <= lastDate){    
+            innerHTML += "<td onclick='updateDateInput(\""+inputId+"\","+i+","+(monthInt+1)+",\""+year+"\");'>" + i + "</td>";
+            n += 1;
+            i += 1;
+        }
+        innerHTML += "</tr>";
+    }
+    innerHTML += "<tbody>";
+    document.getElementById(tableId).innerHTML = innerHTML;
+}
+
+function hideDatePicker(divId){
+    document.getElementById(divId).style.display = "none";
+}
+
+function updateDateInput(id, day, month, year){
+    document.getElementById(id).value = day+"/"+month+"/"+year;
 }
