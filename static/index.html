@@ -22,11 +22,34 @@
         </div>
     </div>
 </div>
+<div id="changePassBar" class="sidebar" style="width:0px;">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeChangePassBar();">&times;</a>
+    <p>Change Password</p>
+    <form id="changePassForm">
+        <input type="password" id="oldPass" placeholder="Old Password">
+        <input type="password" id="newPass1" placeholder="New Password">
+        <input type="password" id="newPass2" placeholder="Repeat Password">
+        <input type="submit" value="Change Password" onclick="changePass(document.getElementById('oldPass').value, document.getElementById('newPass1').value, document.getElementById('newPass2').value);return false;">
+    </form>
+    <p id="changePassInfo"></p>
+</div>
+
+<div id="loginBar" class="sidebar" style="width:0px;">
+    <p>Log In</p>
+    <form id="loginForm">
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <input type="submit" value="Login" onclick="loginPost(document.getElementById('username').value, document.getElementById('password').value);return false;">
+    </form>
+    <a href="createUser.html">Sign Up</a>
+    <p id="loginInfo"></p>
+</div>
 <div id="nav" class="sidebar" style="width:0px;">
     <form id="searchForm">
     <input type="text" id="searchInput" placeholder="Search..."><input type="submit" id="searchButton" href="javascript:void(0)" onclick="searchPost(document.getElementById('searchInput').value);return false" value="Search">
     </form>
-    <a href="javascript:void(0)"  onclick="getArchived();closeNav();">Archive</a>
+    <a href="javascript:void(0)" onclick="getArchived();">Archive</a>
+    <a href="javascript:void(0)" onclick="openChangePassBar();">Change Password</a>
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav();">&times;</a>
     <a href="javascript:void(0)" onclick="logout();">Logout</a>
     <a href="https://pihome.zapto.org">Blog</a>
@@ -42,7 +65,7 @@
         <textarea id="description" rows=3></textarea>
         Due:
         <div>
-            <input type="text" class='dateField' id="dateString" onfocus="renderDatePicker(new Date().getMonth(), 'addDatePicker', 'addDatePickerTable', 'addDatePickerHead', 'dateString')";>
+            <input type="text" class='dateField' id="dateString" onfocus="renderDatePicker(new Date().getMonth(), 'addDatePicker', 'addDatePickerTable', 'addDatePickerHead', 'dateString', new Date().getFullYear());";>
             <div class="datePickerDiv" id="addDatePicker" style='display:none;'>
                 <div id="addDatePickerHead" class="datePickerHead"></div>
                 <div id="addDatePickerBody">
@@ -68,7 +91,7 @@
         <textarea id="editDescription" rows=3></textarea>
         Due:
         <div>
-            <input type="text" class='dateField' id="editDateString" onfocus="renderDatePicker(new Date().getMonth(), 'editDatePicker', 'editDatePickerTable', 'editDatePickerHead', 'editDateString')";>
+            <input type="text" class='dateField' id="editDateString" onfocus="renderDatePicker(new Date().getMonth(), 'editDatePicker', 'editDatePickerTable', 'editDatePickerHead', 'editDateString', new Date().getFullYear());";>
             <div class="datePickerDiv" id="editDatePicker" style='display:none;'>
                 <div id="editDatePickerHead" class="datePickerHead"></div>
                 <div id="editDatePickerBody">

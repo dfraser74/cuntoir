@@ -78,13 +78,16 @@ function handleRequestReturn(data, method){
     if(method == "deleteTask"){
         handleDeleteTaskReturn(data);
     }
+    if(method == "changePass"){
+        handleChangePassReturn(data);
+    }
 }
 
 function getAll(){
     var username = getCookie("username");
     var authCode = getCookie("authCode");
     if(username == 0 || authCode == 0){
-        window.location = "login.html"
+        openLoginBar();
     }else{
         var data = {"username":username, "authCode":authCode, "method":"getAll", "sort":"default", "archived":"false"};
         makePostRequest("/", data, "getAll");
@@ -93,10 +96,10 @@ function getAll(){
 
 function handleGetAllReturn(data){
     if(data == 0){
-        window.location = "login.html"
+        openLoginBar();
     }
     if(data == 2){
-        document.getElementById("tasks").innerHTML = "<div class='task'><h2 class='taskTitle'>You're all done, congrats!!</h2></div>";
+        document.getElementById("tasks").innerHTML = "<div class='task' style='height:auto;'><h2 class='taskTitle'>All Done</h2></div>";
     }
     if(data != 0 && data != 2){
         document.getElementById("tasks").innerHTML = data;
@@ -106,8 +109,9 @@ function handleGetAllReturn(data){
 function getArchived(){
     var username = getCookie("username");
     var authCode = getCookie("authCode");
+    closeNav();
     if(username == 0 || authCode == 0){
-        window.location = "login.html"
+        openLoginBar();
     }else{
         var data = {"username":username, "authCode":authCode, "method":"getAll", "sort":"createTime", "archived":"true"};
         makePostRequest("/", data, "getArchived");
@@ -116,10 +120,10 @@ function getArchived(){
 
 function handleGetArchivedReturn(data){
     if(data == 0){
-        window.location = "login.html"
+        openLoginBar();
     }
     if(data == 2){
-        document.getElementById("tasks").innerHTML = "<div class='task'><h2 class='taskTitle'>You're all done, congrats!!</h2></div>";
+        document.getElementById("tasks").innerHTML = "<div class='task' style='height:auto;'><h2 class='taskTitle'>Nothing Archived</h2><input type='button' value='Go Back' onclick='getAll();'></div>";
     }
     if(data != 0 && data != 2){
         document.getElementById("tasks").innerHTML = data;
@@ -137,10 +141,11 @@ function loginPost(username, pass){
 function handleLoginPostReturn(data){
     if(data != 0){
         setCookie("authCode", data);
-        window.location = "index.html";
+        closeLoginBar();
+        getAll();
     }
     else{
-        document.getElementById("info").innerHTML = "Username or password incorrect";
+        document.getElementById("loginInfo").innerHTML = "Username or password incorrect";
     }
 }
 
@@ -162,7 +167,7 @@ function handleAddTaskPostReturn(data){
         closeAdd();
         getAll();
     }else{
-        window.location = "login.html";
+        openLoginBar();;
     }
 }
 
@@ -213,17 +218,58 @@ function createUser(username, pass, pass2, inviteCode){
     username = username.trim();
     pass = pass.trim();
     pass2 = pass2.trim();
-    if(pass == pass2){
+    if(pass == pass2 && username != "" && pass.length > 7 && username.length > 3){
         var data = {"method":"createUser", "username":username, "userPass":pass, "inviteCode":inviteCode};
         makePostRequest("/", data, "createUser");
-    }else{
+        return;
+    }
+    if(pass != pass2){
         document.getElementById("info").innerHTML = "Passwords Don't Match";
+        return;
+    }
+    if(username == "" || username.length < 4){
+        document.getElementById("info").innerHTML = "Username too short";
+        return;
+    }
+    if(pass.length < 8){
+        document.getElementById("info").innerHTML = "Password must be longer than 8 characters";
+        return;
+    }
+}
+
+function changePass(oldPass, newPass1, newPass2){
+    username = getCookie("username");
+    if(newPass1 != newPass2){
+        document.getElementById("changePassInfo").innerHTML = "Your Passwords don't match";
+        return;
+    }
+    if(username == 0){
+        closeChangePassBar();
+        openLoginBar();
+        return;
+    }
+    if(newPass1.length < 8){
+        document.getElementById("changePassInfo").innerHTML = "New Password must be at least 8 characters long"
+        return;
+    }
+    var data = {"method":"changePass", "username":username, "oldPass":oldPass, "newPass":newPass1}
+    makePostRequest("/", data, "changePass")
+}
+
+function handleChangePassReturn(data){
+    console.log(data)
+    if(data == 1){
+        closeChangePassBar();
+        logout();
+    }
+    else{
+        document.getElementById("changePassInfo").innerHTML = "Username or Password Incorrect";
     }
 }
 
 function handleCreateUserReturn(data){
     if(data == 1){
-        window.location = "login.html";
+        window.location = "index.html";
     }
     if(data == 0){
         document.getElementById("info").innerHTML = "Invite Code Incorrect";
@@ -248,7 +294,7 @@ function restoreTaskPost(title, createTime){
     var done = "false";
     document.getElementById(title).style.display = "none";
     var data = {"method":"completeTask", "title":title, "createTime":createTime, "username":username, "authCode":authCode, "done":done};
-    window.setTimeout(function(){makePostRequest("/", data, "completeTask")}, 0);
+    window.setTimeout(function(){makePostRequest("/", data, "deleteTask")}, 0);
 }
 
 function handleCompleteTaskPostReturn(data){
@@ -275,7 +321,8 @@ function handleDeleteTaskReturn(data){
 function logout(){
     setCookie("authCode", "0");
     setCookie("username", "0");
-    window.location = "login.html";
+    closeNav();
+    openLoginBar();
 }
 
 /* Set the width of the side navigation to 250px and the left margin of the page content to 250px */
@@ -283,6 +330,8 @@ function openNav() {
     closeAdd();
     closeEdit();
     closeCalBar();
+    closeLoginBar();
+    closeChangePassBar();
     document.getElementById("navInfo").innerHTML = "";
     document.getElementById("searchInput").value = "";
     document.getElementById("searchInput").focus();
@@ -299,15 +348,69 @@ function openNav() {
 }
 
 /* Set the width of the side navigation to 0 and the left margin of the page content to 0 */
-function closeNav() {
+function closeNav(){
     document.getElementById("nav").style.width = "0px";
     document.getElementById("main").style.marginLeft = "0px";
 }
+function openLoginBar() {
+    closeAdd();
+    closeEdit();
+    closeCalBar();
+    closeNav();
+    closeChangePassBar();
+    document.getElementById("tasks").innerHTML = "<div class='task' style='height:auto;'><h2 style='padding:auto;'>You're Logged Out</h2></div>";
+    document.getElementById("username").focus();
+    document.getElementbyId("loginInfo").innerHTML = "";
+    if(document.getElementById("loginBar").style.width != "0px"){
+        closeLoginBar();
+        return;
+    }
+    if(window.screen.availWidth < 500){
+        document.getElementById("loginBar").style.width = "100%";
+    }else{
+        document.getElementById("loginBar").style.width = "300px";
+        document.getElementById("main").style.marginLeft = "300px";
+    }
+}
 
+function openChangePassBar(){
+    closeAdd();
+    closeEdit();
+    closeCalBar();
+    closeLoginBar();
+    closeNav();
+    document.getElementById("changePassInfo").innerHTML = "";
+    document.getElementById("oldPass").value = "";
+    document.getElementById("newPass1").value = "";
+    document.getElementById("newPass2").value = "";
+    document.getElementById("oldPass").focus();
+    if(document.getElementById("changePassBar").style.width != "0px"){
+        closeChangePassBar();
+        return;
+    }
+    if(window.screen.availWidth < 500){
+        document.getElementById("changePassBar").style.width = "100%";
+    }else{
+        document.getElementById("changePassBar").style.width = "300px";
+        document.getElementById("main").style.marginLeft = "300px";
+    }
+}
+
+function closeChangePassBar(){
+    document.getElementById("changePassBar").style.width = "0px";
+    document.getElementById("main").style.marginLeft = "0px";
+}
+
+function closeLoginBar(){
+    document.getElementById("loginBar").style.width = "0px";
+    document.getElementById("main").style.marginLeft = "0px";
+}
 function openAdd(){
     closeNav();
     closeEdit();
     closeCalBar();
+    closeLoginBar();
+    closeChangePassBar();
     document.getElementById("title").value = "";
     document.getElementById("description").value = "";
     document.getElementById("tags").value = "";
@@ -338,6 +441,8 @@ function openEdit(title, description, dueTimeString, createTime, tags){
     closeNav();
     closeAdd();
     closeCalBar();
+    closeLoginBar();
+    closeChangePassBar();
     document.getElementById("editInfo").innerHTML = "";
     if(document.getElementById("edit").style.width != "0px" && document.getElementById("editTitle").value == title){
         closeEdit();
@@ -391,7 +496,7 @@ function handleEditTaskPostReturn(data){
         getAll();
     }
     if(data == 0){
-        window.location = "login.html";
+        openLoginBar();
     }
 }
 
@@ -399,7 +504,7 @@ function getTagged(tag){
     var username = getCookie("username");
     var authCode = getCookie("authCode");
     if(username == 0 || authCode == 0){
-        window.location = "login.html"
+        openLoginBar();
     }else{
         var data = {"username":username, "authCode":authCode, "method":"getTagged", "sort":"default", "tag":tag};
         makePostRequest("/", data, "getTaggedPost");
@@ -408,7 +513,7 @@ function getTagged(tag){
 
 function handleGetTaggedReturn(data){
     if(data == 0){
-        window.location = "login.html"
+        openLoginBar();
     }
     if(data == 2){
         document.getElementById("tasks").innerHTML = "<div class='task'><h2 class='taskTitle'>No tasks with that tag</h2><input type='button' value='Go Back' onclick='getAll();'></div>";
@@ -429,7 +534,7 @@ function searchPost(searchString){
     }
     closeNav();
     if(username == 0 || authCode == 0){
-        window.location = "login.html"
+        openLoginBar();
     }else{
         var data = {"username":username, "authCode":authCode, "method":"search", "sort":"default", "searchString":searchString};
         makePostRequest("/", data, "search");
@@ -438,7 +543,7 @@ function searchPost(searchString){
 
 function handleSearchPostReturn(data){
     if(data == 0){
-        window.location = "login.html"
+        openLoginBar();
     }
     if(data == 2){
         document.getElementById("tasks").innerHTML = "<div class='task' style='height:auto;'><h2 class='taskTitle'>No matches</h2><input type='button' value='Go Back' onclick='getAll();'></div>";
@@ -454,7 +559,10 @@ function openCalBar(){
     closeAdd();
     closeEdit();
     closeNav();
+    closeLoginBar();
+    closeChangePassBar();
     var month = new Date().getMonth();
+    var year = new Date().getFullYear();
     if(document.getElementById("calBar").style.width != "0px"){
         closeCalBar();
         return;
@@ -465,7 +573,7 @@ function openCalBar(){
         document.getElementById("calBar").style.width = "300px";
         document.getElementById("main").style.marginLeft = "300px";
     }
-    renderCalPost(month);
+    renderCalPost(month, year);
 }
 
 /* Set the width of the side navigation to 0 and the left margin of the page content to 0 */
@@ -474,14 +582,14 @@ function closeCalBar() {
     document.getElementById("main").style.marginLeft = "0px";
 }
 
-function renderCalPost(monthInt){
+function renderCalPost(monthInt, year){
     var username = getCookie("username");
     var authCode = getCookie("authCode");
     if(navigator.onLine == true){
         if(username == 0 || authCode == 0){
-            window.location = "login.html"
+            openLoginBar();
         }else{
-            var data = {"username":username, "authCode":authCode, "method":"getTaskDates", "sort":"default", "month":monthInt};
+            var data = {"username":username, "authCode":authCode, "method":"getTaskDates", "sort":"default", "month":monthInt, "year":year};
             makePostRequest("/", data, "getTaskDates");
         }
     }
@@ -494,43 +602,56 @@ function renderCalPost(monthInt){
             datesString += datesList[0] + "/" + datesList[1] + ",";
             i += 1;
         }
-        console.log(monthInt + ";" + datesString);
-        renderCal(monthInt + ";" + datesString);
+        console.log(monthInt + ";" + datesString + ";" + year);
+        renderCal(monthInt + ";" + datesString + ";" + year);
     }
 }
 
 function renderCal(data){
     if(data == 0){
-        window.location = "login.html";
+        openLoginBar();
         return;
     }
     else{
         var monthInt = parseInt(data.split(";")[0]);
         var datesList = data.split(";")[1].split(",");
+        var year = data.split(";")[2];
         var ii = 0;
         var parsedDatesList = "";
         while(ii < datesList.length){
             day = parseInt(datesList[ii].split("/")[0]);
             month = parseInt(datesList[ii].split("/")[1])-1;
-            parsedDatesList += day+"/"+month;
+            taskYear = parseInt(datesList[ii].split("/")[2]);
+            if(day < 10){
+                day = "0" + day;
+            }
+            parsedDatesList += day+"/"+month+"/"+taskYear;
             ii += 1;
         }
     }
+    var todayDate = new Date().getDate();
+    if(todayDate < 10){
+        todayDate = "0" + todayDate;
+    }
+    var thisMonth = new Date().getMonth();
+    var thisYear = new Date().getFullYear();
+    var todayString = todayDate + "/" + thisMonth+"/"+thisYear;
     while(monthInt > 11){
         monthInt -= 12;
+        year = parseInt(year) + 1;
     }
     while(monthInt < 0){
         monthInt += 12
+        year = parseInt(year) - 1;
     }
     var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     var dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     var monthName = monthNames[monthInt];
-    var year = new Date().getFullYear();
     var firstDay = new Date(year, monthInt, 1).getDay();
     var lastDate = new Date(year, monthInt + 1, 0).getDate();
     var i = 0;
     var n = 0;
-    document.getElementById("calHead").innerHTML = "<i class='fa fa-arrow-left' onclick='renderCalPost(" + (monthInt-1) + ");'></i>" + monthName + " " + year + "<i class='fa fa-arrow-right' onclick='renderCalPost(" + (monthInt+1) + ");'></i>";
+    document.getElementById("calHead").innerHTML = "<i class='fa fa-arrow-left' onclick='renderCalPost("+(monthInt-1)+","+year+");'></i>" + monthName + " " + year + "<i class='fa fa-arrow-right' onclick='renderCalPost("+(monthInt+1)+","+year+");'></i>";
     var innerHTML = "<tbody><tr id='dayNamesRow'>";
     while(i < 7){
         innerHTML += "<th class='dayName'>" + dayNames[i] + "</th>"
@@ -545,13 +666,30 @@ function renderCal(data){
         i += 1;
     }
     i = 1;
+    console.log(parsedDatesList)
+    console.log(todayString)
     while(i < 8-startDay){
-        if(parsedDatesList.indexOf(i+"/"+monthInt) >= 0){
-            innerHTML += "<td class='activeDate' onclick='dateSearch(" + i + ", " + monthInt + ");'>" + i + "</td>";
+        if(i < 10){
+            currDateString = "0"+i+"/"+monthInt+"/"+year;
+        }else{
+            currDateString = i+"/"+monthInt+"/"+year;
         }
-        else{
-            innerHTML += "<td onclick='dateSearch(" + i + ", " + monthInt + ");'>" + i + "</td>";
+        if(parsedDatesList.indexOf(currDateString) >= 0 && currDateString == todayString){
+            innerHTML += "<td class='dueToday' onclick='dateSearch(" + i + ", " + monthInt+","+year + ");'>" + i + "</td>";
+            i += 1;
+            continue;
         }
+        if(parsedDatesList.indexOf(currDateString) >= 0 && currDateString != todayString){
+            innerHTML += "<td class='activeDate' onclick='dateSearch(" + i + ", " + monthInt+","+year+ ");'>" + i + "</td>";
+            i += 1;
+            continue;
+        }
+        if(currDateString == todayString){
+            innerHTML += "<td class='todaysDate' onclick='dateSearch(" + i + ", " + monthInt+","+year+ ");'>" + i + "</td>";
+            i += 1;
+            continue;
+        }
+        innerHTML += "<td onclick='dateSearch(" + i + ", " + monthInt+","+year+ ");'>" + i + "</td>";
         i += 1;
     }
     innerHTML += "</tr>";
@@ -559,12 +697,30 @@ function renderCal(data){
         innerHTML += "<tr>";
         n = 0;
         while(n < 7 && i <= lastDate){
-            if(parsedDatesList.indexOf(i+"/"+monthInt) >= 0){
-                innerHTML += "<td class='activeDate' onclick='dateSearch(" + i + ", " + monthInt + ");'>" + i + "</td>";
+            if(i < 10){
+                currDateString = "0"+i+"/"+monthInt+"/"+year;
+            }else{
+                currDateString = i+"/"+monthInt+"/"+year;
             }
-            else{
-                innerHTML += "<td onclick='dateSearch(" + i + ", " + monthInt + ");'>" + i + "</td>";
+            if(parsedDatesList.indexOf(currDateString) >= 0 && currDateString == todayString){
+                innerHTML += "<td class='dueToday' onclick='dateSearch(" + i + ", " + monthInt +","+year+ ");'>" + i + "</td>";
+                i += 1;
+                n += 1;
+                continue;
             }
+            if(parsedDatesList.indexOf(currDateString) >= 0 && currDateString != todayString){
+                innerHTML += "<td class='activeDate' onclick='dateSearch(" + i + ", " + monthInt+","+year+ ");'>" + i + "</td>";
+                i += 1;
+                n += 1;
+                continue;
+            }
+            if(currDateString == todayString){
+                innerHTML += "<td class='todaysDate' onclick='dateSearch(" + i + ", " + monthInt+","+year+ ");'>" + i + "</td>";
+                i += 1;
+                n += 1;
+                continue;
+            }
+            innerHTML += "<td onclick='dateSearch(" + i + ", " + monthInt+","+year+ ");'>" + i + "</td>";
             n += 1;
             i += 1;
         }
@@ -574,17 +730,16 @@ function renderCal(data){
     document.getElementById("calBody").innerHTML = innerHTML;
 }
 
-function dateSearch(dateInt, monthInt){
+function dateSearch(dateInt, monthInt, year){
     var username = getCookie("username");
     var authCode = getCookie("authCode");
     closeCalBar();
-    var year = new Date().getFullYear();
     var lowerTime = new Date(year, monthInt, dateInt, 0, 0, 0, 0).getTime()
     lowerTime = lowerTime/1000;
     var upperTime = new Date(year, monthInt, dateInt+1, 0, 0, 0, 0).getTime()
     upperTime = upperTime/1000;
     if(username == 0 || authCode == 0){
-        window.location = "login.html"
+        openLoginBar();
     }else{
         var data = {"username":username, "authCode":authCode, "method":"dateSearch", "sort":"default", "lowerTime":lowerTime, "upperTime":upperTime};
         makePostRequest("/", data, "dateSearch");
@@ -593,7 +748,7 @@ function dateSearch(dateInt, monthInt){
 
 function handleDateSearchPostReturn(data){
     if(data == 0){
-        window.location = "login.html"
+        openLoginBar();
     }
     if(data == 2){
         document.getElementById("tasks").innerHTML = data;
@@ -604,25 +759,26 @@ function handleDateSearchPostReturn(data){
         scroll(0,0);
     }
 }
-function renderDatePicker(monthInt, divId, tableId, headId, inputId){
+function renderDatePicker(monthInt, divId, tableId, headId, inputId, year){
     document.getElementById(divId).style.display = "inline-block";
 //    document.getElementById(divId).style.position = "absolute";
     document.getElementById(divId).style.height = "80%";
     while(monthInt > 11){
         monthInt -= 12;
+        year = parseInt(year) + 1;
     }
     while(monthInt < 0){
         monthInt += 12
+        year = parseInt(year) - 1;
     }
     var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     var dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     var monthName = monthNames[monthInt];
-    var year = new Date().getFullYear();
     var firstDay = new Date(year, monthInt, 1).getDay();
     var lastDate = new Date(year, monthInt + 1, 0).getDate();
     var i = 0;
     var n = 0;
-    document.getElementById(headId).innerHTML = "<i class='fa fa-arrow-left' onclick='renderDatePicker("+(monthInt-1)+",\""+divId+"\",\""+tableId+"\",\""+headId+"\",\""+inputId+"\");'></i>" + monthName + " " + year + "<i class='fa fa-arrow-right' onclick='renderDatePicker(" + (monthInt+1) + ",\""+divId+"\",\""+tableId+"\",\""+headId+"\",\""+inputId+"\");'></i>";
+    document.getElementById(headId).innerHTML = "<i class='fa fa-arrow-left' onclick='renderDatePicker("+(monthInt-1)+",\""+divId+"\",\""+tableId+"\",\""+headId+"\",\""+inputId+"\","+year+");'></i>" + monthName + " " + year + "<i class='fa fa-arrow-right' onclick='renderDatePicker(" + (monthInt+1) + ",\""+divId+"\",\""+tableId+"\",\""+headId+"\",\""+inputId+"\","+year+");'></i>";
     var innerHTML = "<tbody><tr id='dayNamesRow'>";
     while(i < 7){
         innerHTML += "<th class='dayName'>" + dayNames[i] + "</th>"

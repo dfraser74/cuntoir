@@ -75,3 +75,19 @@ def createUser(dataDict):
     db.commit()
     db.close()
     return(1)
+
+def changePass(dataDict):
+    username = dataDict["username"].strip()
+    oldPass = dataDict["oldPass"].strip()
+    newPass = hasher(dataDict["newPass"].strip())
+    if(authUser(username, oldPass) == 0):
+        return(0)
+    db = mysql.connect(host="localhost", db="fin", user="fin", passwd=open("pass.conf","r").read().strip())
+    c = db.cursor()
+    print(username + " : " + newPass)
+    command = "UPDATE users SET pass = %s WHERE BINARY username = %s"
+    c.execute(command, [newPass, username])
+    db.commit()
+    db.close()
+    return(1)
+

@@ -31,6 +31,8 @@ def handlePostRequest(dataDict):
         returnCode = getLib.getTaskDates(dataDict)
     if(method == "deleteTask"):
         returnCode = taskLib.deleteTask(dataDict)
+    if(method == "changePass"):
+        returnCode = authLib.changePass(dataDict)
     return(returnCode)
 
 def handleGetRequest(dataDict):

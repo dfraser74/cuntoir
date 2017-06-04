@@ -103,6 +103,10 @@ def getTagged(dataDict):
         text = task[4]
         title = task[6]
         tags = task[7]
+        if("'" in title):
+            title = title.replace("'", "&apos;")
+        if("'" in text):
+            text = text.replace("'", "&apos;")
         if(searchTag not in tags.split(",")):
             continue
         if(task[5] == "true"):
@@ -159,6 +163,10 @@ def search(dataDict):
         text = task[4]
         title = task[6]
         tags = task[7]
+        if("'" in title):
+            title = title.replace("'", "&apos;")
+        if("'" in text):
+            text = text.replace("'", "&apos;")
         if(searchString not in tags.lower().split(",") and searchString not in title.lower() and searchString not in text.lower() and task[5] != "true"):
             continue
         timeString = time.strftime("%d/%m/%Y %H:%M", time.localtime(dueTime))
@@ -217,6 +225,10 @@ def dateSearch(dataDict):
         text = task[4]
         title = task[6]
         tags = task[7]
+        if("'" in title):
+            title = title.replace("'", "&apos;")
+        if("'" in text):
+            text = text.replace("'", "&apos;")
         if(lowerTime > dueTime or upperTime < dueTime):
             continue
         timeString = time.strftime("%d/%m/%Y %H:%M", time.localtime(dueTime))
@@ -249,6 +261,7 @@ def getTaskDates(dataDict):
     authCode = dataDict["authCode"].strip()
     sort = dataDict["sort"]
     month = int(dataDict["month"])
+    year = int(dataDict["year"])
     auth = authLib.checkAuthCode(dataDict)
     if(auth != 1):
         return(0)
@@ -261,8 +274,9 @@ def getTaskDates(dataDict):
     returnString = str(month) + ";"
     for task in tasks:
         dueTime = task[0]
-        dueTimeString = time.strftime("%d/%m", time.localtime(dueTime))
+        dueTimeString = time.strftime("%d/%m/%Y", time.localtime(dueTime))
         returnString += (dueTimeString + ",")
     db.close()
+    returnString += ";"+str(year)
     print(returnString)
     return(returnString)

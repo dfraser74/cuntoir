@@ -280,6 +280,14 @@ td:hover {
 .noDate:hover {
     background-color: #333;
 }
+.todaysDate {
+    background-color: #00d84b;
+}
+.dueToday{
+    border: 1px solid #ff3030;
+    background-color: #00d84b;
+    color: #ff3030;
+}
 ::-webkit-scrollbar{
     width: 4px;
     height: 4px;

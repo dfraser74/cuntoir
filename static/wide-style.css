@@ -42,7 +42,7 @@ body {
 }
 #archiveButton{
     display: inline-block;
-    width: auto;
+    width: 40%;
 }
 #header {
     background-color: white;
@@ -95,6 +95,7 @@ input:focus, textarea:focus {
 
 input[type=button] {
     font-size: 15px;
+    width: 80%;
 }
 
 input[type=button]:hover {
@@ -289,6 +290,14 @@ td:hover {
 .noDate:hover {
     background-color: #333;
 }
+.todaysDate{
+    background-color: #00d84b;
+}
+.dueToday{
+    border: 1px solid #ff3030;
+    background-color: #00d84b;
+    color: #ff3030;
+}
 ::-webkit-scrollbar{
     width: 4px;
     height: 4px;
@@ -297,7 +306,7 @@ td:hover {
     background-color: #eeeeee;
 }
 ::-webkit-scrollbar-thumb {
-    background-color: #666666; 
+    background-color: #666666;
 }
 ::-webkit-scrollbar-button {
     display:none;
