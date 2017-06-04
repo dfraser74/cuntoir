@@ -29,6 +29,8 @@ def handlePostRequest(dataDict):
         returnCode = getLib.dateSearch(dataDict)
     if(method == "getTaskDates"):
         returnCode = getLib.getTaskDates(dataDict)
+    if(method == "deleteTask"):
+        returnCode = taskLib.deleteTask(dataDict)
     return(returnCode)
 
 def handleGetRequest(dataDict):

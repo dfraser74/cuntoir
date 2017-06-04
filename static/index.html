@@ -26,8 +26,9 @@
     <form id="searchForm">
     <input type="text" id="searchInput" placeholder="Search..."><input type="submit" id="searchButton" href="javascript:void(0)" onclick="searchPost(document.getElementById('searchInput').value);return false" value="Search">
     </form>
+    <a href="javascript:void(0)"  onclick="getArchived();closeNav();">Archive</a>
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav();">&times;</a>
-    <a href="javascript:void(0)" value="Logout" onclick="logout();">Logout</a>
+    <a href="javascript:void(0)" onclick="logout();">Logout</a>
     <a href="https://pihome.zapto.org">Blog</a>
     <p id="navInfo"></p>
 </div>

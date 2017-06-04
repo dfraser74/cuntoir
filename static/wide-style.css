@@ -25,6 +25,7 @@ body {
     height: 200px;
     width: 24%;
     min-width: 200px;
+    transition: 0.5s;
 }
 .taskTitle {
     display: block;
@@ -38,6 +39,10 @@ body {
 .taskBody{
     display: inline-block;
     margin: 4px;
+}
+#archiveButton{
+    display: inline-block;
+    width: auto;
 }
 #header {
     background-color: white;
@@ -204,6 +209,7 @@ i:hover {
 }
 .taskTags{
     overflow: auto;
+    border-bottom: 2px dashed #666666;
 }
 .taskTag {
     display: inline-block;

@@ -1,6 +1,13 @@
 import hashlib, time, random
 import MySQLdb as mysql
 
+def hasher(string):
+    i = 0;
+    while(i < 64000):
+        string = str(hashlib.sha512(string).hexdigest())
+        i += 1
+    return(string)
+
 def checkAuthCode(dataDict):
     username = dataDict["username"].strip()
     authCode = dataDict["authCode"].strip()
@@ -18,8 +25,7 @@ def checkAuthCode(dataDict):
 
 def authUser(username, userPass):
     username = username.strip()
-    userPass = userPass.strip()
-    userPass = str(hashlib.sha256(userPass).hexdigest())
+    userPass = hasher(userPass.strip())
     db = mysql.connect(host="localhost", db="fin", user="fin", passwd=open("pass.conf","r").read().strip())
     c = db.cursor()
     command = "SELECT username, pass FROM users;"
@@ -48,7 +54,7 @@ def createAuthCode(username, userPass):
 
 def createUser(dataDict):
     username = dataDict["username"].strip()
-    userPass = str(hashlib.sha256(dataDict["userPass"].strip()).hexdigest())
+    userPass = hasher(dataDict["userPass"].strip())
     inviteCode = dataDict["inviteCode"]
     with open("invite.conf", "r") as inviteFile:
         invite = inviteFile.read().strip()

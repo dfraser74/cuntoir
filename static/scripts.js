@@ -72,6 +72,12 @@ function handleRequestReturn(data, method){
     if(method == "getTaskDates"){
         renderCal(data);
     }
+    if(method == "getArchived"){
+        handleGetArchivedReturn(data);
+    }
+    if(method == "deleteTask"){
+        handleDeleteTaskReturn(data);
+    }
 }
 
 function getAll(){
@@ -80,12 +86,35 @@ function getAll(){
     if(username == 0 || authCode == 0){
         window.location = "login.html"
     }else{
-        var data = {"username":username, "authCode":authCode, "method":"getAll", "sort":"default"};
+        var data = {"username":username, "authCode":authCode, "method":"getAll", "sort":"default", "archived":"false"};
         makePostRequest("/", data, "getAll");
     }
 }
 
 function handleGetAllReturn(data){
+    if(data == 0){
+        window.location = "login.html"
+    }
+    if(data == 2){
+        document.getElementById("tasks").innerHTML = "<div class='task'><h2 class='taskTitle'>You're all done, congrats!!</h2></div>";
+    }
+    if(data != 0 && data != 2){
+        document.getElementById("tasks").innerHTML = data;
+    }
+}
+
+function getArchived(){
+    var username = getCookie("username");
+    var authCode = getCookie("authCode");
+    if(username == 0 || authCode == 0){
+        window.location = "login.html"
+    }else{
+        var data = {"username":username, "authCode":authCode, "method":"getAll", "sort":"createTime", "archived":"true"};
+        makePostRequest("/", data, "getArchived");
+    }
+}
+
+function handleGetArchivedReturn(data){
     if(data == 0){
         window.location = "login.html"
     }
@@ -207,14 +236,39 @@ function handleCreateUserReturn(data){
 function completeTaskPost(title, createTime){
     var username = getCookie("username");
     var authCode = getCookie("authCode");
+    var done = "true";
     document.getElementById(title).style.display = "none";
-    var data = {"method":"completeTask", "title":title, "createTime":createTime, "username":username, "authCode":authCode};
-    makePostRequest("/", data, "completeTask");
+    var data = {"method":"completeTask", "title":title, "createTime":createTime, "username":username, "authCode":authCode, "done":done};
+    window.setTimeout(function(){makePostRequest("/", data, "completeTask")}, 0);
+}
+
+function restoreTaskPost(title, createTime){
+    var username = getCookie("username");
+    var authCode = getCookie("authCode");
+    var done = "false";
+    document.getElementById(title).style.display = "none";
+    var data = {"method":"completeTask", "title":title, "createTime":createTime, "username":username, "authCode":authCode, "done":done};
+    window.setTimeout(function(){makePostRequest("/", data, "completeTask")}, 0);
 }
 
 function handleCompleteTaskPostReturn(data){
     if(data == 1){
         getAll();
+    }
+}
+
+function deleteTask(title, createTime){
+    var username = getCookie("username");
+    var authCode = getCookie("authCode");
+    document.getElementById(title).style.display = "none";
+    var data = {"method":"deleteTask", "title":title, "createTime":createTime, "username":username, "authCode":authCode};
+    window.setTimeout(function(){makePostRequest("/", data, "deleteTask")}, 0);
+}
+
+function handleDeleteTaskReturn(data){
+    console.log(data);
+    if(data == 1){
+        getArchived();
     }
 }
 
@@ -461,8 +515,6 @@ function renderCal(data){
             parsedDatesList += day+"/"+month;
             ii += 1;
         }
-        console.log(parsedDatesList);
-        console.log(datesList);
     }
     while(monthInt > 11){
         monthInt -= 12;
@@ -494,7 +546,6 @@ function renderCal(data){
     }
     i = 1;
     while(i < 8-startDay){
-        console.log(i+"/"+monthInt + " : " + parsedDatesList + " : " + parsedDatesList.indexOf(i+"/"+monthInt));
         if(parsedDatesList.indexOf(i+"/"+monthInt) >= 0){
             innerHTML += "<td class='activeDate' onclick='dateSearch(" + i + ", " + monthInt + ");'>" + i + "</td>";
         }

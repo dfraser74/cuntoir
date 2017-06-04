@@ -32,12 +32,13 @@ def completeTask(dataDict):
     authCode = dataDict["authCode"].strip()
     title = dataDict["title"]
     createTime = dataDict["createTime"]
+    doneFlag = dataDict["done"]
     if(authLib.checkAuthCode({"username":username, "authCode":authCode}) != 1):
         return(0)
     db = mysql.connect(host = "localhost", db = "fin", user = "fin", passwd = open("pass.conf","r").read().strip())
     c = db.cursor()
-    command = "UPDATE tasks SET done = 'true' WHERE BINARY username = %s AND BINARY title = %s AND createTime = %s"
-    c.execute(command, [username, title, createTime])
+    command = "UPDATE tasks SET done = %s WHERE BINARY username = %s AND BINARY title = %s AND createTime = %s"
+    c.execute(command, [doneFlag, username, title, createTime])
     db.commit()
     db.close()
     return(1)
@@ -65,4 +66,18 @@ def editTask(dataDict):
     db.commit()
     db.close()
     return(1)
-    
+
+def deleteTask(dataDict):
+    username = dataDict["username"].strip()
+    authCode = dataDict["authCode"].strip()
+    title = dataDict["title"]
+    createTime = dataDict["createTime"]
+    if(authLib.checkAuthCode({"username":username, "authCode":authCode}) != 1):
+        return(0)
+    db = mysql.connect(host = "localhost", db = "fin", user = "fin", passwd = open("pass.conf","r").read().strip())
+    c = db.cursor()
+    command = "DELETE FROM tasks WHERE BINARY username = %s AND BINARY title = %s AND createTime = %s"
+    c.execute(command, [username, title, createTime])
+    db.commit()
+    db.close()
+    return(1)
