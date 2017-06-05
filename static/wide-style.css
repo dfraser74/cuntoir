@@ -330,3 +330,17 @@ td:hover {
     width: 100%;
     height: 90%;
 }
+
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color: #aaaaaa;
+}
+::-moz-placeholder { /* Firefox 19+ */
+  color: #aaaaaa;
+}
+:-ms-input-placeholder { /* IE 10+ */
+  color: #aaaaaa;
+}
+:-moz-placeholder { /* Firefox 18- */
+  color: #aaaaaa;
+}
+

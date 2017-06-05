@@ -257,13 +257,12 @@ function changePass(oldPass, newPass1, newPass2){
 }
 
 function handleChangePassReturn(data){
-    console.log(data)
     if(data == 1){
         closeChangePassBar();
         logout();
     }
     else{
-        document.getElementById("changePassInfo").innerHTML = "Username or Password Incorrect";
+        document.getElementById("changePassInfo").innerHTML = "Old Password Incorrect";
     }
 }
 
@@ -312,7 +311,6 @@ function deleteTask(title, createTime){
 }
 
 function handleDeleteTaskReturn(data){
-    console.log(data);
     if(data == 1){
         getArchived();
     }
@@ -360,7 +358,7 @@ function openLoginBar() {
     closeChangePassBar();
     document.getElementById("tasks").innerHTML = "<div class='task' style='height:auto;'><h2 style='padding:auto;'>You're Logged Out</h2></div>";
     document.getElementById("username").focus();
-    document.getElementbyId("loginInfo").innerHTML = "";
+    document.getElementById("loginInfo").innerHTML = "";
     if(document.getElementById("loginBar").style.width != "0px"){
         closeLoginBar();
         return;
@@ -602,7 +600,6 @@ function renderCalPost(monthInt, year){
             datesString += datesList[0] + "/" + datesList[1] + ",";
             i += 1;
         }
-        console.log(monthInt + ";" + datesString + ";" + year);
         renderCal(monthInt + ";" + datesString + ";" + year);
     }
 }
@@ -666,8 +663,6 @@ function renderCal(data){
         i += 1;
     }
     i = 1;
-    console.log(parsedDatesList)
-    console.log(todayString)
     while(i < 8-startDay){
         if(i < 10){
             currDateString = "0"+i+"/"+monthInt+"/"+year;
