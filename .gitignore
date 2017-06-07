@@ -1,3 +1,5 @@
 *.conf
 *.pyc
 *.swp
+*.png
+*.pem

@@ -294,9 +294,8 @@ td:hover {
     background-color: #00d84b;
 }
 .dueToday{
-    border: 1px solid #ff3030;
-    background-color: #00d84b;
-    color: #ff3030;
+    background-color: #ff0000;
+    color: #eeeeee;
 }
 ::-webkit-scrollbar{
     width: 4px;

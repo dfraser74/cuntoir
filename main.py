@@ -1,6 +1,7 @@
 import getLib
 import authLib
 import taskLib
+import pushLib
 
 def handlePostRequest(dataDict):
     returnCode = 0
@@ -33,6 +34,8 @@ def handlePostRequest(dataDict):
         returnCode = taskLib.deleteTask(dataDict)
     if(method == "changePass"):
         returnCode = authLib.changePass(dataDict)
+    if(method == "updateSub"):
+        returnCode = pushLib.updateSub(dataDict)
     return(returnCode)
 
 def handleGetRequest(dataDict):

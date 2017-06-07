@@ -1,3 +1,24 @@
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js')
+    .then(function(reg) {
+        // registration worked
+        console.log("Service worker registered")
+        }).catch(function(error) {
+        // registration failed
+        console.log('Registration failed with ' + error);
+    });
+}
+
+function updateSubButton(){
+    navigator.serviceWorker.getRegistration().then(function(reg){
+        reg.pushManager.getSubscription().then(function(isSubbed){
+            if(isSubbed != null){
+                document.getElementById("pushPermission").style.display = "none";
+            }
+        });
+    })
+}
+
 function getCookie(name){
     var name = name + "=";
     var cookieJar = document.cookie;
@@ -813,4 +834,38 @@ function hideDatePicker(divId){
 
 function updateDateInput(id, day, month, year){
     document.getElementById(id).value = day+"/"+month+"/"+year;
+}
+
+function subscribe(){
+        navigator.serviceWorker.getRegistration().then(function(reg){
+            reg.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: base64UrlToUint8Array("BIceeej1Sv37OVW0Ey4miAkZ4ZYxEQOwp4iNJa6s-MjdvjMJjV6Z9XVZ2i0eRscywzDhDSWgf-3i974Y4qAnpKs")
+            }).then(function(subInfo){
+                updateSubInfo(subInfo);
+            });
+        }).catch(function(err){console.log(err);})
+        setCookie("pnSubbed", "true");
+        document.getElementById("pushPermission").style.display = "none";
+}
+
+function base64UrlToUint8Array(base64UrlData) {
+    const padding = '='.repeat((4 - base64UrlData.length % 4) % 4);
+    const base64 = (base64UrlData + padding)
+    .replace(/\-/g, '+')
+    .replace(/_/g, '/');
+    const rawData = window.atob(base64);
+    const buffer = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) {
+        buffer[i] = rawData.charCodeAt(i);
+    }
+    return buffer;
+}
+
+function updateSubInfo(subInfo){
+    username = getCookie("username");
+    authCode = getCookie("authCode");
+    var data = {"method":"updateSub", "username":username, "authCode":authCode, "subInfo":JSON.stringify(subInfo)};
+    makePostRequest("/", data, "updateSub");
+    console.log("Sub Info Updated");
 }

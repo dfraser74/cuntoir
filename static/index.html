@@ -1,10 +1,11 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/png" href="images/icon512-Rounded-Gray.png">
 <link rel="manifest" href="manifest.json">
 <link rel='stylesheet' media='screen and (min-width: 500px)' href='wide-style.css' />
 <link rel='stylesheet' media='screen and (min-width: 0px) and (max-width: 499px)' href='narrow-style.css' />
-<meta name="theme_color" content="#666666">
+<meta name="theme-color" content="#666666">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
@@ -52,6 +53,7 @@
     <a href="javascript:void(0)" onclick="openChangePassBar();">Change Password</a>
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav();">&times;</a>
     <a href="javascript:void(0)" onclick="logout();">Logout</a>
+    <a href="javascript:void(0)" id="pushPermission" onclick="subscribe();">Enable Notifications</a>
     <a href="https://pihome.zapto.org">Blog</a>
     <p id="navInfo"></p>
 </div>
@@ -120,6 +122,7 @@
     <div id="tasks"></div>
     <script type="text/javascript">
         getAll();
+        updateSubButton();
     </script>
 </div>
 </body>

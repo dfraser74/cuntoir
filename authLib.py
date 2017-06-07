@@ -1,6 +1,10 @@
 import hashlib, time, random
 import MySQLdb as mysql
 
+def dbCon():
+    db = mysql.connect(host="localhost", db="fin", user="fin", passwd=open("pass.conf","r").read().strip())
+    return(db)
+
 def hasher(string):
     i = 0;
     while(i < 64000):
@@ -70,7 +74,7 @@ def createUser(dataDict):
         if(username == user):
             db.close()
             return(2)
-    command = "INSERT INTO users (username, pass) VALUES (%s, %s);"
+    command = "INSERT INTO users (username, pass, sendPushes) VALUES (%s, %s, 'false');"
     c.execute(command, [username, userPass])
     db.commit()
     db.close()
