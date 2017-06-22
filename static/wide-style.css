@@ -52,6 +52,9 @@ body {
     margin: 0px;
     display: block;
 }
+#footer {
+    display: none;
+}
 #mainTitle {
     text-align: center;
     font-size: 40px;
@@ -76,9 +79,12 @@ a:hover{
     margin: 4px;
     padding: 4px;
     background-color: #cccccc;
+    border: 1px solid #555;
     border-radius: 4px;
 }
-
+.dueTime:hover{
+    background-color: #666666;    
+}
 input, textarea {
     width: 100%;
     margin: 4px;
@@ -157,9 +163,12 @@ input[type=submit]:focus {
 .sidebar a:hover{
     background-color: #666666;
 }
-.navButtons {
+.topNavButtons {
     text-align: center;
     font-size: 40px;
+}
+.bottomNavButton {
+    display: none;
 }
 
 i {
@@ -167,11 +176,9 @@ i {
     margin: 2px;
     border-radius: 4px;
 }
-
 i:hover {
     background-color: #666666;
 }
-
 #addButton {
     border-radius: 400px;
 }
@@ -188,7 +195,10 @@ i:hover {
     background-color: #666666;
     font-size: 15px;
 }
-
+.pushable{
+    display: inline;
+    width: auto;
+}
 .sidebar p{
     color: #eeeeee;
     font-size: 25px;
@@ -329,7 +339,12 @@ td:hover {
     width: 100%;
     height: 90%;
 }
-
+.datePickerHead{
+    font-size: 20px;
+}
+.dayName{
+    font-weight: normal;
+}
 ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
   color: #aaaaaa;
 }

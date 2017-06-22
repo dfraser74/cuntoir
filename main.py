@@ -2,6 +2,11 @@ import getLib
 import authLib
 import taskLib
 import pushLib
+import thread
+
+def startPushWatcher():
+    thread.start_new_thread(pushLib.pushWatcher, ())
+    return(1)
 
 def handlePostRequest(dataDict):
     returnCode = 0
@@ -35,7 +40,7 @@ def handlePostRequest(dataDict):
     if(method == "changePass"):
         returnCode = authLib.changePass(dataDict)
     if(method == "updateSub"):
-        returnCode = pushLib.updateSub(dataDict)
+        returnCode = pushLib.addSub(dataDict)
     return(returnCode)
 
 def handleGetRequest(dataDict):

@@ -1,5 +1,6 @@
 import time
 import authLib
+import pushLib
 import MySQLdb as mysql
 
 def addTask(dataDict):
@@ -8,6 +9,7 @@ def addTask(dataDict):
     if(authLib.checkAuthCode({"username":username, "authCode":authCode}) != 1):
         return(0)
     createTime = str(time.time())
+    dataDict["createTime"] = createTime
     dueTime = dataDict["dueTime"]
     description = dataDict["description"]
     done = "false"
@@ -19,12 +21,14 @@ def addTask(dataDict):
             continue
         tagString += tag.strip() + ","
     tagString = tagString[:-1]
-    db = mysql.connect(host = "localhost", db = "fin", user = "fin", passwd = open("pass.conf","r").read().strip())
+    db = authLib.dbCon()
     c = db.cursor()
-    command = "INSERT INTO tasks (username, createTime, dueTime, text, done, title, tags) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    command = "INSERT INTO tasks (username, createTime, dueTime, text, done, title, tags) VALUES ( %s, %s, %s, %s, %s, %s, %s)"
     c.execute(command, [username, createTime, dueTime, description, done, title, tagString])
     db.commit()
     db.close()
+    if(dataDict["pushable"] == "true"):
+        pushLib.schedulePush(dataDict)
     return(1)
 
 def completeTask(dataDict):
@@ -35,12 +39,16 @@ def completeTask(dataDict):
     doneFlag = dataDict["done"]
     if(authLib.checkAuthCode({"username":username, "authCode":authCode}) != 1):
         return(0)
-    db = mysql.connect(host = "localhost", db = "fin", user = "fin", passwd = open("pass.conf","r").read().strip())
+    db = authLib.dbCon()
     c = db.cursor()
     command = "UPDATE tasks SET done = %s WHERE BINARY username = %s AND BINARY title = %s AND createTime = %s"
     c.execute(command, [doneFlag, username, title, createTime])
     db.commit()
     db.close()
+    if(doneFlag == "true"):
+        pushLib.completePush(username, createTime)
+    else:
+        pushLib.schedulePush(dataDict)
     return(1)
 
 def editTask(dataDict):
@@ -51,6 +59,7 @@ def editTask(dataDict):
     createTime = str(dataDict["createTime"])
     text = dataDict["description"]
     tags = dataDict["tags"]
+    pushable = dataDict["pushable"]
     tagString = ""
     for tag in tags.split(","):
         if(tag == ""):
@@ -59,12 +68,16 @@ def editTask(dataDict):
     tagString = tagString[:-1]
     if(authLib.checkAuthCode({"username":username, "authCode":authCode}) != 1):
         return(0)
-    db = mysql.connect(host = "localhost", db = "fin", user = "fin", passwd = open("pass.conf","r").read().strip())
+    db = authLib.dbCon()
     c = db.cursor()
     command = "UPDATE tasks SET title = %s, text = %s, dueTime = %s, tags = %s WHERE BINARY username = %s AND createTime = %s"
     c.execute(command, [title, text, dueTime, tagString, username, createTime])
     db.commit()
     db.close()
+    if(dataDict["pushable"] == "true"):
+        pushLib.schedulePush(dataDict)
+    else:
+        pushLib.completePush(username, createTime)
     return(1)
 
 def deleteTask(dataDict):
@@ -74,10 +87,11 @@ def deleteTask(dataDict):
     createTime = dataDict["createTime"]
     if(authLib.checkAuthCode({"username":username, "authCode":authCode}) != 1):
         return(0)
-    db = mysql.connect(host = "localhost", db = "fin", user = "fin", passwd = open("pass.conf","r").read().strip())
+    db = authLib.dbCon()
     c = db.cursor()
     command = "DELETE FROM tasks WHERE BINARY username = %s AND BINARY title = %s AND createTime = %s"
     c.execute(command, [username, title, createTime])
     db.commit()
     db.close()
+    pushLib.completePush(username, createTime)
     return(1)

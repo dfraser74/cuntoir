@@ -3,6 +3,7 @@ if ('serviceWorker' in navigator) {
     .then(function(reg) {
         // registration worked
         console.log("Service worker registered")
+        reg.update()
         }).catch(function(error) {
         // registration failed
         console.log('Registration failed with ' + error);
@@ -10,15 +11,28 @@ if ('serviceWorker' in navigator) {
 }
 
 function updateSubButton(){
-    navigator.serviceWorker.getRegistration().then(function(reg){
-        reg.pushManager.getSubscription().then(function(isSubbed){
-            if(isSubbed != null){
-                document.getElementById("pushPermission").style.display = "none";
-            }
-        });
-    })
+    if("serviceWorker" in navigator){
+        navigator.serviceWorker.getRegistration().then(function(reg){
+            reg.pushManager.getSubscription().then(function(isSubbed){
+                if(isSubbed != null){
+                    document.getElementById("pushPermission").style.display = "none";
+                }
+            });
+        })
+    }else{document.getElementById("pushPermission").style.display = "none";}
 }
 
+function checkIfSubbed(){
+    if("serviceWorker" in navigator){
+        navigator.serviceWorker.getRegistration().then(function(reg){
+            reg.pushManager.getSubscription().then(function(isSubbed){
+                if(isSubbed != null){
+                    return(1);
+                }else{return(0);}
+            });
+        })
+    }else{return(2);}
+}
 function getCookie(name){
     var name = name + "=";
     var cookieJar = document.cookie;
@@ -102,15 +116,23 @@ function handleRequestReturn(data, method){
     if(method == "changePass"){
         handleChangePassReturn(data);
     }
+    if(method == "updatePushable"){
+        handleUpdatePushableReturn(data);
+    }
 }
 
 function getAll(){
     var username = getCookie("username");
     var authCode = getCookie("authCode");
+    var timeOffset = timezoneOffset();
+    document.getElementById("tasks").innerHTML = localStorage["lastTaskGetReturn"];
+    if(navigator.onLine != true){
+        return;
+    }
     if(username == 0 || authCode == 0){
         openLoginBar();
     }else{
-        var data = {"username":username, "authCode":authCode, "method":"getAll", "sort":"default", "archived":"false"};
+        var data = {"username":username, "authCode":authCode, "method":"getAll", "sort":"default", "archived":"false", "timeOffset":timeOffset};
         makePostRequest("/", data, "getAll");
     }
 }
@@ -121,8 +143,10 @@ function handleGetAllReturn(data){
     }
     if(data == 2){
         document.getElementById("tasks").innerHTML = "<div class='task' style='height:auto;'><h2 class='taskTitle'>All Done</h2></div>";
+        localStorage["lastTaskGetReturn"] = document.getElementById("tasks").innerHTML;
     }
     if(data != 0 && data != 2){
+        localStorage["lastTaskGetReturn"] = data;
         document.getElementById("tasks").innerHTML = data;
     }
 }
@@ -130,11 +154,20 @@ function handleGetAllReturn(data){
 function getArchived(){
     var username = getCookie("username");
     var authCode = getCookie("authCode");
+    var timeOffset = timezoneOffset();
     closeNav();
+    if(navigator.onLine != true){
+        if(localStorage["lastArchiveGetReturn"] != null){
+            document.getElementById("tasks").innerHTML = localStorage["lastArchiveGetReturn"];
+        }else{
+            handleGetArchivedReturn(2);
+        }
+        return;
+    }
     if(username == 0 || authCode == 0){
         openLoginBar();
     }else{
-        var data = {"username":username, "authCode":authCode, "method":"getAll", "sort":"createTime", "archived":"true"};
+        var data = {"username":username, "authCode":authCode, "method":"getAll", "sort":"createTime", "archived":"true", "timeOffset":timeOffset};
         makePostRequest("/", data, "getArchived");
     }
 }
@@ -147,6 +180,7 @@ function handleGetArchivedReturn(data){
         document.getElementById("tasks").innerHTML = "<div class='task' style='height:auto;'><h2 class='taskTitle'>Nothing Archived</h2><input type='button' value='Go Back' onclick='getAll();'></div>";
     }
     if(data != 0 && data != 2){
+        localStorage["lastArchiveGetReturn"] = data;
         document.getElementById("tasks").innerHTML = data;
     }
 }
@@ -173,11 +207,19 @@ function handleLoginPostReturn(data){
 function addTaskPost(title, description, dueTime, tags){
     var username = getCookie("username");
     var authCode = getCookie("authCode");
+    var pushable = "" + document.getElementById("pushable").checked;
+    console.log(pushable);
     if(title == ""){
         document.getElementById("info").innerHTML = "Your task needs a title";
     }else{
         if(dueTime != 0){
-            var data = {"method":"addTask", "username":username, "authCode":authCode, "dueTime":dueTime, "description":description, "title":title, "tags":tags};
+            var data = {"method":"addTask", 
+                "username":username, 
+                "authCode":authCode, "dueTime":dueTime, 
+                "description":description, 
+                "title":title, 
+                "tags":tags, 
+                "pushable":pushable};
             makePostRequest("/", data, "addTaskPost");
         }
     }
@@ -201,6 +243,7 @@ function getDateTime(dateString, timeString){
     second = 00;
     var time = new Date(year, month-1, day, hour, minute, second, 0).getTime();
     time = time/1000;
+    time = time - timezoneOffset();
     if(isNaN(time)){
         document.getElementById("info").innerHTML = "Sorry, date format incorrect. It should be dd/mm/yyyy and hh/mm/ss";
         document.getElementById("editInfo").innerHTML = "Sorry, date format incorrect. It should be dd/mm/yyyy and hh/mm/ss";
@@ -299,21 +342,21 @@ function handleCreateUserReturn(data){
     }
 }
 
-function completeTaskPost(title, createTime){
+function completeTaskPost(title, createTime, dueTime){
     var username = getCookie("username");
     var authCode = getCookie("authCode");
     var done = "true";
     document.getElementById(title).style.display = "none";
-    var data = {"method":"completeTask", "title":title, "createTime":createTime, "username":username, "authCode":authCode, "done":done};
+    var data = {"method":"completeTask", "title":title, "createTime":createTime, "username":username, "authCode":authCode, "done":done, "dueTime":dueTime};
     window.setTimeout(function(){makePostRequest("/", data, "completeTask")}, 0);
 }
 
-function restoreTaskPost(title, createTime){
+function restoreTaskPost(title, createTime, dueTime){
     var username = getCookie("username");
     var authCode = getCookie("authCode");
     var done = "false";
     document.getElementById(title).style.display = "none";
-    var data = {"method":"completeTask", "title":title, "createTime":createTime, "username":username, "authCode":authCode, "done":done};
+    var data = {"method":"completeTask", "title":title, "createTime":createTime, "username":username, "authCode":authCode, "done":done, "dueTime":dueTime};
     window.setTimeout(function(){makePostRequest("/", data, "deleteTask")}, 0);
 }
 
@@ -434,6 +477,7 @@ function openAdd(){
     document.getElementById("description").value = "";
     document.getElementById("tags").value = "";
     document.getElementById("info").value = "";
+    document.getElementById("pushable").checked = true;
     if(document.getElementById("add").style.width != "0px"){
         closeAdd();
         return;
@@ -494,17 +538,27 @@ function updateEditFields(title, description, timeString, createTime, tags){
     document.getElementById("editInfo").innerHTML = "";
     document.getElementById("editCreateTime").innerHTML = createTime;
     document.getElementById("editTags").value = tags;
+    document.getElementById("editPushable").checked = true;
 }
 
 function editTaskPost(title, description, dueTime, tags){
     var username = getCookie("username");
     var authCode = getCookie("authCode");
     var createTime = document.getElementById("editCreateTime").innerHTML;
+    var pushable = document.getElementById("editPushable").checked + "";
     if(title == ""){
         document.getElementById("editInfo").innerHTML = "Your task needs a title";
     }else{
         if(dueTime != 0){
-            var data = {"method":"editTask", "username":username,"dueTime":dueTime, "authCode":authCode, "createTime":createTime, "description":description, "title":title, "tags":tags};
+            var data = {"method":"editTask", 
+                "username":username,
+                "dueTime":dueTime, 
+                "authCode":authCode, 
+                "createTime":createTime, 
+                "description":description, 
+                "title":title, 
+                "tags":tags,
+                "pushable":pushable};
             makePostRequest("/", data, "editTaskPost");
         }
     }
@@ -522,10 +576,11 @@ function handleEditTaskPostReturn(data){
 function getTagged(tag){
     var username = getCookie("username");
     var authCode = getCookie("authCode");
+    var timeOffset = timezoneOffset();
     if(username == 0 || authCode == 0){
         openLoginBar();
     }else{
-        var data = {"username":username, "authCode":authCode, "method":"getTagged", "sort":"default", "tag":tag};
+        var data = {"username":username, "authCode":authCode, "method":"getTagged", "sort":"default", "tag":tag, "timeOffset":timeOffset};
         makePostRequest("/", data, "getTaggedPost");
     }
 }
@@ -547,6 +602,7 @@ function handleGetTaggedReturn(data){
 function searchPost(searchString){
     var username = getCookie("username");
     var authCode = getCookie("authCode");
+    var timeOffset = timezoneOffset();
     if(searchString.length < 1){
         document.getElementById("navInfo").innerHTML = "You need to search for something!";
         return;
@@ -555,7 +611,7 @@ function searchPost(searchString){
     if(username == 0 || authCode == 0){
         openLoginBar();
     }else{
-        var data = {"username":username, "authCode":authCode, "method":"search", "sort":"default", "searchString":searchString};
+        var data = {"username":username, "authCode":authCode, "method":"search", "sort":"default", "searchString":searchString, "timeOffset":timeOffset};
         makePostRequest("/", data, "search");
     }
 }
@@ -604,7 +660,7 @@ function closeCalBar() {
 function renderCalPost(monthInt, year){
     var username = getCookie("username");
     var authCode = getCookie("authCode");
-    if(navigator.onLine == true){
+    if(document.getElementsByClassName("dueTime").length < 1 && navigator.onLine == true){
         if(username == 0 || authCode == 0){
             openLoginBar();
         }else{
@@ -618,7 +674,7 @@ function renderCalPost(monthInt, year){
         var datesString = "";
         while(i < dueTimeList.length){
             datesList = dueTimeList[i].innerHTML.split(" ")[0].split("/").slice(0, 2);
-            datesString += datesList[0] + "/" + datesList[1] + ",";
+            datesString += datesList[0] + "/" + datesList[1] + "/" + year + ",";
             i += 1;
         }
         renderCal(monthInt + ";" + datesString + ";" + year);
@@ -749,6 +805,7 @@ function renderCal(data){
 function dateSearch(dateInt, monthInt, year){
     var username = getCookie("username");
     var authCode = getCookie("authCode");
+    var timeOffset = timezoneOffset();
     closeCalBar();
     var lowerTime = new Date(year, monthInt, dateInt, 0, 0, 0, 0).getTime()
     lowerTime = lowerTime/1000;
@@ -757,7 +814,7 @@ function dateSearch(dateInt, monthInt, year){
     if(username == 0 || authCode == 0){
         openLoginBar();
     }else{
-        var data = {"username":username, "authCode":authCode, "method":"dateSearch", "sort":"default", "lowerTime":lowerTime, "upperTime":upperTime};
+        var data = {"username":username, "authCode":authCode, "method":"dateSearch", "sort":"default", "lowerTime":lowerTime, "upperTime":upperTime, "timeOffset":timeOffset};
         makePostRequest("/", data, "dateSearch");
     }
 }
@@ -765,10 +822,6 @@ function dateSearch(dateInt, monthInt, year){
 function handleDateSearchPostReturn(data){
     if(data == 0){
         openLoginBar();
-    }
-    if(data == 2){
-        document.getElementById("tasks").innerHTML = data;
-        scroll(0,0);
     }
     if(data != 0 && data != 2){
         document.getElementById("tasks").innerHTML = data;
@@ -794,6 +847,9 @@ function renderDatePicker(monthInt, divId, tableId, headId, inputId, year){
     var lastDate = new Date(year, monthInt + 1, 0).getDate();
     var i = 0;
     var n = 0;
+    var thisYear = new Date().getFullYear();
+    var today = new Date().getDate();
+    var thisMonth = new Date().getMonth();
     document.getElementById(headId).innerHTML = "<i class='fa fa-arrow-left' onclick='renderDatePicker("+(monthInt-1)+",\""+divId+"\",\""+tableId+"\",\""+headId+"\",\""+inputId+"\","+year+");'></i>" + monthName + " " + year + "<i class='fa fa-arrow-right' onclick='renderDatePicker(" + (monthInt+1) + ",\""+divId+"\",\""+tableId+"\",\""+headId+"\",\""+inputId+"\","+year+");'></i>";
     var innerHTML = "<tbody><tr id='dayNamesRow'>";
     while(i < 7){
@@ -810,7 +866,11 @@ function renderDatePicker(monthInt, divId, tableId, headId, inputId, year){
     }
     i = 1;
     while(i < 8-startDay){
-        innerHTML += "<td onclick='updateDateInput(\""+inputId+"\","+i+","+(monthInt+1)+",\""+year+"\");'>" + i + "</td>";
+        if(i == today && monthInt == thisMonth && year == thisYear){
+            innerHTML += "<td class='todaysDate' onclick='updateDateInput(\""+inputId+"\","+i+","+(monthInt+1)+",\""+year+"\");'>" + i + "</td>"; 
+        }else{
+            innerHTML += "<td onclick='updateDateInput(\""+inputId+"\","+i+","+(monthInt+1)+",\""+year+"\");'>" + i + "</td>";
+        }
         i += 1;
     }
     innerHTML += "</tr>";
@@ -818,7 +878,11 @@ function renderDatePicker(monthInt, divId, tableId, headId, inputId, year){
         innerHTML += "<tr>";
         n = 0;
         while(n < 7 && i <= lastDate){    
-            innerHTML += "<td onclick='updateDateInput(\""+inputId+"\","+i+","+(monthInt+1)+",\""+year+"\");'>" + i + "</td>";
+            if(i == today && monthInt == thisMonth && year == thisYear){
+                innerHTML += "<td class='todaysDate' onclick='updateDateInput(\""+inputId+"\","+i+","+(monthInt+1)+",\""+year+"\");'>" + i + "</td>"; 
+            }else{
+                innerHTML += "<td onclick='updateDateInput(\""+inputId+"\","+i+","+(monthInt+1)+",\""+year+"\");'>" + i + "</td>";
+            }
             n += 1;
             i += 1;
         }
@@ -868,4 +932,33 @@ function updateSubInfo(subInfo){
     var data = {"method":"updateSub", "username":username, "authCode":authCode, "subInfo":JSON.stringify(subInfo)};
     makePostRequest("/", data, "updateSub");
     console.log("Sub Info Updated");
+}
+
+function updatePushable(createTime){
+    username = getCookie("username");
+    authCode = getCookie("authCode");
+    var data = {"method":"updatePushable", "username":username, "authCode":authCode, "createTime":createTime};
+    makePostRequest("/", data, "updatePushable");
+}
+
+function handleUpdatePushableReturn(data){
+    getAll();
+}
+
+Date.prototype.stdTimezoneOffset = function() {
+    var jan = new Date(this.getFullYear(), 0, 1);
+    var jul = new Date(this.getFullYear(), 6, 1);
+    return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+}
+
+Date.prototype.dst = function() {
+    return this.getTimezoneOffset() < this.stdTimezoneOffset();
+}
+
+function timezoneOffset(){
+    offset = new Date().getTimezoneOffset() * 60;
+    if(new Date().dst()){
+        offset += 60*60;
+    }
+    return offset;
 }

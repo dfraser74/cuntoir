@@ -1,17 +1,26 @@
-cacheVersion = "v18"
-swVersion = "v1"
+cacheVersion = "v52";
+swVersion = "v6";
+
 this.addEventListener("install", function(event){
     event.waitUntil(
         caches.open(cacheVersion).then(function(cache){
             return cache.addAll([
+                "https://pihome.zapto.org/dev/",
                 "index.html",
                 "createUser.html",
                 "manifest.json",
                 "narrow-style.css",
                 "wide-style.css",
                 "scripts.js",
+                "sw.js",
+                "images/icon512-Rounded-Gray.png",
+                "https://fonts.gstatic.com/s/sourcesanspro/v10/ODelI1aHBYDBqgeIAH2zlJbPFduIYtoLzwST68uhz_Y.woff2",
                 "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css",
-                "https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"
+                "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/fonts/fontawesome-webfont.woff2?v=4.7.0",
+                "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/fonts/fontawesome-webfont.woff?v=4.7.0",
+                "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/fonts/fontawesome-webfont.ttf?v=4.7.0",
+                "https://fonts.googleapis.com/css?family=Source+Sans+Pro",
+                "jquery.min.js"
             ]);
         })
     );
@@ -48,11 +57,11 @@ this.addEventListener('fetch', function(event) {
 self.addEventListener("push", function(event){
     console.log("Push notification receieved")
     data = event.data.text().split(";");
-    title = data[0];
-    text = data[1];
+    title = data[3];
+    text = data[0];
     icon = data[2];
-    var promise = self.registration.showNotification("Due today", {
-        "body":title,
+    var promise = self.registration.showNotification(title, {
+        "body":text,
         "icon":icon,
         "vibrate": [500,110,500],
         });

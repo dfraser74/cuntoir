@@ -9,6 +9,7 @@ def getAll(dataDict):
     authCode = dataDict["authCode"].strip()
     sort = dataDict["sort"]
     doneFlag = dataDict["archived"]
+    timeOffset = dataDict["timeOffset"]
     if(doneFlag == "false"):
         buttonVal = "Complete"
         onClick = "completeTaskPost"
@@ -19,7 +20,7 @@ def getAll(dataDict):
     if(auth != 1):
         return(0)
     returnString = ""
-    db = mysql.connect(host="localhost", db="fin", user="fin", passwd=open("pass.conf","r").read().strip())
+    db = authLib.dbCon()
     c = db.cursor()
     command = "SELECT * FROM tasks WHERE BINARY username = %s AND BINARY done = %s"
     c.execute(command, [username, doneFlag])
@@ -44,13 +45,14 @@ def getAll(dataDict):
             title = title.replace("'", "&apos;")
         if("'" in text):
             text = text.replace("'", "&apos;")
-        timeString = time.strftime("%d/%m/%Y %H:%M", time.localtime(dueTime))
+        timeString = time.strftime("%d/%m/%Y %H:%M", time.localtime(dueTime + float(timeOffset)))
         returnString += "<div class='task' id='"+title+"'><h2 class='taskTitle' onclick='openEdit(\""+title +"\",\""+text+"\",\""+timeString+"\",\""+str(createTime)+"\",\""+tags+"\");'>" + title + "</h2>"
         if(text != ""):
             returnString += "<div class='taskBody'>" + text + "</div><br>"
         else:
             returnString += "<div class='taskBody'><span class='italic'>No details</span></div><br>"
-        returnString += "<div class='dueTime'>" + timeString + "</div>"
+        returnString += "<div class='dueTime'>" + timeString
+        returnString += "</div>"
         returnString += "<div class='taskTags'>"
         if(len(tags) < 1):
             returnString += "<span class='noTaskTag'><span class='italic'>No tags</span></span>" 
@@ -59,18 +61,12 @@ def getAll(dataDict):
                 continue
             returnString += "<span class='taskTag' onclick='getTagged(\""+tag+"\");'>"+tag+"</span>"
         returnString += "</div>"
-        returnString += "<input type='button' value='" + buttonVal + "' onclick='" + onClick +"(\"" + title + "\",\"" + str(createTime) + "\");'>"
+        returnString += "<input type='button' value='" + buttonVal + "' onclick='" + onClick +"(\"" + title + "\",\"" + str(createTime) + "\",\"" +str(dueTime) + "\");'>"
         if(doneFlag == "true"):
             returnString += "<input type='button' id='archiveButton' value='Delete' onclick='deleteTask(\""+title+"\",\""+str(createTime)+"\");'>"
         returnString += "</div>"
     if(doneFlag == "true"):
         returnString += "<br><div class='task' style='height:auto;'><input type='button' onclick='getAll();' value='Go Back'></div>"
-    return(returnString)
-
-def login(dataDict):
-    returnString = ""
-    with open("static/login.html", "r") as loginFile:
-        returnString += loginFile.read()
     return(returnString)
 
 def getTagged(dataDict):
@@ -79,10 +75,11 @@ def getTagged(dataDict):
     searchTag = dataDict["tag"].strip()
     sort = dataDict["sort"]
     auth = authLib.checkAuthCode(dataDict)
+    timeOffset = float(dataDict["timeOffset"])
     if(auth != 1):
         return(0)
     returnString = ""
-    db = mysql.connect(host="localhost", db="fin", user="fin", passwd=open("pass.conf","r").read().strip())
+    db = authLib.dbCon()
     c = db.cursor()
     command = "SELECT * FROM tasks WHERE BINARY username = %s AND BINARY done != %s"
     c.execute(command, [username, "true"])
@@ -111,13 +108,14 @@ def getTagged(dataDict):
             continue
         if(task[5] == "true"):
             continue
-        timeString = time.strftime("%d/%m/%Y %H:%M", time.localtime(dueTime))
+        timeString = time.strftime("%d/%m/%Y %H:%M", time.localtime(dueTime + timeOffset))
         returnString += "<div class='task' id='"+title+"'><h2 class='taskTitle' onclick='openEdit(\""+title +"\",\""+text+"\",\""+timeString+"\",\""+str(createTime)+"\",\""+tags+"\");'>" + title + "</h2>"
         if(text != ""):
             returnString += "<div class='taskBody'>" + text + "</div><br>"
         else:
             returnString += "<div class='taskBody'><span class='italic'>No details</span></div><br>"
-        returnString += "<div class='dueTime'>" + timeString + "</div><br>"
+        returnString += "<div class='dueTime'>" + timeString
+        returnString += "</div><br>"
         returnString += "<div class='taskTags'>"
         if(len(tags) < 1):
             returnString += "<span class='noTaskTag'><span class='italic'>No tags</span></span>" 
@@ -126,7 +124,7 @@ def getTagged(dataDict):
                 continue
             returnString += "<span class='taskTag' onclick='getTagged(\""+tag+"\");'>"+tag+"</span>"
         returnString += "</div>"
-        returnString += "<input type='button' value='Done' onclick='completeTaskPost(\"" + title + "\",\"" + str(createTime) + "\");'>"
+        returnString += "<input type='button' value='Complete' onclick='completeTaskPost(\"" + title + "\",\"" + str(createTime) + "\");'>"
         returnString += "</div>"
     if(returnString == ""):
         return(2)
@@ -138,11 +136,12 @@ def search(dataDict):
     authCode = dataDict["authCode"].strip()
     searchString = dataDict["searchString"].strip().lower()
     sort = dataDict["sort"]
+    timeOffset = float(dataDict["timeOffset"])
     auth = authLib.checkAuthCode(dataDict)
     if(auth != 1):
         return(0)
     returnString = ""
-    db = mysql.connect(host="localhost", db="fin", user="fin", passwd=open("pass.conf","r").read().strip())
+    db = authLib.dbCon()
     c = db.cursor()
     command = "SELECT * FROM tasks WHERE BINARY username = %s AND BINARY done != %s"
     c.execute(command, [username, "true"])
@@ -169,13 +168,14 @@ def search(dataDict):
             text = text.replace("'", "&apos;")
         if(searchString not in tags.lower().split(",") and searchString not in title.lower() and searchString not in text.lower() and task[5] != "true"):
             continue
-        timeString = time.strftime("%d/%m/%Y %H:%M", time.localtime(dueTime))
+        timeString = time.strftime("%d/%m/%Y %H:%M", time.localtime(dueTime + timeOffset))
         returnString += "<div class='task' id='"+title+"'><h2 class='taskTitle' onclick='openEdit(\""+title +"\",\""+text+"\",\""+timeString+"\",\""+str(createTime)+"\",\""+tags+"\");'>" + title + "</h2>"
         if(text != ""):
             returnString += "<div class='taskBody'>" + text + "</div><br>"
         else:
             returnString += "<div class='taskBody'><span class='italic'>No details</span></div><br>"
-        returnString += "<div class='dueTime'>" + timeString + "</div><br>"
+        returnString += "<div class='dueTime'>" + timeString 
+        returnString += "</div><br>"
         returnString += "<div class='taskTags'>"
         if(len(tags) < 1):
             returnString += "<span class='noTaskTag'><span class='italic'>No tags<span></span>" 
@@ -184,7 +184,7 @@ def search(dataDict):
                 continue
             returnString += "<span class='taskTag' onclick='getTagged(\""+tag+"\");'>"+tag+"</span>"
         returnString += "</div>"
-        returnString += "<input type='button' value='Done' onclick='completeTaskPost(\"" + title + "\",\"" + str(createTime) + "\");'>"
+        returnString += "<input type='button' value='Complete' onclick='completeTaskPost(\"" + title + "\",\"" + str(createTime) + "\");'>"
         returnString += "</div>"
     if(returnString == ""):
         return(2)
@@ -197,13 +197,14 @@ def dateSearch(dataDict):
     sort = dataDict["sort"]
     lowerTime = float(dataDict["lowerTime"])
     upperTime = float(dataDict["upperTime"])
+    timeOffset = float(dataDict["timeOffset"])
     auth = authLib.checkAuthCode(dataDict)
     if(auth != 1):
         return(0)
     infoString = "<div class='task' style='height:auto;width:auto;'><h2 class='taskTitle'>Tasks on " + time.strftime("%d/%m/%Y", time.localtime(lowerTime)) + ":</h2></div><br>"
     returnString = ""
     returnString += infoString
-    db = mysql.connect(host="localhost", db="fin", user="fin", passwd=open("pass.conf","r").read().strip())
+    db = authLib.dbCon()
     c = db.cursor()
     command = "SELECT * FROM tasks WHERE BINARY username = %s AND BINARY done != %s"
     c.execute(command, [username, "true"])
@@ -213,9 +214,6 @@ def dateSearch(dataDict):
         for item in task:
             if(type(item) == StringType):
                 item = item.decode("utf-8")
-    if(len(tasks) == 0):
-        db.close()
-        return(2)
     if(sort == "default"):
         tasks.sort(key = lambda x:x[3])
     for task in tasks:
@@ -231,13 +229,15 @@ def dateSearch(dataDict):
             text = text.replace("'", "&apos;")
         if(lowerTime > dueTime or upperTime < dueTime):
             continue
-        timeString = time.strftime("%d/%m/%Y %H:%M", time.localtime(dueTime))
+        dueTime = dueTime
+        timeString = time.strftime("%d/%m/%Y %H:%M", time.localtime(dueTime + timeOffset))
         returnString += "<div class='task' id='"+title+"'><h2 class='taskTitle' onclick='openEdit(\""+title +"\",\""+text+"\",\""+timeString+"\",\""+str(createTime)+"\",\""+tags+"\");'>" + title + "</h2>"
         if(text != ""):
             returnString += "<div class='taskBody'>" + text + "</div><br>"
         else:
             returnString += "<div class='taskBody'><span class='italic'>No details</span></div><br>"
-        returnString += "<div class='dueTime'>" + timeString + "</div><br>"
+        returnString += "<div class='dueTime'>" + timeString
+        returnString += "</div><br>"
         returnString += "<div class='taskTags'>"
         if(len(tags) < 1):
             returnString += "<span class='noTaskTag'><span class='italic'>No tags<span></span>" 
@@ -246,7 +246,7 @@ def dateSearch(dataDict):
                 continue
             returnString += "<span class='taskTag' onclick='getTagged(\""+tag+"\");'>"+tag+"</span>"
         returnString += "</div>"
-        returnString += "<input type='button' value='Done' onclick='completeTaskPost(\"" + title + "\",\"" + str(createTime) + "\");'>"
+        returnString += "<input type='button' value='Complete' onclick='completeTaskPost(\"" + title + "\",\"" + str(createTime) + "\");'>"
         returnString += "</div>"
     if(returnString == infoString):
         returnString += "<div class='task' style='height:auto;'><h2 class='taskTitle'>No tasks</h2><input type='button' onclick='getAll();' value='Go Back'></div>"
@@ -265,7 +265,7 @@ def getTaskDates(dataDict):
     auth = authLib.checkAuthCode(dataDict)
     if(auth != 1):
         return(0)
-    db = mysql.connect(host="localhost", db="fin", user="fin", passwd=open("pass.conf","r").read().strip())
+    db = authLib.dbCon()
     c = db.cursor()
     command = "SELECT dueTime FROM tasks WHERE BINARY username = %s AND BINARY done != %s"
     c.execute(command, [username, "true"])
@@ -278,5 +278,4 @@ def getTaskDates(dataDict):
         returnString += (dueTimeString + ",")
     db.close()
     returnString += ";"+str(year)
-    print(returnString)
     return(returnString)
