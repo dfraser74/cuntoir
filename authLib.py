@@ -21,6 +21,7 @@ def hasher(string):
 
 def checkAuthCode(dataDict):
 #    startTime = time.time()
+    timeOut = 60*60*24
     username = dataDict["username"].strip()
     authCode = dataDict["authCode"].strip()
     db = dbCon()
@@ -29,12 +30,10 @@ def checkAuthCode(dataDict):
     c.execute(command)
     authCodeTuples = c.fetchall()
     for authCodeTuple in authCodeTuples:
-        if(str(authCodeTuple[0]) == str(username) and str(authCodeTuple[1]) == str(authCode) and (abs(time.time() - float(authCodeTuple[2]))) < 60*60*24):
+        if(str(authCodeTuple[0]) == str(username) and str(authCodeTuple[1]) == str(authCode) and (abs(time.time() - float(authCodeTuple[2]))) < timeOut):
             db.close()
-#            print("AuthCode check took " + str(time.time() - startTime) + " seconds")
             return(1)
     db.close()
-#    print("AuthCode check took " + str(time.time() - startTime) + " seconds")
     return(0)
 
 def authUser(username, userPass):
@@ -53,11 +52,15 @@ def authUser(username, userPass):
     return(0)
 
 def createAuthCode(username, userPass):
+    timeout = 60*60*12
     username = username.strip()
     userPass = userPass.strip()
     if(authUser(username, userPass) == 0):
         return(0)
     db = dbCon()
+    c = db.cursor()
+    command = "DELETE FROM authCodes WHERE username = %s AND  createTime < %s"
+    c.execute(command, [username, time.time()-timeout])
     c = db.cursor()
     command = "INSERT INTO authCodes (username, authCode, createTime) VALUES (%s, %s, %s);"
     authCode = str(hashlib.sha256(str(time.time) + str(random.uniform(1,100))).hexdigest())
@@ -70,6 +73,10 @@ def createUser(dataDict):
     username = dataDict["username"].strip()
     userPass = hasher(dataDict["userPass"].strip())
     inviteCode = dataDict["inviteCode"]
+    if(len(userPass) < 8):
+        return(3)
+    if(len(username) < 4):
+        return(4)
     with open("invite.conf", "r") as inviteFile:
         invite = inviteFile.read().strip()
     if(invite != "" and inviteCode != invite):
@@ -104,4 +111,3 @@ def changePass(dataDict):
     db.commit()
     db.close()
     return(1)
-

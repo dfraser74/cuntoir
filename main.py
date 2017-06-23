@@ -3,8 +3,9 @@ import authLib
 import taskLib
 import pushLib
 import thread
+import httpRedirectServer
 
-def startPushWatcher():
+def startThreads():
     thread.start_new_thread(pushLib.pushWatcher, ())
     return(1)
 

@@ -1,11 +1,11 @@
-cacheVersion = "v52";
+cacheVersion = "v63";
 swVersion = "v6";
 
 this.addEventListener("install", function(event){
     event.waitUntil(
         caches.open(cacheVersion).then(function(cache){
             return cache.addAll([
-                "https://pihome.zapto.org/dev/",
+                "https://cuntoir.com",
                 "index.html",
                 "createUser.html",
                 "manifest.json",

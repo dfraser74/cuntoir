@@ -19,7 +19,13 @@ function updateSubButton(){
                 }
             });
         })
-    }else{document.getElementById("pushPermission").style.display = "none";}
+    }else{
+        document.getElementById("pushable").style.display = "none";
+        document.getElementById("editPushable").style.display = "none";
+        document.getElementById("pushable").checked = false;
+        document.getElementById("editPushable").checked = false;
+        document.getElementById("pushPermission").style.display = "none";
+    }
 }
 
 function checkIfSubbed(){
@@ -57,7 +63,7 @@ function setCookie(name, value){
 }
 
 function makePostRequest(url, requestParams, method){
-    url = "/dev/"
+    url = "/"
     $.ajax({
         type: "POST",
         url: url,
@@ -67,7 +73,7 @@ function makePostRequest(url, requestParams, method){
 }
 
 function makeGetRequest(url, requestParams, method){
-    url = "/dev/"
+    url = "/"
     $.ajax({
         type: "GET",
         url: url,
@@ -339,6 +345,12 @@ function handleCreateUserReturn(data){
     }
     if(data == 2){
         document.getElementById("info").innerHTML = "Username Taken";
+    }
+    if(data == 3){
+        document.getElementById("info").innerHTML = "Password Must Be At Least 8 Characters"
+    }
+    if(data == 4){
+        document.getElementById("info").innerHTML = "Username Must Be At Least 4 Characters"
     }
 }
 
@@ -678,6 +690,10 @@ function renderCalPost(monthInt, year){
             i += 1;
         }
         renderCal(monthInt + ";" + datesString + ";" + year);
+    }
+    if(navigator.onLine == true){
+        var data = {"username":username, "authCode":authCode, "method":"getTaskDates", "sort":"default", "month":monthInt, "year":year};
+        makePostRequest("/", data, "getTaskDates");    
     }
 }
 

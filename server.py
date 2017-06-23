@@ -5,7 +5,16 @@ import main
 import os
 import time
 
-cherrypy.config.update({"server.socket_port" : 80, "server.socket_host" : "0.0.0.0"})
+sslConf = {
+    'server.ssl_module':'pyopenssl',
+    'server.ssl_certificate':'ssl/cert.pem',
+    'server.ssl_private_key':'ssl/priv.key',
+    'cherrypy.server.ssl_certificate_chain':'ssl/chain.pem',
+    'server.socket_port':443,
+    'server.socket_host':'0.0.0.0'
+}
+cherrypy.config.update(sslConf)
+
 @cherrypy.expose()
 class finServer(object):
     @cherrypy.tools.accept(media='text/plain')
@@ -27,7 +36,7 @@ class finServer(object):
 
 
 if __name__ == '__main__' :
-    main.startPushWatcher()
+    main.startThreads()
     conf = {
         '/': {
             'request.dispatch': cherrypy.dispatch.MethodDispatcher(),
