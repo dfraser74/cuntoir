@@ -1025,7 +1025,7 @@ function getTaskDataById(id){
     for(var i = 0; i < taskTags.childNodes.length; i++){
         tags += taskTags.childNodes[i].innerHTML + ",";
     }
-    if(tags = "<span class=\"italic\">No tags</span>,"){tags = "";}
+    if(tags == "<span class=\"italic\">No tags</span>,"){tags = "";}
     return([title, description, dueTime, tags, id]);
 }
 
