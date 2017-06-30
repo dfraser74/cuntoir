@@ -35,7 +35,7 @@ def getAll(dataDict):
     if(doneFlag == "true"):
         returnString += "<div class='task' style='height:auto;' id='infoHeader'><h2 style='margin:auto;'>Archived Tasks:</h2></div>"
     for task in tasks:
-        taskId = task[0]
+        taskId = str(task[0])
         username = task[1]
         createTime = float(task[2])
         dueTime = float(task[3])
@@ -49,7 +49,7 @@ def getAll(dataDict):
         timeString = time.strftime("%d/%m/%Y %H:%M", time.gmtime(dueTime - float(timeOffset)))
         dateSearchList = time.strftime("%d/%m/%Y", time.gmtime(dueTime - float(timeOffset))).split("/")
         dateSearchList[1] = str(int(dateSearchList[1]) - 1)
-        returnString += "<div class='task' id='"+title+"'><h2 class='taskTitle' onclick='openEdit(\""+title +"\",\""+text+"\",\""+timeString+"\",\""+str(createTime)+"\",\""+tags+"\");'>" + title + "</h2>"
+        returnString += "<div class='task' id='"+taskId+"'><h2 class='taskTitle' onclick='openEdit("+taskId+");'>" + title + "</h2>"
         if(text != ""):
             returnString += "<div class='taskBody'>" + text + "</div>"
         else:
@@ -64,9 +64,9 @@ def getAll(dataDict):
                 continue
             returnString += "<span class='taskTag' onclick='getTagged(\""+tag+"\");'>"+tag+"</span>"
         returnString += "</div></div>"
-        returnString += "<input type='button' value='" + buttonVal + "' onclick='" + onClick +"(\"" + title + "\",\"" + str(createTime) + "\",\"" +str(dueTime) + "\");'>"
+        returnString += "<input type='button' value='" + buttonVal + "' onclick='" + onClick +"(" + taskId + ");'>"
         if(doneFlag == "true"):
-            returnString += "<input type='button' id='archiveButton' value='Delete' onclick='deleteTask(\""+title+"\",\""+str(createTime)+"\");'>"
+            returnString += "<input type='button' id='archiveButton' value='Delete' onclick='deleteTask(" + taskId + ");'>"
         returnString += "</div>"
     if(doneFlag == "true"):
         returnString += "<div class='task' id='infoFooter' style='height:auto;'><input type='button' id='archiveButton' onclick='getAll();' value='Go Back'></div>"
@@ -99,6 +99,7 @@ def getTagged(dataDict):
     infoString = "<div class='task' id='infoHeader' style='height:auto;width:auto;'><h2 class='taskTitle'>Tasks tagged with \"" + searchTag + "\" :</h2></div>"
     returnString += infoString
     for task in tasks:
+        taskId = str(task[0])
         username = task[1]
         createTime = float(task[2])
         dueTime = float(task[3])
@@ -116,7 +117,7 @@ def getTagged(dataDict):
         timeString = time.strftime("%d/%m/%Y %H:%M", time.gmtime(dueTime - timeOffset))
         dateSearchList = time.strftime("%d/%m/%Y", time.gmtime(dueTime - float(timeOffset))).split("/")
         dateSearchList[1] = str(int(dateSearchList[1]) - 1)
-        returnString += "<div class='task' id='"+title+"'><h2 class='taskTitle' onclick='openEdit(\""+title +"\",\""+text+"\",\""+timeString+"\",\""+str(createTime)+"\",\""+tags+"\");'>" + title + "</h2>"
+        returnString += "<div class='task' id='" + taskId + "'><h2 class='taskTitle' onclick='openEdit(" + taskId + ");'>" + title + "</h2>"
         if(text != ""):
             returnString += "<div class='taskBody'>" + text + "</div>"
         else:
@@ -131,7 +132,7 @@ def getTagged(dataDict):
                 continue
             returnString += "<span class='taskTag' onclick='getTagged(\""+tag+"\");'>"+tag+"</span>"
         returnString += "</div></div>"
-        returnString += "<input type='button' id='archiveButton' value='Complete' onclick='completeTaskPost(\"" + title + "\",\"" + str(createTime) + "\");'>"
+        returnString += "<input type='button' id='archiveButton' value='Complete' onclick='completeTaskPost(" + taskId + ");'>"
         returnString += "</div>"
     if(returnString == infoString):
         return(2)
@@ -165,6 +166,7 @@ def search(dataDict):
     if(sort == "default"):
         tasks.sort(key = lambda x:x[3])
     for task in tasks:
+        taskId = str(task[0])
         username = task[1]
         createTime = float(task[2])
         dueTime = float(task[3])
@@ -175,12 +177,12 @@ def search(dataDict):
             title = title.replace("'", "&apos;")
         if("'" in text):
             text = text.replace("'", "&apos;")
-        if(searchString not in tags.lower().split(",") and searchString not in title.lower() and searchString not in text.lower() and task[5] != "true"):
+        if(searchString not in tags.lower().split(",") and searchString not in title.lower() and searchString not in text.lower()):
             continue
         timeString = time.strftime("%d/%m/%Y %H:%M", time.gmtime(dueTime - timeOffset))
         dateSearchList = time.strftime("%d/%m/%Y", time.gmtime(dueTime - float(timeOffset))).split("/")
         dateSearchList[1] = str(int(dateSearchList[1]) - 1)
-        returnString += "<div class='task' id='"+title+"'><h2 class='taskTitle' onclick='openEdit(\""+title +"\",\""+text+"\",\""+timeString+"\",\""+str(createTime)+"\",\""+tags+"\");'>" + title + "</h2>"
+        returnString += "<div class='task' id='" + taskId + "'><h2 class='taskTitle' onclick='openEdit(" + taskId + ");'>" + title + "</h2>"
         if(text != ""):
             returnString += "<div class='taskBody'>" + text + "</div>"
         else:
@@ -195,7 +197,7 @@ def search(dataDict):
                 continue
             returnString += "<span class='taskTag' onclick='getTagged(\""+tag+"\");'>"+tag+"</span>"
         returnString += "</div></div>"
-        returnString += "<input type='button' value='Complete' id='archiveButton' onclick='completeTaskPost(\"" + title + "\",\"" + str(createTime) + "\");'>"
+        returnString += "<input type='button' value='Complete' id='archiveButton' onclick='completeTaskPost(" + taskId + ");'>"
         returnString += "</div>"
     if(returnString == infoString):
         return(2)
@@ -228,6 +230,7 @@ def dateSearch(dataDict):
     if(sort == "default"):
         tasks.sort(key = lambda x:x[3])
     for task in tasks:
+        taskId = str(task[0])
         username = task[1]
         createTime = float(task[2])
         dueTime = float(task[3])
@@ -244,7 +247,7 @@ def dateSearch(dataDict):
         timeString = time.strftime("%d/%m/%Y %H:%M", time.gmtime(dueTime - timeOffset))
         dateSearchList = time.strftime("%d/%m/%Y", time.gmtime(dueTime - float(timeOffset))).split("/")
         dateSearchList[1] = str(int(dateSearchList[1]) - 1)
-        returnString += "<div class='task' id='"+title+"'><h2 class='taskTitle' onclick='openEdit(\""+title +"\",\""+text+"\",\""+timeString+"\",\""+str(createTime)+"\",\""+tags+"\");'>" + title + "</h2>"
+        returnString += "<div class='task' id='" + taskId + "'><h2 class='taskTitle' onclick='openEdit(" + taskId + ");'>" + title + "</h2>"
         if(text != ""):
             returnString += "<div class='taskBody'>" + text + "</div>"
         else:
@@ -259,7 +262,7 @@ def dateSearch(dataDict):
                 continue
             returnString += "<span class='taskTag' onclick='getTagged(\""+tag+"\");'>"+tag+"</span>"
         returnString += "</div></div>"
-        returnString += "<input type='button' value='Complete' id='archiveButton' onclick='completeTaskPost(\"" + title + "\",\"" + str(createTime) + "\");'>"
+        returnString += "<input type='button' value='Complete' id='archiveButton' onclick='completeTaskPost(" + taskId + ");'>"
         returnString += "</div>"
     if(returnString == infoString):
         returnString += "<div class='task' id='infoFooter' style='height:auto;'><h2 class='taskTitle'>No tasks</h2><input type='button' id='archiveButton' onclick='getAll();' value='Go Back'></div>"

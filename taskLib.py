@@ -27,6 +27,11 @@ def addTask(dataDict):
     c.execute(command, [username, createTime, dueTime, description, done, title, tagString])
     db.commit()
     db.close()
+    db = authLib.dbCon()
+    c = db.cursor()
+    command = "SELECT id FROM tasks WHERE BINARY username = %s AND createTime = %s"
+    c.execute(command, [username, createTime])
+    dataDict["id"] = c.fetchall()[0][0]
     if(dataDict["pushable"] == "true"):
         pushLib.schedulePush(dataDict)
     return(1)
@@ -34,19 +39,18 @@ def addTask(dataDict):
 def completeTask(dataDict):
     username = dataDict["username"].strip()
     authCode = dataDict["authCode"].strip()
-    title = dataDict["title"]
-    createTime = dataDict["createTime"]
+    taskId = dataDict["id"]
     doneFlag = dataDict["done"]
     if(authLib.checkAuthCode({"username":username, "authCode":authCode}) != 1):
         return(0)
     db = authLib.dbCon()
     c = db.cursor()
-    command = "UPDATE tasks SET done = %s WHERE BINARY username = %s AND BINARY title = %s AND createTime = %s"
-    c.execute(command, [doneFlag, username, title, createTime])
+    command = "UPDATE tasks SET done = %s WHERE BINARY username = %s AND id = %s"
+    c.execute(command, [doneFlag, username, taskId])
     db.commit()
     db.close()
     if(doneFlag == "true"):
-        pushLib.completePush(username, createTime)
+        pushLib.completePush(username, taskId)
     else:
         pushLib.schedulePush(dataDict)
     return(1)
@@ -56,7 +60,7 @@ def editTask(dataDict):
     authCode = dataDict["authCode"]
     title = dataDict["title"]
     dueTime = str(dataDict["dueTime"])
-    createTime = str(dataDict["createTime"])
+    taskId = str(dataDict["id"])
     text = dataDict["description"]
     tags = dataDict["tags"]
     pushable = dataDict["pushable"]
@@ -70,28 +74,27 @@ def editTask(dataDict):
         return(0)
     db = authLib.dbCon()
     c = db.cursor()
-    command = "UPDATE tasks SET title = %s, text = %s, dueTime = %s, tags = %s, done = %s WHERE BINARY username = %s AND createTime = %s"
-    c.execute(command, [title, text, dueTime, tagString, "false", username, createTime])
+    command = "UPDATE tasks SET title = %s, text = %s, dueTime = %s, tags = %s, done = %s WHERE BINARY username = %s AND id = %s"
+    c.execute(command, [title, text, dueTime, tagString, "false", username, taskId])
     db.commit()
     db.close()
     if(dataDict["pushable"] == "true"):
         pushLib.schedulePush(dataDict)
     else:
-        pushLib.completePush(username, createTime)
+        pushLib.completePush(username, taskId)
     return(1)
 
 def deleteTask(dataDict):
     username = dataDict["username"].strip()
     authCode = dataDict["authCode"].strip()
-    title = dataDict["title"]
-    createTime = dataDict["createTime"]
+    taskId = dataDict["id"]
     if(authLib.checkAuthCode({"username":username, "authCode":authCode}) != 1):
         return(0)
     db = authLib.dbCon()
     c = db.cursor()
-    command = "DELETE FROM tasks WHERE BINARY username = %s AND BINARY title = %s AND createTime = %s"
-    c.execute(command, [username, title, createTime])
+    command = "DELETE FROM tasks WHERE BINARY username = %s AND id = %s"
+    c.execute(command, [username, taskId])
     db.commit()
     db.close()
-    pushLib.completePush(username, createTime)
+    pushLib.completePush(username, taskId)
     return(1)
