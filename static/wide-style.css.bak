@@ -8,79 +8,65 @@ body {
     background-color: #f1f1f1;
     font-family: 'Source Sans Pro', sans-serif;
 }
-br {
-    display: none;
-}
-.task {
-    display: block;
-    background-color: white;
-    padding: 2px;
-    margin: 4px;
-    border: solid 1px #d9d9d9;
-    border-radius: 2px;
-    font-size: 15px;
-    transition: 0s;
+#tasks{
     text-align: center;
 }
-.signup {
-    display: block;
+.task {
+    display: inline-block;
     background-color: white;
     padding: 10px;
-    margin: 10px;
+    margin: 4px;
     border: solid 1px #d9d9d9;
     border-radius: 20px;
     font-size: 15px;
-    transition: 0s;
-    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    height: 200px;
+    width: 24%;
+    min-width: 200px;
+    transition: 0.5s;
 }
-#tasks{
-    margin-bottom: 80px;
+.signup{
+    display: inline-block;
+    background-color: white;
+    padding: 10px;
+    margin: 4px;
+    border: solid 1px #d9d9d9;
+    border-radius: 20px;
+    font-size: 15px;
+    height: auto;
+    width: 50%;
+    min-width: 200px;
+    transition: 0.5s;
 }
 .taskTitle {
-    width: 100%;
     display: block;
-    text-align: left;
-    font-size: 1.5em;
-    margin: 4px 0px 4px 4px;
-    padding: 0px 0px 0px 4px;
-    border-left: 4px solid #555555;
+    text-align: center;
+    font-size: 25px;
+    margin: 4px 0px 4px 0px;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
 }
 .taskBody{
-    display: block;
-    margin: 4px 4px 4px 14px;
-    word-wrap: break-word;
-    overflow: auto;
-    max-height: 80px;
-    text-align: left;
+    display: inline-block;
+    margin: 4px;
 }
 #archiveButton{
-    font-size: 1em; 
     display: inline-block;
-    width: auto;
-    padding: auto;
-    margin: 4px 4px 4px 4px;
+    width: 40%;
 }
 #header {
     background-color: white;
-    border: 2px #666666;
+    border: 3px #666666;
     border-bottom-style: solid;
     padding: 10px;
     margin: 0px;
     display: block;
 }
 #footer {
-    background-color: white;
-    border: 2px #666666;
-    border-top-style: solid;
-    padding: 10px;
-    margin: 0px;
-    display: block;
-    position: fixed;
-    bottom: 0px;
-    width: 100%;
+    display: none;
 }
 #mainTitle {
     text-align: center;
@@ -101,9 +87,8 @@ a:hover{
     background-color: #666666;
 }
 .dueTime {
-    font-weight: bold;
-    display: inline;
-    font-size: 1em;
+    display: inline-block;
+    font-size: 15px;
     margin: 4px;
     padding: 4px;
     background-color: #cccccc;
@@ -129,6 +114,7 @@ input:focus, textarea:focus {
 
 input[type=button] {
     font-size: 15px;
+    width: 80%;
 }
 
 input[type=button]:hover {
@@ -153,15 +139,15 @@ input[type=submit]:focus {
 
 .sidebar {
     height: 100%; /* 100% Full-height */
-    width: 0px;
-    position: fixed;
-    z-index: 1;
+    width: 0px; /* 0 width - change this with JavaScript */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Stay on top */
     top: 0;
     left: 0;
-    background-color: #111;
-    overflow-x: hidden;
-    padding-top: 60px;
-    transition: 0.5s;
+    background-color: #111; /* Black*/
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 60px; /* Place content 60px from the top */
+    transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
     text-align: center;
 }
 
@@ -191,11 +177,11 @@ input[type=submit]:focus {
     background-color: #666666;
 }
 .topNavButtons {
-    display: none;
-}
-.bottomNavButtons {
     text-align: center;
     font-size: 40px;
+}
+.bottomNavButton {
+    display: none;
 }
 
 i {
@@ -203,11 +189,9 @@ i {
     margin: 2px;
     border-radius: 4px;
 }
-
 i:hover {
     background-color: #666666;
 }
-
 #addButton {
     border-radius: 400px;
 }
@@ -224,15 +208,15 @@ i:hover {
     background-color: #666666;
     font-size: 15px;
 }
-
-.sidebar p{
-    color: #eeeeee;
-    font-size: 25px;
-}
 .pushable{
     display: inline;
     width: auto;
 }
+.sidebar p{
+    color: #eeeeee;
+    font-size: 25px;
+}
+
 #searchInput{
     display: inline-block;
     width: auto;
@@ -247,26 +231,17 @@ i:hover {
     margin: 0px;
     padding: 0px;
 }
-.tagAndDueTimeWrapper{
-    text-align: left;
-    border-bottom: 2px dashed #888888;
-    display: block;
-    overflow: auto;
-    white-space: nowrap;
-    margin: 0px 4px 0px 4px;
-    padding: 0px;
-}
 .taskTags{
-    display: inline-block;
-    border-left: 1px solid #666666;
+    overflow: auto;
+    border-bottom: 2px dashed #666666;
 }
 .taskTag {
     display: inline-block;
-    font-weight:bold;
+    font-weight: bold;
     background-color: #cccccc;
     padding: 4px;
     margin: 4px;
-    font-size: 1em;
+    font-size: 15px;
     border-radius: 4px;
     border: 1px solid #555;
 }
@@ -300,7 +275,7 @@ i:hover {
     background-color: #333;
     border-radius: 4px;
     margin: 4px;
-}
+ }
 #calBodyDiv {
     display: block;
     width: auto;
@@ -313,11 +288,10 @@ i:hover {
 }
 table{
     width: 100%;
-    height: 100%;
     margin: auto;
+    height: 100%;
 }
 th, td{
-    margin: 40px;
     font-size: 15px;
     text-align: center;
     color: #eeeeee;
@@ -340,7 +314,7 @@ td:hover {
 .noDate:hover {
     background-color: #333;
 }
-.todaysDate {
+.todaysDate{
     background-color: #3fa36a;
 }
 .dueToday{
@@ -355,7 +329,7 @@ td:hover {
     background-color: #eeeeee;
 }
 ::-webkit-scrollbar-thumb {
-    background-color: #666666; 
+    background-color: #666666;
 }
 ::-webkit-scrollbar-button {
     display:none;
@@ -369,14 +343,15 @@ td:hover {
 .datePickerDiv{
     margin: 4px;
     width: 100%;
-    max-height: 300px;
+    max-height: 260px;
     border-radius: 4px;
     background-color: #333;
 }
+
 .datePickerTable{
     margin: auto;
     width: 100%;
-    height: 240px;
+    height: 90%;
 }
 .datePickerHead{
     font-size: 20px;

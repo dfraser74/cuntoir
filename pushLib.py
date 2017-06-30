@@ -33,7 +33,7 @@ def checkPushSubscribed(username):
         return 1
 
 def sendPush(username, title, text):
-    with open("private_key.pem", "r") as privKeyFile:
+    with open("pushKeys/private_key.pem", "r") as privKeyFile:
         privKey = privKeyFile.read().strip()
     db = authLib.dbCon()
     c = db.cursor()
@@ -82,18 +82,24 @@ def updateSub(subString, returnCode):
     db.close()
 
 def pushWatcher():
-    while(1):
+    while(True):
+        with open("pushLog", "a") as pushLog:
+            pushLog.write("Last push run through at " + str(time.time()) + "\n")
         doDuePushes()
         time.sleep(5)
 
 def doDuePushes():
+    logFile = open("pushLog","a")
     db = authLib.dbCon()
     c = db.cursor()
     t = time.time() + 30.0
+    logFile.write("Pushing tasks before " +str(t) + "\n")
     command = "SELECT * FROM duePushes WHERE pushTime < %s"
     c.execute(command, [t,])
     duePushes = c.fetchall()
     if(len(duePushes) == 0):
+        logFile.write("No pushes found due before " + str(t) + "\n")
+        logFile.close()
         return 0
     for duePush in duePushes:
         title = duePush[1]
@@ -101,11 +107,16 @@ def doDuePushes():
         pushTime = float(duePush[3])
         text = duePush[4]
         createTime = float(duePush[5])
+        logFile.write("Push due: " + title + " at " + str(pushTime) + " to " + username + "\n")
         returnCode = sendPush(username, title, text)
         if(returnCode == 0):
-            print("Failed to notifiy user " + username + " of task " + title)
+            logFile.write("Failed to notifiy user " + username + " of task " + title + "\n")
+            if(checkPushSubscribed(username) != 1):
+                logFile.write("Deleted task as user was not subscribed\n")
+                completePush(username,createTime)
         else:
             completePush(username,createTime)
+    logFile.close()
 
 def schedulePush(dataDict):
     username = dataDict["username"]

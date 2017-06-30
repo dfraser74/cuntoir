@@ -70,8 +70,8 @@ def editTask(dataDict):
         return(0)
     db = authLib.dbCon()
     c = db.cursor()
-    command = "UPDATE tasks SET title = %s, text = %s, dueTime = %s, tags = %s WHERE BINARY username = %s AND createTime = %s"
-    c.execute(command, [title, text, dueTime, tagString, username, createTime])
+    command = "UPDATE tasks SET title = %s, text = %s, dueTime = %s, tags = %s, done = %s WHERE BINARY username = %s AND createTime = %s"
+    c.execute(command, [title, text, dueTime, tagString, "false", username, createTime])
     db.commit()
     db.close()
     if(dataDict["pushable"] == "true"):

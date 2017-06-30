@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html style="height:100%;">
 <head>
 <meta charset="UTF-8">
 <link rel="icon" type="image/png" href="images/icon512-Rounded-Gray.png">
@@ -10,9 +11,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="jquery.min.js"></script>
 <script src="scripts.js"></script>
-<title>Cúntóir</title>
+<title>Cúntóir - Get Things Done</title>
 </head>
-<body>
+<body style="height:100%;">
 <div id="calBar" class="sidebar" style="width:0px;">
     <a href="javascript:void(0)" class="closebtn" onclick="closeCalBar();">&times;</a>
     <div id="cal">
@@ -43,6 +44,7 @@
         <input type="submit" value="Login" onclick="loginPost(document.getElementById('username').value, document.getElementById('password').value);return false;">
     </form>
     <a href="createUser.html">Sign Up</a>
+    <a href="about.html" id="about">About</a>
     <p id="loginInfo"></p>
 </div>
 <div id="nav" class="sidebar" style="width:0px;">
@@ -54,6 +56,7 @@
     <a href="javascript:void(0)" onclick="openChangePassBar();">Change Password</a>
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav();">&times;</a>
     <a href="javascript:void(0)" onclick="logout();">Logout</a>
+    <a href="about.html" id="about">About</a>
     <a href="https://www.paypal.me/cuntoir/5" id="tipJar" target="_blank">Tip Jar</a>
     <p id="navInfo"></p>
 </div>
@@ -79,7 +82,7 @@
         <input type="text" id="timeString">
         Comma Separated Tags:
         <input type="text" id="tags">
-        <span>Notify Me: <input type="checkbox" class="pushable" id="pushable" checked></span>
+        <span id="pushChoice">Notify Me: <input type="checkbox" class="pushable" id="pushable" checked></span>
         <input type="submit"  value="Add Task" onclick="addTaskPost(document.getElementById('title').value, document.getElementById('description').value, getDateTime(document.getElementById('dateString').value, document.getElementById('timeString').value), document.getElementById('tags').value); return false;" />
     </form>
     <p id="info"></p>
@@ -106,13 +109,14 @@
         <input type="text" id="editTimeString">
         Comma Separated Tags:
         <input type="test" id="editTags">
-        <span>Notify Me: <input type="checkbox" class="pushable" id="editPushable" checked></span>
+        <span id="editPushChoice">Notify Me: <input type="checkbox" class="pushable" id="editPushable" checked></span>
         <input type="submit"  value="Update Task" onclick="editTaskPost(document.getElementById('editTitle').value, document.getElementById('editDescription').value, getDateTime(document.getElementById('editDateString').value, document.getElementById('editTimeString').value), document.getElementById('editTags').value); return false;" />
     </form>
     <p id="editCreateTime" style="display:none;"></p>
     <p id="editInfo"></p>
 </div>
-<div id="main">
+<div id="main" style="position:relative;height:100%;">
+    <div id="overlay" style="height:100%;"><div id="overlayText">Loading...</div></div>
     <div id="header">
         <div id="mainTitle"><a href="javascript:void(0)" onclick="getAll();">Cúntóir</a></div>
         <div class="topNavButtons">

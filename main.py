@@ -3,10 +3,9 @@ import authLib
 import taskLib
 import pushLib
 import thread
-import httpRedirectServer
 
 def startThreads():
-    thread.start_new_thread(pushLib.pushWatcher, ())
+#    thread.start_new_thread(pushLib.pushWatcher, ())
     return(1)
 
 def handlePostRequest(dataDict):

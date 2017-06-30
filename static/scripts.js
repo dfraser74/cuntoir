@@ -20,8 +20,8 @@ function updateSubButton(){
             });
         })
     }else{
-        document.getElementById("pushable").style.display = "none";
-        document.getElementById("editPushable").style.display = "none";
+        document.getElementById("pushChoice").style.display = "none";
+        document.getElementById("editPushChoice").style.display = "none";
         document.getElementById("pushable").checked = false;
         document.getElementById("editPushable").checked = false;
         document.getElementById("pushPermission").style.display = "none";
@@ -63,6 +63,7 @@ function setCookie(name, value){
 }
 
 function makePostRequest(url, requestParams, method){
+    showOverlay();
     url = "/"
     $.ajax({
         type: "POST",
@@ -73,6 +74,7 @@ function makePostRequest(url, requestParams, method){
 }
 
 function makeGetRequest(url, requestParams, method){
+    showOverlay()
     url = "/"
     $.ajax({
         type: "GET",
@@ -83,6 +85,7 @@ function makeGetRequest(url, requestParams, method){
 }
 
 function handleRequestReturn(data, method){
+    hideOverlay();
     if(method == "getAll"){
         handleGetAllReturn(data);
     }
@@ -144,6 +147,7 @@ function getAll(){
 }
 
 function handleGetAllReturn(data){
+    data = escapeHTML(data);
     if(data == 0){
         openLoginBar();
     }
@@ -179,11 +183,12 @@ function getArchived(){
 }
 
 function handleGetArchivedReturn(data){
+    data = escapeHTML(data);
     if(data == 0){
         openLoginBar();
     }
     if(data == 2){
-        document.getElementById("tasks").innerHTML = "<div class='task' style='height:auto;'><h2 class='taskTitle'>Nothing Archived</h2><input type='button' value='Go Back' onclick='getAll();'></div>";
+        document.getElementById("tasks").innerHTML = "<div class='task' id='infoHeader' style='height:auto;'><h2 class='taskTitle'>Nothing Archived</h2><input type='button' id='archivedButton' value='Go Back' onclick='getAll();'></div>";
     }
     if(data != 0 && data != 2){
         localStorage["lastArchiveGetReturn"] = data;
@@ -211,10 +216,16 @@ function handleLoginPostReturn(data){
 }
 
 function addTaskPost(title, description, dueTime, tags){
+    title = escapeHTML(title);
+    description = escapeHTML(description);
+    tags = escapeHTML(tags);
     var username = getCookie("username");
     var authCode = getCookie("authCode");
     var pushable = "" + document.getElementById("pushable").checked;
-    console.log(pushable);
+    if(title.includes("\"") || title.includes("\'") ||tags.includes("\"") || tags.includes("\'") || description.includes("\"") || description.includes("\'")){
+        document.getElementById("info").innerHTML = "Tasks cannot include quotation marks";
+        return;
+    }
     if(title == ""){
         document.getElementById("info").innerHTML = "Your task needs a title";
     }else{
@@ -249,7 +260,6 @@ function getDateTime(dateString, timeString){
     second = 00;
     var time = new Date(year, month-1, day, hour, minute, second, 0).getTime();
     time = time/1000;
-    time = time - timezoneOffset();
     if(isNaN(time)){
         document.getElementById("info").innerHTML = "Sorry, date format incorrect. It should be dd/mm/yyyy and hh/mm/ss";
         document.getElementById("editInfo").innerHTML = "Sorry, date format incorrect. It should be dd/mm/yyyy and hh/mm/ss";
@@ -398,21 +408,24 @@ function logout(){
     closeNav();
     openLoginBar();
 }
-
-/* Set the width of the side navigation to 250px and the left margin of the page content to 250px */
-function openNav() {
+function closeSidebars(){
+    closeNav();
     closeAdd();
     closeEdit();
     closeCalBar();
     closeLoginBar();
     closeChangePassBar();
-    document.getElementById("navInfo").innerHTML = "";
-    document.getElementById("searchInput").value = "";
-    document.getElementById("searchInput").focus();
+}
+/* Set the width of the side navigation to 250px and the left margin of the page content to 250px */
+function openNav() {
     if(document.getElementById("nav").style.width != "0px"){
         closeNav();
         return;
-    }
+    } 
+    closeSidebars();
+    document.getElementById("navInfo").innerHTML = "";
+    document.getElementById("searchInput").value = "";
+    document.getElementById("searchInput").focus();
     if(window.screen.availWidth < 500){
         document.getElementById("nav").style.width = "100%";
     }else{
@@ -427,18 +440,14 @@ function closeNav(){
     document.getElementById("main").style.marginLeft = "0px";
 }
 function openLoginBar() {
-    closeAdd();
-    closeEdit();
-    closeCalBar();
-    closeNav();
-    closeChangePassBar();
-    document.getElementById("tasks").innerHTML = "<div class='task' style='height:auto;'><h2 style='padding:auto;'>You're Logged Out</h2></div>";
-    document.getElementById("username").focus();
-    document.getElementById("loginInfo").innerHTML = "";
     if(document.getElementById("loginBar").style.width != "0px"){
         closeLoginBar();
         return;
     }
+    closeSidebars(); 
+    document.getElementById("tasks").innerHTML = "<div class='task' style='height:auto;'><h2 style='padding:auto;'>You're Logged Out</h2></div>";
+    document.getElementById("username").focus();
+    document.getElementById("loginInfo").innerHTML = "";
     if(window.screen.availWidth < 500){
         document.getElementById("loginBar").style.width = "100%";
     }else{
@@ -448,20 +457,16 @@ function openLoginBar() {
 }
 
 function openChangePassBar(){
-    closeAdd();
-    closeEdit();
-    closeCalBar();
-    closeLoginBar();
-    closeNav();
+    if(document.getElementById("changePassBar").style.width != "0px"){
+        closeChangePassBar();
+        return;
+    }
+    closeSidebars();
     document.getElementById("changePassInfo").innerHTML = "";
     document.getElementById("oldPass").value = "";
     document.getElementById("newPass1").value = "";
     document.getElementById("newPass2").value = "";
     document.getElementById("oldPass").focus();
-    if(document.getElementById("changePassBar").style.width != "0px"){
-        closeChangePassBar();
-        return;
-    }
     if(window.screen.availWidth < 500){
         document.getElementById("changePassBar").style.width = "100%";
     }else{
@@ -480,20 +485,16 @@ function closeLoginBar(){
     document.getElementById("main").style.marginLeft = "0px";
 }
 function openAdd(){
-    closeNav();
-    closeEdit();
-    closeCalBar();
-    closeLoginBar();
-    closeChangePassBar();
+    if(document.getElementById("add").style.width != "0px"){
+        closeAdd();
+        return;
+    }
+    closeSidebars();
     document.getElementById("title").value = "";
     document.getElementById("description").value = "";
     document.getElementById("tags").value = "";
     document.getElementById("info").value = "";
     document.getElementById("pushable").checked = true;
-    if(document.getElementById("add").style.width != "0px"){
-        closeAdd();
-        return;
-    }
     if(window.screen.availWidth < 500){
         document.getElementById("add").style.width = "100%";
         document.getElementById("title").focus();
@@ -513,16 +514,12 @@ function closeAdd(){
 }
 
 function openEdit(title, description, dueTimeString, createTime, tags){
-    closeNav();
-    closeAdd();
-    closeCalBar();
-    closeLoginBar();
-    closeChangePassBar();
-    document.getElementById("editInfo").innerHTML = "";
     if(document.getElementById("edit").style.width != "0px" && document.getElementById("editTitle").value == title){
         closeEdit();
         return;
     }
+    closeSidebars();
+    document.getElementById("editInfo").innerHTML = "";
     if(window.screen.availWidth < 500){
         document.getElementById("edit").style.width = "100%";
         document.getElementById("editTitle").focus();
@@ -554,10 +551,17 @@ function updateEditFields(title, description, timeString, createTime, tags){
 }
 
 function editTaskPost(title, description, dueTime, tags){
+    title = escapeHTML(title);
+    description = escapeHTML(description);
+    tags = escapeHTML(tags);
     var username = getCookie("username");
     var authCode = getCookie("authCode");
     var createTime = document.getElementById("editCreateTime").innerHTML;
     var pushable = document.getElementById("editPushable").checked + "";
+    if(title.includes("\"") || title.includes("\'") ||tags.includes("\"") || tags.includes("\'")){
+        document.getElementById("info").innerHTML = "Title and tags cannot include quotation marks";
+        return;
+    }
     if(title == ""){
         document.getElementById("editInfo").innerHTML = "Your task needs a title";
     }else{
@@ -598,11 +602,12 @@ function getTagged(tag){
 }
 
 function handleGetTaggedReturn(data){
+    data = escapeHTML(data);
     if(data == 0){
         openLoginBar();
     }
     if(data == 2){
-        document.getElementById("tasks").innerHTML = "<div class='task'><h2 class='taskTitle'>No tasks with that tag</h2><input type='button' value='Go Back' onclick='getAll();'></div>";
+        document.getElementById("tasks").innerHTML = "<div class='task' id='infoHeader'><h2 class='taskTitle'>No tasks with that tag</h2><input type='button' id='archiveButton' value='Go Back' onclick='getAll();'></div>";
         scroll(0,0);
     }
     if(data != 0 && data != 2){
@@ -615,6 +620,7 @@ function searchPost(searchString){
     var username = getCookie("username");
     var authCode = getCookie("authCode");
     var timeOffset = timezoneOffset();
+    closeSidebars();
     if(searchString.length < 1){
         document.getElementById("navInfo").innerHTML = "You need to search for something!";
         return;
@@ -629,11 +635,12 @@ function searchPost(searchString){
 }
 
 function handleSearchPostReturn(data){
+    data = escapeHTML(data);
     if(data == 0){
         openLoginBar();
     }
     if(data == 2){
-        document.getElementById("tasks").innerHTML = "<div class='task' style='height:auto;'><h2 class='taskTitle'>No matches</h2><input type='button' value='Go Back' onclick='getAll();'></div>";
+        document.getElementById("tasks").innerHTML = "<div class='task' style='height:auto;' id='infoFooter'><h2 class='taskTitle'>No matches</h2><input type='button' id='archiveButton' value='Go Back' onclick='getAll();'></div>";
         scroll(0,0);
     }
     if(data != 0 && data != 2){
@@ -643,17 +650,13 @@ function handleSearchPostReturn(data){
 }
 
 function openCalBar(){
-    closeAdd();
-    closeEdit();
-    closeNav();
-    closeLoginBar();
-    closeChangePassBar();
-    var month = new Date().getMonth();
-    var year = new Date().getFullYear();
     if(document.getElementById("calBar").style.width != "0px"){
         closeCalBar();
         return;
     }
+    closeSidebars();
+    var month = new Date().getMonth();
+    var year = new Date().getFullYear();
     if(window.screen.availWidth < 500){
         document.getElementById("calBar").style.width = "100%";
     }else{
@@ -822,7 +825,7 @@ function dateSearch(dateInt, monthInt, year){
     var username = getCookie("username");
     var authCode = getCookie("authCode");
     var timeOffset = timezoneOffset();
-    closeCalBar();
+    closeSidebars();
     var lowerTime = new Date(year, monthInt, dateInt, 0, 0, 0, 0).getTime()
     lowerTime = lowerTime/1000;
     var upperTime = new Date(year, monthInt, dateInt+1, 0, 0, 0, 0).getTime()
@@ -836,6 +839,7 @@ function dateSearch(dateInt, monthInt, year){
 }
 
 function handleDateSearchPostReturn(data){
+    data = escapeHTML(data);
     if(data == 0){
         openLoginBar();
     }
@@ -973,8 +977,24 @@ Date.prototype.dst = function() {
 
 function timezoneOffset(){
     offset = new Date().getTimezoneOffset() * 60;
-    if(new Date().dst()){
-        offset += 60*60;
-    }
+//    if(!(new Date().dst())){
+//        offset += 60*60;
+//    }
     return offset;
+}
+
+function showOverlay(){
+    document.getElementById("overlay").style.display = "block";
+}
+function hideOverlay(){
+    document.getElementById("overlay").style.display = "none";
+}
+function escapeHTML(unsafe) {
+    unsafe = unsafe
+//    .replace(/&/g, "&amp;")
+//    .replace(/</g, "&lt;")
+//    .replace(/>/g, "&gt;")
+//    .replace(/"/g, "\"")
+//    .replace(/'/g, "&#039;");
+    return(unsafe);
 }

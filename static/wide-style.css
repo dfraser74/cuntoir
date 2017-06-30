@@ -2,7 +2,17 @@
 * {
     box-sizing: border-box;
 }
-
+#infoHeader{
+    display: block;
+    margin: 4px auto 4px auto;
+    padding: 4px;
+}
+#infoFooter{
+    display: block;
+    margin: 0px auto 4px auto;
+    height: auto;
+    padding: 4px;
+}
 body {
     margin: 0px;
     background-color: #f1f1f1;
@@ -50,12 +60,13 @@ body {
     overflow: hidden;
 }
 .taskBody{
-    display: inline-block;
+    display: block;
     margin: 4px;
 }
 #archiveButton{
+    margin: 6px 4px 4px 4px;
     display: inline-block;
-    width: 40%;
+    width: auto;
 }
 #header {
     background-color: white;
@@ -231,12 +242,18 @@ i:hover {
     margin: 0px;
     padding: 0px;
 }
+.tagAndDueTimeWrapper{
+    display: block;
+    margin: 0px;
+    padding: 0px;
+}
 .taskTags{
     overflow: auto;
     border-bottom: 2px dashed #666666;
 }
 .taskTag {
     display: inline-block;
+    font-weight: bold;
     background-color: #cccccc;
     padding: 4px;
     margin: 4px;
@@ -314,7 +331,7 @@ td:hover {
     background-color: #333;
 }
 .todaysDate{
-    background-color: #00d84b;
+    background-color: #3fa36a;
 }
 .dueToday{
     background-color: #ff0000;
@@ -337,7 +354,7 @@ td:hover {
     display:none;
 }
 .activeDate{
-    background-color: #2d9ec6;
+    background-color: #ff7000;
 }
 .datePickerDiv{
     margin: 4px;
@@ -370,4 +387,24 @@ td:hover {
 :-moz-placeholder { /* Firefox 18- */
   color: #aaaaaa;
 }
-
+#overlay {
+    position: absolute; /* Sit on top of the page content */
+    display: none; /* Hidden by default */
+    width: 100%; /* Full width (cover the whole page) */
+    height: 100%; /* Full height (cover the whole page) */
+    top: 0; 
+    left: 0;
+    opacity: 0.5;
+    background-color: #000000; /* Black background with opacity */
+    z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+    cursor: pointer; /* Add a pointer on hover */
+}
+#overlayText{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: 50px;
+    color: white;
+    opacity: 1;
+    transform: translate(-50%,-50%);
+}
