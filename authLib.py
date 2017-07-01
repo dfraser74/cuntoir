@@ -125,3 +125,27 @@ def checkIfPremium(username):
         return(0)
     db.close()
     return(1)
+
+def upgradeToPremium(username):
+    if(checkIfPremium(username)):
+        return(0)#user is already premium
+    username = username.strip()
+    db = dbCon()
+    c = db.cursor()
+    command = "UPDATE users SET premium = %s WHERE BINARY username = %s;"
+    c.execute(command, ["true", username])
+    db.commit()
+    db.close()
+    return(1)
+
+def downgradeFromPremium(username):
+    if(checkIfPremium(username) == 0):
+        return(0)#user is already not premium
+    username = username.strip()
+    db = dbCon()
+    c = db.cursor()
+    command = "UPDATE users SET premium = %s WHERE BINARY username = %s;"
+    c.execute(command, ["false", username])
+    db.commit()
+    db.close()
+    return(1)
