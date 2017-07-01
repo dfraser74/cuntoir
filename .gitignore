@@ -1,7 +1,6 @@
 *.conf
 *.pyc
 *.swp
-*.png
 *.pem
 *.key
 *.crt
