@@ -5,6 +5,8 @@ def dbCon():
     with open("dbHosts.conf") as dbHostsFile:
         dbHosts = dbHostsFile.readlines()
     for host in dbHosts:
+        if(host[0] == "#"):
+            continue
         try:
             host = host.strip()
             db = mysql.connect(host=host, db="fin", user="fin", passwd=open("pass.conf","r").read().strip())
