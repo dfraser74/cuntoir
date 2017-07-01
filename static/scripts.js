@@ -10,6 +10,8 @@ if ('serviceWorker' in navigator) {
     });
 }
 
+thisBrowserSupportsPush = "true";
+
 function updateSubButton(){
     if("serviceWorker" in navigator){
         navigator.serviceWorker.getRegistration().then(function(reg){
@@ -20,6 +22,7 @@ function updateSubButton(){
             });
         })
     }else{
+        thisBrowserSupportsPush = "false";
         document.getElementById("pushChoice").style.display = "none";
         document.getElementById("editPushChoice").style.display = "none";
         document.getElementById("pushable").checked = false;
@@ -222,10 +225,10 @@ function addTaskPost(title, description, dueTime, tags){
     var username = getCookie("username");
     var authCode = getCookie("authCode");
     var pushable = "" + document.getElementById("pushable").checked;
-    if(title.includes("\"") || title.includes("\'") ||tags.includes("\"") || tags.includes("\'") || description.includes("\"") || description.includes("\'")){
-        document.getElementById("info").innerHTML = "Tasks cannot include quotation marks";
-        return;
-    }
+//    if(title.includes("\"") || title.includes("\'") ||tags.includes("\"") || tags.includes("\'") || description.includes("\"") || description.includes("\'")){
+//        document.getElementById("info").innerHTML = "Tasks cannot include quotation marks";
+//        return;
+//    }
     if(title == ""){
         document.getElementById("info").innerHTML = "Your task needs a title";
     }else{
@@ -364,21 +367,24 @@ function handleCreateUserReturn(data){
     }
 }
 
-function completeTaskPost(title, createTime, dueTime){
+function completeTaskPost(id){
     var username = getCookie("username");
     var authCode = getCookie("authCode");
     var done = "true";
-    document.getElementById(title).style.display = "none";
-    var data = {"method":"completeTask", "title":title, "createTime":createTime, "username":username, "authCode":authCode, "done":done, "dueTime":dueTime};
+    document.getElementById(id).style.display = "none";
+    var data = {"method":"completeTask", "id":id, "username":username, "authCode":authCode, "done":done};
     window.setTimeout(function(){makePostRequest("/", data, "completeTask")}, 0);
 }
 
-function restoreTaskPost(title, createTime, dueTime){
+function restoreTaskPost(id){
     var username = getCookie("username");
     var authCode = getCookie("authCode");
     var done = "false";
-    document.getElementById(title).style.display = "none";
-    var data = {"method":"completeTask", "title":title, "createTime":createTime, "username":username, "authCode":authCode, "done":done, "dueTime":dueTime};
+    document.getElementById(id).style.display = "none";
+    var taskData = getTaskDataById(id);
+    var title = taskData[0];
+    var dueTime = getTimeFromDateString(taskData[2]);
+    var data = {"method":"completeTask", "id":id, "username":username, "authCode":authCode, "done":done, "title":title, "dueTime":dueTime};
     window.setTimeout(function(){makePostRequest("/", data, "deleteTask")}, 0);
 }
 
@@ -388,11 +394,11 @@ function handleCompleteTaskPostReturn(data){
     }
 }
 
-function deleteTask(title, createTime){
+function deleteTask(id){
     var username = getCookie("username");
     var authCode = getCookie("authCode");
-    document.getElementById(title).style.display = "none";
-    var data = {"method":"deleteTask", "title":title, "createTime":createTime, "username":username, "authCode":authCode};
+    document.getElementById(id).style.display = "none";
+    var data = {"method":"deleteTask", "id":id, "username":username, "authCode":authCode};
     window.setTimeout(function(){makePostRequest("/", data, "deleteTask")}, 0);
 }
 
@@ -513,8 +519,8 @@ function closeAdd(){
     hideDatePicker("addDatePicker");
 }
 
-function openEdit(title, description, dueTimeString, createTime, tags){
-    if(document.getElementById("edit").style.width != "0px" && document.getElementById("editTitle").value == title){
+function openEdit(id){
+    if(document.getElementById("edit").style.width != "0px" && document.getElementById("editId").innerHTML == id){
         closeEdit();
         return;
     }
@@ -528,7 +534,12 @@ function openEdit(title, description, dueTimeString, createTime, tags){
         document.getElementById("edit").style.width = "300px";
         document.getElementById("main").style.marginLeft = "300px";
     }
-    updateEditFields(title, description, dueTimeString, createTime, tags);
+    taskData = getTaskDataById(id);
+    title = taskData[0];
+    description = taskData[1];
+    dueTimeString = taskData[2];
+    tags = taskData[3];
+    updateEditFields(title, description, dueTimeString, tags, id);
 }
 
 function closeEdit(){
@@ -537,7 +548,7 @@ function closeEdit(){
     hideDatePicker("editDatePicker");
 }
 
-function updateEditFields(title, description, timeString, createTime, tags){
+function updateEditFields(title, description, timeString, tags, id){
     var date = timeString.split(" ")[0]
     var time = timeString.split(" ")[1]
     document.getElementById("editTitle").value = title;
@@ -545,9 +556,11 @@ function updateEditFields(title, description, timeString, createTime, tags){
     document.getElementById("editDateString").value = date;
     document.getElementById("editTimeString").value = time;
     document.getElementById("editInfo").innerHTML = "";
-    document.getElementById("editCreateTime").innerHTML = createTime;
+    document.getElementById("editId").innerHTML = id;
     document.getElementById("editTags").value = tags;
-    document.getElementById("editPushable").checked = true;
+    if(thisBrowserSupportsPush == "true"){
+        document.getElementById("editPushable").checked = true;
+    }
 }
 
 function editTaskPost(title, description, dueTime, tags){
@@ -556,12 +569,12 @@ function editTaskPost(title, description, dueTime, tags){
     tags = escapeHTML(tags);
     var username = getCookie("username");
     var authCode = getCookie("authCode");
-    var createTime = document.getElementById("editCreateTime").innerHTML;
+    var id = document.getElementById("editId").innerHTML;
     var pushable = document.getElementById("editPushable").checked + "";
-    if(title.includes("\"") || title.includes("\'") ||tags.includes("\"") || tags.includes("\'")){
-        document.getElementById("info").innerHTML = "Title and tags cannot include quotation marks";
-        return;
-    }
+//    if(title.includes("\"") || title.includes("\'") ||tags.includes("\"") || tags.includes("\'")){
+//        document.getElementById("info").innerHTML = "Title and tags cannot include quotation marks";
+//        return;
+//    }
     if(title == ""){
         document.getElementById("editInfo").innerHTML = "Your task needs a title";
     }else{
@@ -570,7 +583,7 @@ function editTaskPost(title, description, dueTime, tags){
                 "username":username,
                 "dueTime":dueTime, 
                 "authCode":authCode, 
-                "createTime":createTime, 
+                "id":id, 
                 "description":description, 
                 "title":title, 
                 "tags":tags,
@@ -997,4 +1010,37 @@ function escapeHTML(unsafe) {
 //    .replace(/"/g, "\"")
 //    .replace(/'/g, "&#039;");
     return(unsafe);
+}
+
+function getTaskDataById(id){
+    var taskDiv = document.getElementById(id);
+    var taskChildNodes = taskDiv.childNodes;
+    var title = taskChildNodes[0].innerHTML;
+    var description = taskChildNodes[1].innerHTML;
+    if(description == "<span class=\"italic\">No details</span>"){description = "";}
+    var dueTimeAndTaskTagsWrapper = taskChildNodes[2];
+    var dueTime = dueTimeAndTaskTagsWrapper.childNodes[0].innerHTML;
+    var taskTags = dueTimeAndTaskTagsWrapper.childNodes[1];
+    var tags = "";
+    for(var i = 0; i < taskTags.childNodes.length; i++){
+        tags += taskTags.childNodes[i].innerHTML + ",";
+    }
+    if(tags == "<span class=\"italic\">No tags</span>,"){tags = "";}
+    return([title, description, dueTime, tags, id]);
+}
+
+function getTimeFromDateString(dateString){
+    date = dateString.split(" ")[0];
+    dateList = date.split("/");
+    day = parseInt(dateList[0]);
+    month = parseInt(dateList[1]);
+    year = parseInt(dateList[2]);
+    time = dateString.split(" ")[1];
+    timeList = time.split(":");
+    hour = timeList[0];
+    minute = timeList[1];
+    time = new Date(year,month-1,day,hour,minute,0,0).getTime();
+    time = time/1000;
+//    console.log(time);
+    return(time);
 }

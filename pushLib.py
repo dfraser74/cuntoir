@@ -106,16 +106,16 @@ def doDuePushes():
         username = duePush[2]
         pushTime = float(duePush[3])
         text = duePush[4]
-        createTime = float(duePush[5])
+        taskId = duePush[5]
         logFile.write("Push due: " + title + " at " + str(pushTime) + " to " + username + "\n")
         returnCode = sendPush(username, title, text)
         if(returnCode == 0):
             logFile.write("Failed to notifiy user " + username + " of task " + title + "\n")
             if(checkPushSubscribed(username) != 1):
                 logFile.write("Deleted task as user was not subscribed\n")
-                completePush(username,createTime)
+                completePush(username, taskId)
         else:
-            completePush(username,createTime)
+            completePush(username, taskId)
     logFile.close()
 
 def schedulePush(dataDict):
@@ -123,27 +123,27 @@ def schedulePush(dataDict):
     title = dataDict["title"]
     text = "This task is due soon"
     dueTime = float(dataDict["dueTime"])
-    createTime = float(dataDict["createTime"])
+    taskId = dataDict["id"]
 #TODO set up users picking time of notification
     #hoursBefore = dataDict["hoursBefore"]
     hoursBefore = 2.0
     pushTime = dueTime - hoursBefore*60.0*60.0
     if(checkPushSubscribed(username) == 0):
         return(2)
-    completePush(username, createTime)
+    completePush(username, taskId)
     db = authLib.dbCon()
     c = db.cursor()
-    command = "INSERT INTO duePushes (title, username, pushTime, text, createTime) VALUES (%s, %s, %s, %s, %s)"
-    c.execute(command, [title, username, pushTime, text, createTime])
+    command = "INSERT INTO duePushes (title, username, pushTime, text, taskId) VALUES (%s, %s, %s, %s, %s)"
+    c.execute(command, [title, username, pushTime, text, taskId])
     db.commit()
     db.close()
     return(1)
 
-def completePush(username, createTime):
+def completePush(username, taskId):
     db = authLib.dbCon()
     c = db.cursor()
-    command = "DELETE FROM duePushes WHERE username = %s AND createTime = %s"
-    c.execute(command, [username, float(createTime)])
+    command = "DELETE FROM duePushes WHERE username = %s AND taskId = %s"
+    c.execute(command, [username, taskId])
     db.commit()
     db.close()
     return 0

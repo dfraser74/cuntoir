@@ -108,11 +108,11 @@
         </div>
         <input type="text" id="editTimeString">
         Comma Separated Tags:
-        <input type="test" id="editTags">
+        <input type="text" id="editTags">
         <span id="editPushChoice">Notify Me: <input type="checkbox" class="pushable" id="editPushable" checked></span>
         <input type="submit"  value="Update Task" onclick="editTaskPost(document.getElementById('editTitle').value, document.getElementById('editDescription').value, getDateTime(document.getElementById('editDateString').value, document.getElementById('editTimeString').value), document.getElementById('editTags').value); return false;" />
     </form>
-    <p id="editCreateTime" style="display:none;"></p>
+    <p id="editId" style="display:none;"></p>
     <p id="editInfo"></p>
 </div>
 <div id="main" style="position:relative;height:100%;">
