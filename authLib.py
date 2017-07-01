@@ -93,8 +93,8 @@ def createUser(dataDict):
         if(username == user):
             db.close()
             return(2)
-    command = "INSERT INTO users (username, pass, sendPushes) VALUES (%s, %s, 'false');"
-    c.execute(command, [username, userPass])
+    command = "INSERT INTO users (username, pass, sendPushes, premium) VALUES (%s, %s, %s, %s);"
+    c.execute(command, [username, userPass, "false", "false"])
     db.commit()
     db.close()
     return(1)
@@ -107,9 +107,21 @@ def changePass(dataDict):
         return(0)
     db = dbCon()
     c = db.cursor()
-    print(username + " : " + newPass)
     command = "UPDATE users SET pass = %s WHERE BINARY username = %s"
     c.execute(command, [newPass, username])
     db.commit()
+    db.close()
+    return(1)
+
+def checkIfPremium(username):
+    username = username.strip()
+    db = dbCon()
+    c = db.cursor()
+    command = "SELECT premium FROM users WHERE BINARY username = %s;"
+    c.execute(command, [username, ])
+    premium = c.fetchall()[0][0]
+    if(premium == "false"):
+        db.close()
+        return(0)
     db.close()
     return(1)
