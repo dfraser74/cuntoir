@@ -147,3 +147,9 @@ def downgradeFromPremium(username):
     db.commit()
     db.close()
     return(1)
+
+def clientCheckIfPremium(dataDict):
+    if(checkAuthCode(dataDict) == 0):
+        return(2)
+    return(checkIfPremium(dataDict["username"]))
+

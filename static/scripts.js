@@ -31,6 +31,25 @@ function updateSubButton(){
     }
 }
 
+function updateUpgradeButton(){
+    var username = getCookie("username");
+    var authCode = getCookie("authCode");
+    var data = {"method":"checkPremium", "username":username, "authCode":authCode};
+    makePostRequest("/", data, "updateUpgradeButton");
+}
+
+function handleUpdateUpgradeButtonReturn(data){
+    if(data == 0){
+        return;
+    }
+    if(data == 1){
+        document.getElementById("upgrade").style.display = "none";
+    }
+    if(data == 2){
+        return;
+    }
+}
+
 function checkIfSubbed(){
     if("serviceWorker" in navigator){
         navigator.serviceWorker.getRegistration().then(function(reg){
@@ -134,6 +153,9 @@ function handleRequestReturn(data, method){
     if(method == "stripeSubscribePost"){
         handleStripeSubscribePostReturn(data);
     }
+    if(method == "updateUpgradeButton"){
+        handleUpdateUpgradeButtonReturn(data);
+    }
 }
 
 function getAll(){
@@ -214,6 +236,7 @@ function handleLoginPostReturn(data){
     if(data != 0){
         setCookie("authCode", data);
         closeLoginBar();
+        updateUpgradeButton();
         getAll();
     }
     else{

@@ -49,7 +49,7 @@ def createCustomer(dataDict):
     db.commit()
     db.close()
     authLib.upgradeToPremium(username)
-    taskLib.notifyUser(username, "Thanks for Subscribing!", "Premium features like archive and push notifications are now available, look in the menu for them")
+    taskLib.notifyUser(username, "Thanks for Subscribing!", "Premium features like archive and push notifications are now available, look for them in the menu")
     return(1)
 
 def subscribeCustomer(customerId, username):

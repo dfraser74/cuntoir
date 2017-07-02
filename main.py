@@ -44,6 +44,8 @@ def handlePostRequest(dataDict):
         returnCode = pushLib.addSub(dataDict)
     if(method == "createCustomer"):
         returnCode = stripeLib.createCustomer(dataDict)
+    if(method == "checkPremium"):
+        returnCode = authLib.clientCheckIfPremium(dataDict)
     return(returnCode)
 
 def handleGetRequest(dataDict):
