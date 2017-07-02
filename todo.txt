@@ -1,4 +1,4 @@
-build delete customer funntion for stripeLib
+build unsubscribe button for client side
 build premium checking into search and archive functionality
 build clientside handling of non-premium users hitting premium functions
 add "stripe" table to prod db

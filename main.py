@@ -7,6 +7,7 @@ import stripeLib
 
 def startThreads():
     thread.start_new_thread(pushLib.pushWatcher, ())
+    thread.start_new_thread(stripeLib.customerSubscriptionWatcher, ())
     return(1)
 
 def handlePostRequest(dataDict):

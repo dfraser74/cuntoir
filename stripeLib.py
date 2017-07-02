@@ -2,6 +2,7 @@ import sys
 import stripe
 import authLib
 import taskLib
+import time
 
 def getKey():
     with open("stripeKeys/stripe.key", "r") as keyFile:
@@ -60,4 +61,70 @@ def subscribeCustomer(customerId, username):
     )
     return(subscription)
 
+def customerSubscriptionWatcher():
+    while(1):
+        customers = getCustomers()
+        if(len(customers) == 0):
+            print("No customers in database")
+        for customer in customers:
+            username = customer[1]
+            customerInfo = getCustomerInfo(username)
+            stripeId = customerInfo[1]
+            subId = customerInfo[4]
+            try:
+                checkSubStatus(username, stripeId, subId)
+            except:
+                print("Subscription check failed for " + username + ", with subId " + subId)
+            time.sleep(30)
+        time.sleep(5)
+
+def getCustomers():
+    db = authLib.dbCon()
+    c = db.cursor()
+    command = "SELECT * FROM users WHERE premium = %s"
+    c.execute(command, ["true",])
+    customers = c.fetchall()
+    db.close()
+    return(customers)
+
+def getCustomerInfo(username):
+    db = authLib.dbCon()
+    c = db.cursor()
+    command = "SELECT * FROM stripe WHERE BINARY username = %s"
+    c.execute(command, [username, ])
+    customerInfo = c.fetchall()
+    customerInfo = customerInfo[0]
+    db.close()
+    return(customerInfo)
+
+def checkSubStatus(username, stripeId, subId):
+    stripe.api_key = getKey()
+    subscription = stripe.Subscription.retrieve(subId)
+    status = subscription["status"]
+    if(status in ["canceled", "unpaid"]):
+        print("Customer " + username + " subscription renewal failed, deleting")
+        r = deleteCustomer(username, stripeId, "Subscription Renewal Failed", "Please hit \"Upgrade to Premium\" in the menu to update with new details.")
+        if(r == 0):
+            print("Failed to delete customer entry for " + username + ", with stripe id " + stripeId)
+        if(r == 1):
+            print("Deletion of customer records for " + username + " successful")
+    else:
+        print("Customer " + username + " subscription renewal successful")
+
+def deleteCustomer(username, stripeId, title, text):
+    stripe.api_key = getKey()
+    try:
+        taskLib.notifyUser(username, title, text)
+        cu = stripe.Customer.retrieve(stripeId)
+        cu.delete()
+        db = authLib.dbCon()
+        c = db.cursor()
+        command = "DELETE FROM stripe WHERE BINARY username = %s"
+        c.execute(command, [username, ])
+        db.commit()
+        db.close()
+        authLib.downgradeFromPremium(username)
+        return(1)
+    except:
+        return(0)
 
