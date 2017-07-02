@@ -7,5 +7,6 @@ hide "upgrade to premium" button if user is subscribed already
 build clientside handling of non-premium users hitting premium functions
 add "stripe" table to prod db
 Add stripe library to prod server
+add stripe live tokens to prod server in place of testing tokens
 Update prod databbase, "ALTER TABLE users ADD COLUMN premium TEXT NOT NULL"
 KEEP THAT STRIPE TRAIN CHUGGING CHOO CHOO MOTHERFUCKERS
