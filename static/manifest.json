@@ -5,7 +5,7 @@
     "name": "Cúntóir", 
     "Description": "You do things. Cúntóir helps",
     "start_url": "index.html" ,
-    "scope":"https://dev.cuntoir.com" ,
+    "scope":"https://cuntoir.com" ,
     "display": "standalone" ,
     "orientation": "portrait" ,
     "theme_color": "#666666" ,
