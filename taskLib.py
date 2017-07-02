@@ -103,7 +103,7 @@ def notifyUser(username, title, text):
     db = authLib.dbCon()
     c = db.cursor()
     command = "INSERT INTO tasks (username, createTime, dueTime, text, done, title, tags) VALUES ( %s, %s, %s, %s, %s, %s, %s)"
-    c.execute(command, [username, time.time(), time.time()+60*60*24*365, text, "false", title, ""])
+    c.execute(command, [username, time.time(), 0, text, "false", title, ""])
     db.commit()
     db.close()
     return(1)
