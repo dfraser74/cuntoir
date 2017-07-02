@@ -64,8 +64,8 @@ def subscribeCustomer(customerId, username):
 def customerSubscriptionWatcher():
     while(1):
         customers = getCustomers()
-        if(len(customers) == 0):
-            print("No customers in database")
+#        if(len(customers) == 0):
+#            print("No customers in database")
         for customer in customers:
             username = customer[1]
             if(customer in authLib.getExemptUsers()):
