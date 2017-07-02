@@ -102,14 +102,14 @@ def checkSubStatus(username, stripeId, subId):
     subscription = stripe.Subscription.retrieve(subId)
     status = subscription["status"]
     if(status in ["canceled", "unpaid"]):
-        print("Customer " + username + " subscription renewal failed, deleting")
+        print("Customer " + username + " subscription stale, deleting")
         r = deleteCustomer(username, stripeId, "Subscription Renewal Failed", "Please hit \"Upgrade to Premium\" in the menu to update with new details.")
         if(r == 0):
             print("Failed to delete customer entry for " + username + ", with stripe id " + stripeId)
         if(r == 1):
             print("Deletion of customer records for " + username + " successful")
     else:
-        print("Customer " + username + " subscription renewal successful")
+        print("Customer " + username + " subscription up to date")
 
 def deleteCustomer(username, stripeId, title, text):
     stripe.api_key = getKey()
