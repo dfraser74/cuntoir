@@ -1,3 +1,4 @@
+import sys
 import stripe
 import authLib
 
@@ -14,14 +15,33 @@ def createCustomer(dataDict):
     stripe.api_key = getKey()
     token = dataDict["token"]
     email = dataDict["email"]
-    customer = stripe.Customer.create(
+    try:
+        customer = stripe.Customer.create(
         description = "New Customer",
         email = email,
         source = token)
-    customerId = customer["id"]
+        customerId = customer["id"]
+        subscription = subscribeCustomer(customerId, username)
+    except stripe.error.CardError as e:
+        body = e.json_body
+        err = body["error"]
+        print(err)
+        print("HTTP status is: " + str(e.http_status))
+        print("Type is: " + str(err["type"]))
+        print("Code is: " + str(err["code"]))
+        print("Message is: " + str(err["message"]))
+        print("Param is: " + str(err["param"]))
+        print("Attempting to delete unusable customer")
+        try:
+            customer.delete()
+            print("Customer deleted successfully")
+        except:
+            print("Customer delete failed, as customer creation failed earlier")
+        return(err["message"])
+    except:
+        return(4)
     db = authLib.dbCon()
     c = db.cursor()
-    subscription = subscribeCustomer(customerId, username)
     subId = subscription["id"]
     command = "INSERT INTO stripe (stripeId, email, username, subId) VALUES (%s, %s, %s, %s);"
     c.execute(command, [customerId, email, username, subId])

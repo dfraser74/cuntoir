@@ -1063,12 +1063,25 @@ function handleStripeSubscribePostReturn(data){
     console.log(data);
     if(data == 1){
         window.location = "/";
+        return;
     }
     if(data == 2){
         document.getElementById("premiumInfo").innerHTML = "You're already a subscriber, thanks 😄 ! If you don't already have access to premium features, please contact admin@cuntoir.com <br>";
-        document.getElementById("premiumInfo").innerHTML += "<input type='button' onclick='window.location=\"/\";' value='Go Back'></input>"
+        document.getElementById("premiumInfo").innerHTML += "<input type='button' onclick='window.location=\"/\";' value='Go Back'></input>";
+        return;
     }
     if(data == 0){
-        document.getElementById("premiumInfo").innerHTML = "You're not logged in, sorry. Please <a href='/'>Log In</a> and try again."
+        document.getElementById("premiumInfo").innerHTML = "You're not logged in, sorry. Please <a href='/'>Log In</a> and try again.";
+        return;
+    }
+    if(data == 4){
+        document.getElementById("premiumInfo").innerHTML = "Sorry, something went wrong on our end. If this problem persists, please contatct admin@cuntoir.com";
+        return;
+    }
+    else{
+        data = "Sorry, your card was declined. The message we got from Stripe was: \"" + data + "\"<br>";
+        data += "<input type='button' onclick='window.location=\"/\";' value='Go Back'></input>";
+        document.getElementById("premiumInfo").innerHTML = data;
+        return;
     }
 }
