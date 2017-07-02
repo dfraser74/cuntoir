@@ -5,7 +5,7 @@ this.addEventListener("install", function(event){
     event.waitUntil(
         caches.open(cacheVersion).then(function(cache){
             return cache.addAll([
-                "https://cuntoir.com",
+                "/",
                 "index.html",
                 "createUser.html",
                 "manifest.json",

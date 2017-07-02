@@ -158,4 +158,10 @@ def deleteAllSubs(username):
     for sub in subs:
         subString = sub[0]
         deleteSub(subString)
+    command = "UPDATE users SET sendPushes = %s WHERE BINARY username = %s"
+    db = authLib.dbCon()
+    c = db.cursor()
+    c.execute(command, ["false", username])
+    db.commit()
+    db.close()
     return(1)

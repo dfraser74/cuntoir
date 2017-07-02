@@ -140,5 +140,6 @@ def clientDeleteCustomer(dataDict):
         return(2)
     customerInfo = getCustomerInfo(username)
     stripeId = customerInfo[1]
-    deleteCustomer(username, stripeId, "You're unsubscribed", "Sorry to see you go.")
+    print(deleteCustomer(username, stripeId, "You're unsubscribed", "Sorry to see you go."))
+    return(1)
 

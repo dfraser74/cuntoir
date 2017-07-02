@@ -1120,8 +1120,10 @@ function deleteCustomerPost(){
 }
 
 function handleDeleteCustomerPostReturn(data){
+    console.log(data)
     if(data == 1){
         updateUpgradeButton();
+        closeSidebars();
         getAll();
         return;
     }
