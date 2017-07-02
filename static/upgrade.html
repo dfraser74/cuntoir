@@ -6,29 +6,45 @@
 <link rel='stylesheet' media='screen and (min-width: 0px) and (max-width: 499px)' href='narrow-style.css' />
 <link rel='stylesheet' media='screen and (min-width: 500px)' href='wide-style.css' />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="https://checkout.stripe.com/checkout.js"></script>
 <script src="scripts.js"></script>
 <title>Cúntóir - Get Things Done</title>
 </head>
 <body>
+<div id="overlay" style="height:100%;"><div id="overlayText">Loading...</div></div> 
     <div id="header">
         <div id="mainTitle"><a href="index.html">Cúntóir</a></div>
     </div>
     <div id="tasks">
     <div class='signup'>
-    <form action="/your-server-side-code" method="POST">
-    <script
-            src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-            data-key="pk_test_NXG7UGADzrRBiKlvHG6hX6lS"
-            data-amount="999"
-            data-name="Cuntoir"
-            data-description="Widget"
-            data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
-            data-locale="auto"
-            data-zip-code="true"
-            data-currency="eur">
-        </script>
-    </form>
+    <h3>What do premium users get?</h3>
+    <p>Premium users get access to a permanent archive, the ability to have that archive searched when they do searches, and are able to receive push notifications reminding them when tasks are coming up.<br><br>This comes at the cost of 1 dollar a month, which goes towards funding the hosting of Cúntóir, and helping me buy food and stuff so I can keep working on it, and making it better for all users. If you don't want to become a premium user, but want to help out anyway, please leave anything you can spare in the <a href="https://www.paypal.me/cuntoir/5" target="_blank">tip jar</a>, it's greatly appreciated 😍.  </p>
+    <p>If you do want to get access to premium features, hit the button below to subscribe to the 1 dollar a month premium plan.</p>
+    <input type="button" id="subscribeButton" value="Upgrade to Premium"></input>
+    <h3>What is Stripe?</h3>
+    <p>Stripe is a service that lets programmers not have to worry about how banking works when we want to build web services. You can think of it kind of like paypal, where you send Stripe your card details, and then Stripe sends me money. It means I never see your cards details, and you don't have to trust me with them, which makes sense when it comes to the internet. It also means I don't have to worry about how to safely store them, or transmit them, or all the other worries that come with information as sensitive as credit card details. You do have to trust Stripe, but <a href="https://stripe.com/ie/customers" target="_blank">lots of people</a> already do, so you probably can. If you'd rather not, why not leave something in the <a href="https://www.paypal.me/cuntoir/5" target="_blank">tip jar</a> instead? A years subscription is only 12 dollars 😉 </p>
     </div>
     </div>
+<script>
+var handler = StripeCheckout.configure({
+    key: 'pk_test_NXG7UGADzrRBiKlvHG6hX6lS',
+    image: 'https://cuntoir.com/images/icon512-Rounded-Gray.png',
+    locale: 'auto',
+    token: function(token){stripeSubscribePost(token);}
+    });
+document.getElementById("subscribeButton").addEventListener("click", function(e){
+    handler.open({
+        name: 'Cúntóir',
+        description: 'Upgrade to Premium',
+        zipCode: true,
+        currency: 'eur',
+    });
+    e.preventDefault();
+});
+
+window.addEventListener("popstate", function(){
+    handler.close();
+})
+</script>
 </body>
 <html>

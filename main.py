@@ -3,6 +3,7 @@ import authLib
 import taskLib
 import pushLib
 import thread
+import stripeLib
 
 def startThreads():
     thread.start_new_thread(pushLib.pushWatcher, ())
@@ -41,6 +42,8 @@ def handlePostRequest(dataDict):
         returnCode = authLib.changePass(dataDict)
     if(method == "updateSub"):
         returnCode = pushLib.addSub(dataDict)
+    if(method == "createCustomer"):
+        returnCode = stripeLib.createCustomer(dataDict)
     return(returnCode)
 
 def handleGetRequest(dataDict):

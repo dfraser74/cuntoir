@@ -131,6 +131,9 @@ function handleRequestReturn(data, method){
     if(method == "updatePushable"){
         handleUpdatePushableReturn(data);
     }
+    if(method == "stripeSubscribePost"){
+        handleStripeSubscribePostReturn(data);
+    }
 }
 
 function getAll(){
@@ -1043,4 +1046,22 @@ function getTimeFromDateString(dateString){
     time = time/1000;
 //    console.log(time);
     return(time);
+}
+
+function stripeSubscribePost(token){
+    var username = getCookie("username");
+    var authCode = getCookie("authCode");
+    var id = token.id;
+    var email = token.email;
+    var data = {"method":"createCustomer", "token":id, "username":username, "authCode":authCode, "email":email};
+    console.log(data);
+    makePostRequest("/", data, "stripeSubscribePost");
+    return(false);
+}
+
+function handleStripeSubscribePostReturn(data){
+    console.log(data);
+    if(data == 1){
+        window.location = "/";
+    }
 }

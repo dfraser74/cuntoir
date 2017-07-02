@@ -1,1 +1,3 @@
+add "stripe" table to prod db
+Add stripe library to prod server
 Update prod databbase, "ALTER TABLE users ADD COLUMN premium TEXT NOT NULL"

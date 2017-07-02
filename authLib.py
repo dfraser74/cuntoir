@@ -127,8 +127,6 @@ def checkIfPremium(username):
     return(1)
 
 def upgradeToPremium(username):
-    if(checkIfPremium(username)):
-        return(0)#user is already premium
     username = username.strip()
     db = dbCon()
     c = db.cursor()
