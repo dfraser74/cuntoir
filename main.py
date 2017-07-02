@@ -47,6 +47,8 @@ def handlePostRequest(dataDict):
         returnCode = stripeLib.createCustomer(dataDict)
     if(method == "checkPremium"):
         returnCode = authLib.clientCheckIfPremium(dataDict)
+    if(method == "clientDeleteCustomer"):
+        returnCode = stripeLib.clientDeleteCustomer(dataDict)
     return(returnCode)
 
 def handleGetRequest(dataDict):

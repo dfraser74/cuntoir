@@ -2,6 +2,7 @@ import sys
 import stripe
 import authLib
 import taskLib
+import pushLib
 import time
 
 def getKey():
@@ -116,7 +117,6 @@ def checkSubStatus(username, stripeId, subId):
 def deleteCustomer(username, stripeId, title, text):
     stripe.api_key = getKey()
     try:
-        taskLib.notifyUser(username, title, text)
         cu = stripe.Customer.retrieve(stripeId)
         cu.delete()
         db = authLib.dbCon()
@@ -126,7 +126,19 @@ def deleteCustomer(username, stripeId, title, text):
         db.commit()
         db.close()
         authLib.downgradeFromPremium(username)
+        pushLib.deleteAllSubs(username)
+        taskLib.notifyUser(username, title, text)
         return(1)
     except:
         return(0)
+
+def clientDeleteCustomer(dataDict):
+    username = dataDict["username"]
+    if(authLib.checkAuthCode(dataDict) == 0):
+        return(0)
+    if(authLib.checkIfPremium(username) == 0):
+        return(2)
+    customerInfo = getCustomerInfo(username)
+    stripeId = customerInfo[1]
+    deleteCustomer(username, stripeId, "You're unsubscribed", "Sorry to see you go.")
 

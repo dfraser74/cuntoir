@@ -147,3 +147,15 @@ def completePush(username, taskId):
     db.commit()
     db.close()
     return 0
+
+def deleteAllSubs(username):
+    db = authLib.dbCon()
+    c = db.cursor()
+    command = "SELECT subString FROM pushInfo WHERE BINARY username = %s;"
+    c.execute(command, [username, ])
+    subs = c.fetchall()
+    db.close()
+    for sub in subs:
+        subString = sub[0]
+        deleteSub(subString)
+    return(1)

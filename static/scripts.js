@@ -44,6 +44,7 @@ function handleUpdateUpgradeButtonReturn(data){
     }
     if(data == 1){
         document.getElementById("upgrade").style.display = "none";
+        document.getElementById("downgrade").style.display = "block";
     }
     if(data == 2){
         return;
@@ -155,6 +156,9 @@ function handleRequestReturn(data, method){
     }
     if(method == "updateUpgradeButton"){
         handleUpdateUpgradeButtonReturn(data);
+    }
+    if(method == "deleteCustomerPost"){
+        handleDeleteCustomerPostReturn(data);
     }
 }
 
@@ -1106,5 +1110,26 @@ function handleStripeSubscribePostReturn(data){
         data += "<input type='button' onclick='window.location=\"/\";' value='Go Back'></input>";
         document.getElementById("premiumInfo").innerHTML = data;
         return;
+    }
+}
+function deleteCustomerPost(){
+    var username = getCookie("username");
+    var authCode = getCookie("authCode");
+    var data = {"method":"clientDeleteCustomer", "username":username, "authCode":authCode};
+    makePostRequest("/", data, "deleteCustomerPost");
+}
+
+function handleDeleteCustomerPostReturn(data){
+    if(data == 1){
+        updateUpgradeButton();
+        getAll();
+        return;
+    }
+    if(data == 0){
+        logout();
+        return;
+    }
+    if(data == 2){
+        document.getElementById("navInfo").innerHTML = "You never were subscribed";
     }
 }
