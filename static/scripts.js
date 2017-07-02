@@ -13,10 +13,11 @@ if ('serviceWorker' in navigator) {
 thisBrowserSupportsPush = "true";
 
 function updateSubButton(){
+    document.getElementById("pushPermission").style.display = "block";
     if("serviceWorker" in navigator){
         navigator.serviceWorker.getRegistration().then(function(reg){
             reg.pushManager.getSubscription().then(function(isSubbed){
-                if(isSubbed != null){
+                if(isSubbed != null && getCookie("isPushSubscribed") == "true"){
                     document.getElementById("pushPermission").style.display = "none";
                 }
             });
@@ -80,7 +81,7 @@ function getCookie(name){
 
 function setCookie(name, value){
     currTime = (new Date).getTime();
-    expireTime = currTime + 60*60*24*1000;
+    expireTime = currTime + 10*365*60*60*24*1000;
     expireString = (new Date(expireTime)).toUTCString();
     document.cookie = name + "=" + value +";"+"expires=" + expireString +";";
 }
@@ -160,6 +161,9 @@ function handleRequestReturn(data, method){
     if(method == "deleteCustomerPost"){
         handleDeleteCustomerPostReturn(data);
     }
+    if(method == "updateSub"){
+        handleUpdateSubReturn(data);
+    }
 }
 
 function getAll(){
@@ -216,13 +220,26 @@ function getArchived(){
 
 function handleGetArchivedReturn(data){
     data = escapeHTML(data);
+    console.log(data);
     if(data == 0){
         openLoginBar();
+        return;
     }
     if(data == 2){
         document.getElementById("tasks").innerHTML = "<div class='task' id='infoHeader' style='height:auto;'><h2 class='taskTitle'>Nothing Archived</h2><input type='button' id='archivedButton' value='Go Back' onclick='getAll();'></div>";
+        return;
     }
-    if(data != 0 && data != 2){
+    if(data == 3){
+        var infoTask = "<div class='signup' id='infoHeader' style='height:auto;'>";
+        infoTask += "<div>";
+        infoTask += "Oops, that's a premium feature, please <a href='upgrade.html'><b>Upgrade to Premium</b></a> to access your archive<br>"
+        infoTask += "<input type='button' value='Go Back' onclick='getAll();'></input>"
+        infoTask += "</div>";
+        infoTask += "</div>";
+        document.getElementById("tasks").innerHTML = infoTask;
+        return;
+    }
+    if(data != 0 && data != 2 && data != 3){
         localStorage["lastArchiveGetReturn"] = data;
         document.getElementById("tasks").innerHTML = data;
     }
@@ -1122,6 +1139,8 @@ function deleteCustomerPost(){
 function handleDeleteCustomerPostReturn(data){
     console.log(data)
     if(data == 1){
+        setCookie("isPushSubscribed", "false");
+        updateSubButton();
         updateUpgradeButton();
         closeSidebars();
         getAll();
@@ -1133,5 +1152,29 @@ function handleDeleteCustomerPostReturn(data){
     }
     if(data == 2){
         document.getElementById("navInfo").innerHTML = "You never were subscribed";
+    }
+}
+
+function handleUpdateSubReturn(data){
+    closeSidebars();
+    if(data == 3){
+        updateSubButton()
+        var infoTask = "<div class='signup' id='infoHeader' style='height:auto;'>";
+        infoTask += "<div>";
+        infoTask += "Oops, notifications are a premium feature, please <a href='upgrade.html'><b>Upgrade to Premium</b></a> to get them<br>"
+        infoTask += "<input type='button' value='Go Back' onclick='getAll();'></input>"
+        infoTask += "</div>";
+        infoTask += "</div>";
+        document.getElementById("tasks").innerHTML = infoTask;
+        return;
+    }
+    if(data == 0){
+        logout();
+    }
+    if(data == 1){
+        var d = new Date();
+        d.setTime(d.getTime() + (1000*356*24*60*60*1000));
+        var expires = d.toUTCString();
+        setCookie("isPushSubscribed", "true")
     }
 }

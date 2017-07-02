@@ -8,6 +8,8 @@ def addSub(dataDict):
     authCode = dataDict["authCode"].strip()
     if(authLib.checkAuthCode(dataDict) != 1):
         return(0)
+    if(authLib.checkIfPremium(username) == 0):
+        return(3)
     subInfo = dataDict["subInfo"]
     db = authLib.dbCon()
     c = db.cursor()

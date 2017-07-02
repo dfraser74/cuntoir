@@ -10,6 +10,8 @@ def getAll(dataDict):
     sort = dataDict["sort"]
     doneFlag = dataDict["archived"]
     timeOffset = dataDict["timeOffset"]
+    if(doneFlag == "true" and authLib.checkIfPremium(username) == 0):
+        return(3)
     if(doneFlag == "false"):
         buttonVal = "Complete' id='archiveButton"
         onClick = "completeTaskPost"

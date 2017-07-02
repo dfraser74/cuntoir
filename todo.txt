@@ -1,6 +1,3 @@
-build unsubscribe button for client side
-build premium checking into search and archive functionality
-build clientside handling of non-premium users hitting premium functions
 !!!!Everything after here is to set prod up for update!!!!
 add "stripe" table to prod db
 Add stripe library to prod server
