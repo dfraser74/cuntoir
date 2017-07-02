@@ -1064,4 +1064,11 @@ function handleStripeSubscribePostReturn(data){
     if(data == 1){
         window.location = "/";
     }
+    if(data == 2){
+        document.getElementById("premiumInfo").innerHTML = "You're already a subscriber, thanks 😄 ! If you don't already have access to premium features, please contact admin@cuntoir.com <br>";
+        document.getElementById("premiumInfo").innerHTML += "<input type='button' onclick='window.location=\"/\";' value='Go Back'></input>"
+    }
+    if(data == 0){
+        document.getElementById("premiumInfo").innerHTML = "You're not logged in, sorry. Please <a href='/'>Log In</a> and try again."
+    }
 }
