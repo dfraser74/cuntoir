@@ -1,3 +1,11 @@
+build delete customer funntion for stripeLib
+improve subscription error handling
+build client side handling for all possible return codes
+add function to put "thanks for subscribing" task in users task list after they subscribe
+build premium checking into search and archive functionality
+hide "upgrade to premium" button if user is subscribed already
+build clientside handling of non-premium users hitting premium functions
 add "stripe" table to prod db
 Add stripe library to prod server
 Update prod databbase, "ALTER TABLE users ADD COLUMN premium TEXT NOT NULL"
+KEEP THAT STRIPE TRAIN CHUGGING CHOO CHOO MOTHERFUCKERS
