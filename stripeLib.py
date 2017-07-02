@@ -68,6 +68,8 @@ def customerSubscriptionWatcher():
             print("No customers in database")
         for customer in customers:
             username = customer[1]
+            if(customer in authLib.getExemptUsers()):
+                continue
             customerInfo = getCustomerInfo(username)
             stripeId = customerInfo[1]
             subId = customerInfo[4]
