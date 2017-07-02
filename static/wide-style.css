@@ -62,6 +62,9 @@ body {
 .taskBody{
     display: block;
     margin: 4px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 #archiveButton{
     margin: 6px 4px 4px 4px;

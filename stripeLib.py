@@ -1,6 +1,7 @@
 import sys
 import stripe
 import authLib
+import taskLib
 
 def getKey():
     with open("stripeKeys/stripe.key", "r") as keyFile:
@@ -48,6 +49,7 @@ def createCustomer(dataDict):
     db.commit()
     db.close()
     authLib.upgradeToPremium(username)
+    taskLib.notifyUser(username, "Thanks for Subscribing!", "Premium features like archive and push notifications are now available, look in the menu for them")
     return(1)
 
 def subscribeCustomer(customerId, username):
