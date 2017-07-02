@@ -1,7 +1,2 @@
-!!!!Everything after here is to set prod up for update!!!!
-add "stripe" table to prod db
-Add stripe library to prod server
-add stripe live tokens to prod server in place of testing tokens
-change stripe token in upgrade.html to live token
-Update prod databbase, "ALTER TABLE users ADD COLUMN premium TEXT NOT NULL"
-KEEP THAT STRIPE TRAIN CHUGGING CHOO CHOO MOTHERFUCKERS
+Improve offline functionality
+Improve ui
