@@ -14,7 +14,7 @@ if(localStorage["duePosts"] == null){
     localStorage["duePosts"] = 0;
 }
 
-setInterval(clearCachedRequests, 1000*5)
+setInterval(clearCachedRequests, 1000)
 
 thisBrowserSupportsPush = "true";
 
@@ -1198,7 +1198,6 @@ function cacheRequest(data){
 
 function clearCachedRequests(){
     var duePostCount = parseInt(localStorage["duePosts"]);
-    console.log(duePostCount);
     if(navigator.onLine == true && duePostCount > 0){
     var i = 0;
     while(i < duePostCount){
@@ -1210,7 +1209,7 @@ function clearCachedRequests(){
     }
     localStorage["duePosts"] = 0;
     console.log(userBusy());
-    setTimeout(getAll, 500);
+    getAll();
     }
 }
 
@@ -1238,14 +1237,14 @@ function fakeAddTask(data, id){
     var dueTime = data["dueTime"] * 1000;
     var timeOffset = new Date().getTimezoneOffset();
     var tags = data["tags"];
-    var idString = "'duePost" + id + "'";
+    var idString = "duePost" + id + "";
     var dueYear = new Date(dueTime - timeOffset).getFullYear();
     var dueMonth = new Date(dueTime - timeOffset).getMonth() + 1;
     var dueDay = new Date(dueTime - timeOffset).getDate();
     var dueHour = new Date(dueTime - timeOffset).getHours() + 1;
     var dueMinute = new Date(dueTime - timeOffset).getMinutes() + 1;
     var dueString  = dueDay + "/" + dueMonth + "/" + dueYear + " " + dueHour + ":" + dueMinute;
-    var taskString = "<div class='task' id="+idString+"><h2 class='taskTitle' onlick='openEdit("+idString+")'>"+title+"</h2>";
+    var taskString = "<div class='task' id='"+id+"'><h2 class='taskTitle'>"+title+"</h2>";
     taskString += "<div class='taskBody'>" + description + "</div>";
     taskString += "<div class='tagAndDueTimeWrapper'>";
     taskString += "<div class='dueTime' onclick='dateSearch("+dueDay+","+(dueMonth-1)+","+dueYear+")'>"+dueString+"</div>";
@@ -1261,6 +1260,7 @@ function fakeAddTask(data, id){
     }
     taskString += "</div>";
     taskString += "</div>";
+    taskString += "<button type='button' class='archiveButton' onclick='fakeDeleteTask(" + id + ");'><i class='fa fa-times' aria-hidden='true'></i></button>";
     taskString += "</div>";
     document.getElementById("tasks").innerHTML = taskString + document.getElementById("tasks").innerHTML;
     localStorage["lastTaskGetReturn"] = document.getElementById("tasks").innerHTML;
@@ -1268,3 +1268,14 @@ function fakeAddTask(data, id){
     getAll();
 }
 
+function fakeDeleteTask(id){
+    var postString = "duePost" + id;
+    var taskString = "<div class=\"task\" id=\""+id+"\">"+document.getElementById(id).innerHTML+"</div>";
+    document.getElementById(id).style.display = "none";
+    var oldLastTaskGetReturn = localStorage.getItem("lastTaskGetReturn");
+    var newLastTaskGetReturn = oldLastTaskGetReturn.replace(taskString, "");
+    localStorage.setItem("lastTaskGetReturn", newLastTaskGetReturn);
+    localStorage.removeItem(postString);
+    localStorage["duePosts"] = parseInt(localStorage["duePosts"]) - 1;
+    getAll();
+}
