@@ -38,7 +38,7 @@ br {
     margin-bottom: 80px;
 }
 .taskTitle {
-    width: 71%;
+    width: 84%;
     display: block;
     text-align: left;
     font-size: 1.2em;
@@ -55,7 +55,7 @@ br {
     padding: 4px;
     word-wrap: break-word;
     overflow: auto;
-    width: 71%;
+    width: 83%;
 /*    max-height: 80px;*/
     text-align: left;
 }
@@ -65,16 +65,50 @@ br {
     margin: 0px;
 }
 .archiveButton{
-    font-size: 1em; 
+    border: 0px;
+    background-color: white;
+    font-size: 3em; 
     display: inline-block;
     height: auto;
-    width: 25%;
-    padding: auto;
-    margin: 0px 0px 0px 0px;
+    width: 15%;
+    padding: 0px;
+    margin: 0px;
     position: absolute;
     top: 0px;
     right: 0px;
     bottom: 0px;
+}
+.deleteButton{
+    border: 0px;
+    border-top: 1px dashed #888888;
+    background-color: white;
+    font-size: 3em; 
+    display: inline-block;
+    height: 50%;
+    width: 15%;
+    padding: 0px;
+    margin: 0px 0px 4px 0px;
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+}
+.restoreButton{
+    border: 0px;
+    border-bottom: 1px dashed #888888;
+    background-color: white;
+    font-size: 2.5em; 
+    display: inline-block;
+    height: 50%;
+    width: 15%;
+    padding: 0px;
+    margin: 0px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+button .fa{
+    margin: 0px;
+    padding: 0px;
 }
 #header {
     background-color: white;
@@ -138,10 +172,6 @@ input, textarea {
 }
 input:focus, textarea:focus {
     border: 2px solid #aaaaaa;
-}
-
-input[type=button] {
-    font-size: 15px;
 }
 
 input[type=button]:hover {
@@ -272,7 +302,7 @@ i:hover {
     position: relative;
     left: 0px;
     bottom: 0px;
-    width: 74%;
+    width: 84%;
 }
 .taskTags{
     display: inline-block;
