@@ -292,12 +292,10 @@ i:hover {
 }
 .tagAndDueTimeWrapper{
     text-align: left;
-    border-bottom: 2px dashed #888888;
-    border-right: 2px dashed #888888;
     display: block;
     overflow: auto;
     white-space: nowrap;
-    margin: 0px 4px 0px 4px;
+    margin: 0px 4px 4px 4px;
     padding: 0px;
     position: relative;
     left: 0px;
