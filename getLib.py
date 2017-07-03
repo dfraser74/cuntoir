@@ -13,7 +13,7 @@ def getAll(dataDict):
     if(doneFlag == "true" and authLib.checkIfPremium(username) == 0):
         return(3)
     if(doneFlag == "false"):
-        buttonVal = "Complete' id='archiveButton"
+        buttonVal = "Complete' class='archiveButton"
         onClick = "completeTaskPost"
     if(doneFlag == "true"):
         buttonVal = "Restore' id='archiveButton"
@@ -68,7 +68,7 @@ def getAll(dataDict):
         returnString += "</div></div>"
         returnString += "<input type='button' value='" + buttonVal + "' onclick='" + onClick +"(" + taskId + ");'>"
         if(doneFlag == "true"):
-            returnString += "<input type='button' id='archiveButton' value='Delete' onclick='deleteTask(" + taskId + ");'>"
+            returnString += "<input type='button' class='archiveButton' value='Delete' onclick='deleteTask(" + taskId + ");'>"
         returnString += "</div>"
     if(doneFlag == "true"):
         returnString += "<div class='task' id='infoFooter' style='height:auto;'><input type='button' id='archiveButton' onclick='getAll();' value='Go Back'></div>"
@@ -134,7 +134,7 @@ def getTagged(dataDict):
                 continue
             returnString += "<span class='taskTag' onclick='getTagged(\""+tag+"\");'>"+tag+"</span>"
         returnString += "</div></div>"
-        returnString += "<input type='button' id='archiveButton' value='Complete' onclick='completeTaskPost(" + taskId + ");'>"
+        returnString += "<input type='button' class='archiveButton' value='Complete' onclick='completeTaskPost(" + taskId + ");'>"
         returnString += "</div>"
     if(returnString == infoString):
         return(2)
@@ -199,7 +199,7 @@ def search(dataDict):
                 continue
             returnString += "<span class='taskTag' onclick='getTagged(\""+tag+"\");'>"+tag+"</span>"
         returnString += "</div></div>"
-        returnString += "<input type='button' value='Complete' id='archiveButton' onclick='completeTaskPost(" + taskId + ");'>"
+        returnString += "<input type='button' value='Complete' class='archiveButton' onclick='completeTaskPost(" + taskId + ");'>"
         returnString += "</div>"
     if(returnString == infoString):
         return(2)
@@ -264,7 +264,7 @@ def dateSearch(dataDict):
                 continue
             returnString += "<span class='taskTag' onclick='getTagged(\""+tag+"\");'>"+tag+"</span>"
         returnString += "</div></div>"
-        returnString += "<input type='button' value='Complete' id='archiveButton' onclick='completeTaskPost(" + taskId + ");'>"
+        returnString += "<input type='button' value='Complete' class='archiveButton' onclick='completeTaskPost(" + taskId + ");'>"
         returnString += "</div>"
     if(returnString == infoString):
         returnString += "<div class='task' id='infoFooter' style='height:auto;'><h2 class='taskTitle'>No tasks</h2><input type='button' id='archiveButton' onclick='getAll();' value='Go Back'></div>"

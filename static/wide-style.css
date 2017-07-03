@@ -71,6 +71,11 @@ body {
     display: inline-block;
     width: auto;
 }
+.archiveButton{
+    margin: 6px 4px 4px 4px;
+    display: inline-block;
+    width: auto;
+}
 #header {
     background-color: white;
     border: 3px #666666;
@@ -128,7 +133,6 @@ input:focus, textarea:focus {
 
 input[type=button] {
     font-size: 15px;
-    width: 80%;
 }
 
 input[type=button]:hover {

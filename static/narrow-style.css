@@ -14,13 +14,14 @@ br {
 .task {
     display: block;
     background-color: white;
-    padding: 2px;
+    padding: 2px 2px 0px 2px;
     margin: 4px;
     border: solid 1px #d9d9d9;
     border-radius: 2px;
-    font-size: 15px;
+    font-size: 1em;
     transition: 0s;
     text-align: center;
+    position: relative;
 }
 .signup {
     display: block;
@@ -37,10 +38,10 @@ br {
     margin-bottom: 80px;
 }
 .taskTitle {
-    width: 100%;
+    width: 71%;
     display: block;
     text-align: left;
-    font-size: 1.5em;
+    font-size: 1.2em;
     margin: 4px 0px 4px 4px;
     padding: 0px 0px 0px 4px;
     border-left: 4px solid #555555;
@@ -50,18 +51,30 @@ br {
 }
 .taskBody{
     display: block;
-    margin: 4px 4px 4px 14px;
+    margin: 0px 0px 0px 10px;
+    padding: 4px;
     word-wrap: break-word;
     overflow: auto;
-    max-height: 80px;
+    width: 71%;
+/*    max-height: 80px;*/
     text-align: left;
 }
 #archiveButton{
-    font-size: 1em; 
     display: inline-block;
     width: auto;
+    margin: 0px;
+}
+.archiveButton{
+    font-size: 1em; 
+    display: inline-block;
+    height: auto;
+    width: 25%;
     padding: auto;
-    margin: 4px 4px 4px 4px;
+    margin: 0px 0px 0px 0px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
 }
 #header {
     background-color: white;
@@ -84,7 +97,7 @@ br {
 }
 #mainTitle {
     text-align: center;
-    font-size: 40px;
+    font-size: 2em;
 }
 img {
     max-height: 500px;
@@ -103,7 +116,7 @@ a:hover{
 .dueTime {
     font-weight: bold;
     display: inline;
-    font-size: 1em;
+    font-size: 0.8em;
     margin: 4px;
     padding: 4px;
     background-color: #cccccc;
@@ -195,7 +208,7 @@ input[type=submit]:focus {
 }
 .bottomNavButtons {
     text-align: center;
-    font-size: 40px;
+    font-size: 3em;
 }
 
 i {
@@ -217,12 +230,12 @@ i:hover {
     margin: 8px 8px 8px 0px;
     padding:8px;
     border-color: #818181;
-    font-size: 15px;
+    font-size: 1em;
 }
 .sidebar input, textarea{
     color: #eeeeee;
     background-color: #666666;
-    font-size: 15px;
+    font-size: 1em;
 }
 
 .sidebar p{
@@ -250,11 +263,16 @@ i:hover {
 .tagAndDueTimeWrapper{
     text-align: left;
     border-bottom: 2px dashed #888888;
+    border-right: 2px dashed #888888;
     display: block;
     overflow: auto;
     white-space: nowrap;
     margin: 0px 4px 0px 4px;
     padding: 0px;
+    position: relative;
+    left: 0px;
+    bottom: 0px;
+    width: 74%;
 }
 .taskTags{
     display: inline-block;
@@ -266,7 +284,7 @@ i:hover {
     background-color: #cccccc;
     padding: 4px;
     margin: 4px;
-    font-size: 1em;
+    font-size: 0.8em;
     border-radius: 4px;
     border: 1px solid #555;
 }
@@ -286,7 +304,7 @@ i:hover {
     background-color: #cccccc;
     padding: 4px;
     margin: 4px;
-    font-size: 15px;
+    font-size: 0.8em;
     border-radius: 4px;
 }
 .italic {
