@@ -10,6 +10,12 @@ if ('serviceWorker' in navigator) {
     });
 }
 
+if(localStorage["duePosts"] == null){
+    localStorage["duePosts"] = 0;
+}
+
+setInterval(clearCachedRequests, 1000*5)
+
 thisBrowserSupportsPush = "true";
 
 function updateSubButton(){
@@ -87,7 +93,11 @@ function setCookie(name, value){
 }
 
 function makePostRequest(url, requestParams, method){
-    showOverlay();
+    if(method != "clearCachedRequests" && navigator.onLine){showOverlay();}
+    if(navigator.onLine == false){
+        cacheRequest(requestParams);
+        return;
+    }
     url = "/"
     $.ajax({
         type: "POST",
@@ -220,7 +230,6 @@ function getArchived(){
 
 function handleGetArchivedReturn(data){
     data = escapeHTML(data);
-    console.log(data);
     if(data == 0){
         openLoginBar();
         return;
@@ -1178,3 +1187,84 @@ function handleUpdateSubReturn(data){
         setCookie("isPushSubscribed", "true")
     }
 }
+
+function cacheRequest(data){
+    var dataString = JSON.stringify(data);
+    var currentNumberOfDuePosts = parseInt(localStorage["duePosts"])
+    localStorage["duePost" + (currentNumberOfDuePosts + 1)] = dataString;
+    localStorage["duePosts"] = (currentNumberOfDuePosts + 1);
+    fakePostRequest(data, currentNumberOfDuePosts + 1);
+}
+
+function clearCachedRequests(){
+    var duePostCount = parseInt(localStorage["duePosts"]);
+    console.log(duePostCount);
+    if(navigator.onLine == true && duePostCount > 0){
+    var i = 0;
+    while(i < duePostCount){
+        var data = JSON.parse(localStorage["duePost" + (i+1)]);
+        localStorage.removeItem("duePost" + (i+1));
+        console.log(data);
+        makePostRequest("/", data, "clearCachedRequests")
+        i = i + 1;
+    }
+    localStorage["duePosts"] = 0;
+    console.log(userBusy());
+    setTimeout(getAll, 500);
+    }
+}
+
+function userBusy(){
+    var sideBars = document.getElementsByClassName("sidebar");
+    var i = 0;
+    while(i < sideBars.length){
+        if(sideBars[i].style.width != "0px"){return true;}
+        i += 1;
+    }
+    return false;
+}
+function fakePostRequest(data, postNumber){
+    console.log(data);
+    if(data["method"] == "addTask"){
+        fakeAddTask(data, postNumber);
+    }
+}
+function fakeAddTask(data, id){
+    var title = data["title"];
+    var description = data["description"];
+    if(description.length == 0){
+        description = "<span class='italic'>No details</span>";
+    }
+    var dueTime = data["dueTime"] * 1000;
+    var timeOffset = new Date().getTimezoneOffset();
+    var tags = data["tags"];
+    var idString = "'duePost" + id + "'";
+    var dueYear = new Date(dueTime - timeOffset).getFullYear();
+    var dueMonth = new Date(dueTime - timeOffset).getMonth() + 1;
+    var dueDay = new Date(dueTime - timeOffset).getDate();
+    var dueHour = new Date(dueTime - timeOffset).getHours() + 1;
+    var dueMinute = new Date(dueTime - timeOffset).getMinutes() + 1;
+    var dueString  = dueDay + "/" + dueMonth + "/" + dueYear + " " + dueHour + ":" + dueMinute;
+    var taskString = "<div class='task' id="+idString+"><h2 class='taskTitle' onlick='openEdit("+idString+")'>"+title+"</h2>";
+    taskString += "<div class='taskBody'>" + description + "</div>";
+    taskString += "<div class='tagAndDueTimeWrapper'>";
+    taskString += "<div class='dueTime' onclick='dateSearch("+dueDay+","+(dueMonth-1)+","+dueYear+")'>"+dueString+"</div>";
+    taskString += "<div class='taskTags'>";
+    var i = 0;
+    while(i < tags.split(",").length){
+        if(tags.split(",")[i].length == 0){i+=1;continue;}
+        taskString += "<span class='taskTag' onclick='getTagged(\""+tags.split(",")[i]+"\")'>"+tags.split(",")[i]+"</span>";
+        i += 1;
+    }
+    if(tags.length < 1){
+        taskString += "<span class='noTaskTag'><span class='italic'>No tags</span></span>";
+    }
+    taskString += "</div>";
+    taskString += "</div>";
+    taskString += "</div>";
+    document.getElementById("tasks").innerHTML = taskString + document.getElementById("tasks").innerHTML;
+    localStorage["lastTaskGetReturn"] = document.getElementById("tasks").innerHTML;
+    closeSidebars();
+    getAll();
+}
+
