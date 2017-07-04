@@ -182,6 +182,9 @@ function getAll(){
     var timeOffset = timezoneOffset();
     document.getElementById("tasks").innerHTML = localStorage["lastTaskGetReturn"];
     if(navigator.onLine != true){
+        if(localStorage["lastTaskGetReturn"] == ""){
+            handleGetAllReturn(2);
+        }
         return;
     }
     if(username == 0 || authCode == 0){
@@ -199,11 +202,10 @@ function handleGetAllReturn(data){
     }
     if(data == 2){
         document.getElementById("tasks").innerHTML = "<div class='task' style='height:auto;'><h2 class='taskTitle'>All Done</h2></div>";
-        localStorage["lastTaskGetReturn"] = document.getElementById("tasks").innerHTML;
     }
     if(data != 0 && data != 2){
-        localStorage["lastTaskGetReturn"] = data;
         document.getElementById("tasks").innerHTML = data;
+        localStorage["lastTaskGetReturn"] = document.getElementById("tasks").innerHTML;
     }
 }
 
@@ -231,7 +233,6 @@ function handleGetArchivedReturn(data){
     }
     if(data == 2){
         document.getElementById("tasks").innerHTML = "<div class='task' id='infoHeader' style='height:auto;'><h2 class='taskTitle'>Nothing Archived</h2><input type='button' id='archivedButton' value='Go Back' onclick='getAll();'></div>";
-        localStorage["lastArchiveGetReturn"] = "";
         return;
     }
     if(data == 3){
@@ -245,7 +246,6 @@ function handleGetArchivedReturn(data){
         return;
     }
     if(data != 0 && data != 2 && data != 3){
-        localStorage["lastArchiveGetReturn"] = data;
         document.getElementById("tasks").innerHTML = data;
     }
 }
@@ -277,10 +277,6 @@ function addTaskPost(title, description, dueTime, tags){
     var username = getCookie("username");
     var authCode = getCookie("authCode");
     var pushable = "" + document.getElementById("pushable").checked;
-//    if(title.includes("\"") || title.includes("\'") ||tags.includes("\"") || tags.includes("\'") || description.includes("\"") || description.includes("\'")){
-//        document.getElementById("info").innerHTML = "Tasks cannot include quotation marks";
-//        return;
-//    }
     if(title == ""){
         document.getElementById("info").innerHTML = "Your task needs a title";
     }else{
@@ -1227,6 +1223,9 @@ function fakePostRequest(data, postNumber){
     if(data["method"] == "addTask"){
         fakeAddTask(data, postNumber);
     }
+    if(data["method"] == "completeTask"){
+        fakeCompleteTask(data["id"]);
+    }
 }
 function fakeAddTask(data, id){
     var title = data["title"];
@@ -1235,15 +1234,25 @@ function fakeAddTask(data, id){
         description = "<span class='italic'>No details</span>";
     }
     var dueTime = data["dueTime"] * 1000;
-    var timeOffset = new Date().getTimezoneOffset();
+    var timeOffset = new Date().getTimezoneOffset() * 60 * 1000;
+    console.log(dueTime);
+    dueTime = dueTime + timeOffset;
+    console.log(timeOffset);
+    console.log(dueTime);
     var tags = data["tags"];
     var idString = "duePost" + id + "";
-    var dueYear = new Date(dueTime - timeOffset).getFullYear();
-    var dueMonth = new Date(dueTime - timeOffset).getMonth() + 1;
-    var dueDay = new Date(dueTime - timeOffset).getDate();
-    var dueHour = new Date(dueTime - timeOffset).getHours() + 1;
-    var dueMinute = new Date(dueTime - timeOffset).getMinutes() + 1;
-    var dueString  = dueDay + "/" + dueMonth + "/" + dueYear + " " + dueHour + ":" + dueMinute;
+    var dueYear = new Date(dueTime).getFullYear();
+    var dueMonth = new Date(dueTime).getMonth() + 1;
+    var dueDay = new Date(dueTime).getDate();
+    var dueHour = new Date(dueTime).getHours() + 1;
+    var dueMinute = new Date(dueTime).getMinutes() + 1;
+    if(dueDay < 10){
+        dueDayString = "0" + dueDay;
+    }else{dueDayString = dueDay;}
+    if(dueMonth < 10){
+        dueMonthString = "0" + dueMonth;
+    }else{dueMonthString = dueMonth;}
+    var dueString  = dueDayString + "/" + dueMonthString + "/" + dueYear + " " + dueHour + ":" + dueMinute;
     var taskString = "<div class='task' id='"+id+"'><h2 class='taskTitle'>"+title+"</h2>";
     taskString += "<div class='taskBody'>" + description + "</div>";
     taskString += "<div class='tagAndDueTimeWrapper'>";
@@ -1262,8 +1271,7 @@ function fakeAddTask(data, id){
     taskString += "</div>";
     taskString += "<button type='button' class='archiveButton' onclick='fakeDeleteTask(" + id + ");'><i class='fa fa-times' aria-hidden='true'></i></button>";
     taskString += "</div>";
-    document.getElementById("tasks").innerHTML = taskString + document.getElementById("tasks").innerHTML;
-    localStorage["lastTaskGetReturn"] = document.getElementById("tasks").innerHTML;
+    localStorage["lastTaskGetReturn"] += taskString;
     closeSidebars();
     getAll();
 }
@@ -1278,6 +1286,15 @@ function fakeDeleteTask(id){
     localStorage.removeItem(postString);
     localStorage["duePosts"] = parseInt(localStorage["duePosts"]) - 1;
     getAll();
+}
+
+function fakeCompleteTask(id){
+    var taskString = "<div class=\"task\" id=\""+id+"\">"+document.getElementById(id).innerHTML+"</div>";
+    document.getElementById(id).style.display = "none";
+    var oldLastTaskGetReturn = localStorage.getItem("lastTaskGetReturn");
+    var newLastTaskGetReturn = oldLastTaskGetReturn.replace(taskString, "");
+    localStorage.setItem("lastTaskGetReturn", newLastTaskGetReturn);
+    getAll(2);
 }
 
 function offlineDateSearch(day, month, year){
@@ -1296,6 +1313,9 @@ function offlineDateSearch(day, month, year){
     console.log(dateString);
     while(i < tasks.length){
         var task = tasks[i];
+        if(document.getElementById("tasks").innerHTML == "<div class=\"task\" style=\"height:auto;\"><h2 class=\"taskTitle\">All Done</h2></div>"){
+            break;
+        }
         var taskString = "<div class=\"task\" id=\""+task.id+"\">" + task.innerHTML + "</div>";
         var tagAndDueTimeWrapper = task.children[2];
         var dueTimeNode = tagAndDueTimeWrapper.children[0]
