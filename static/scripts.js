@@ -213,12 +213,7 @@ function getArchived(){
     var timeOffset = timezoneOffset();
     closeNav();
     if(navigator.onLine != true){
-        if(localStorage["lastArchiveGetReturn"] != null){
-            document.getElementById("tasks").innerHTML = localStorage["lastArchiveGetReturn"];
-        }else{
-            handleGetArchivedReturn(2);
-        }
-        return;
+        document.getElementById("tasks").innerHTML = "<div class='task' id='infoHeader' style='height:auto;'><h2 class='taskTitle'>Archive Unavailable Offline</h2><div class='taskBody'>I'm working on it, sorry 😞 </div><input type='button' id='archivedButton' value='Go Back' onclick='getAll();'></div>";
     }
     if(username == 0 || authCode == 0){
         openLoginBar();
@@ -236,6 +231,7 @@ function handleGetArchivedReturn(data){
     }
     if(data == 2){
         document.getElementById("tasks").innerHTML = "<div class='task' id='infoHeader' style='height:auto;'><h2 class='taskTitle'>Nothing Archived</h2><input type='button' id='archivedButton' value='Go Back' onclick='getAll();'></div>";
+        localStorage["lastArchiveGetReturn"] = "";
         return;
     }
     if(data == 3){
@@ -902,8 +898,12 @@ function dateSearch(dateInt, monthInt, year){
     if(username == 0 || authCode == 0){
         openLoginBar();
     }else{
-        var data = {"username":username, "authCode":authCode, "method":"dateSearch", "sort":"default", "lowerTime":lowerTime, "upperTime":upperTime, "timeOffset":timeOffset};
-        makePostRequest("/", data, "dateSearch");
+        if(navigator.onLine == true){
+            var data = {"username":username, "authCode":authCode, "method":"dateSearch", "sort":"default", "lowerTime":lowerTime, "upperTime":upperTime, "timeOffset":timeOffset};
+            makePostRequest("/", data, "dateSearch");
+        }else{
+            offlineDateSearch(dateInt, monthInt, year);
+        }
     }
 }
 
@@ -1278,4 +1278,40 @@ function fakeDeleteTask(id){
     localStorage.removeItem(postString);
     localStorage["duePosts"] = parseInt(localStorage["duePosts"]) - 1;
     getAll();
+}
+
+function offlineDateSearch(day, month, year){
+    month = month + 1;
+    if(day < 10){
+        day = "0" + day;
+    }
+    if(month < 10){
+        month = "0" + month;
+    }
+    var dateString = day + "/" + month + "/" + year;
+    var tasks = document.getElementsByClassName("task");
+    var i = 0;
+    var infoString = "<div class='task' id='infoHeader' style='height:auto;width:auto;'><h2 class='taskTitle'>Tasks on "+dateString+"</h2></div>";
+    var returnString = infoString;
+    console.log(dateString);
+    while(i < tasks.length){
+        var task = tasks[i];
+        var taskString = "<div class=\"task\" id=\""+task.id+"\">" + task.innerHTML + "</div>";
+        var tagAndDueTimeWrapper = task.children[2];
+        var dueTimeNode = tagAndDueTimeWrapper.children[0]
+        var dueTimeString = dueTimeNode.innerHTML.split(" ")[0];
+        console.log(dueTimeString);
+        if(dateString == dueTimeString){
+            returnString += taskString;
+        }
+        i += 1;
+    }
+    if(returnString != infoString){
+        returnString += "<div class='task' id='infoFooter' style='height:auto;'><input type='button' id='archiveButton' onclick='getAll();' value='Go Back'></div>";
+        document.getElementById("tasks").innerHTML = returnString;
+    }else{
+        returnString += "<div class='task' style='height:auto;'><h2 class='taskTitle'>No tasks</h2></div>"
+        returnString += "<div class='task' id='infoFooter' style='height:auto;'><input type='button' id='archiveButton' onclick='getAll();' value='Go Back'></div>";
+        document.getElementById("tasks").innerHTML = returnString;
+    }
 }
