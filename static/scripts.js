@@ -41,8 +41,16 @@ function updateSubButton(){
 function updateUpgradeButton(){
     var username = getCookie("username");
     var authCode = getCookie("authCode");
-    var data = {"method":"checkPremium", "username":username, "authCode":authCode};
-    makePostRequest("/", data, "updateUpgradeButton");
+    if(navigator.onLine == true){
+        var data = {"method":"checkPremium", "username":username, "authCode":authCode};
+        makePostRequest("/", data, "updateUpgradeButton");
+    }else{
+        if(localStorage.getItem("premiumUser") == "true"){
+            handleUpdateUpgradeButtonReturn(1);
+        }else{
+            handleUpdateUpgradeButtonReturn(2);
+        }
+    }
 }
 
 function handleUpdateUpgradeButtonReturn(data){
@@ -50,10 +58,17 @@ function handleUpdateUpgradeButtonReturn(data){
         return;
     }
     if(data == 1){
+        localStorage.setItem("premiumUser", "true");
         document.getElementById("upgrade").style.display = "none";
         document.getElementById("downgrade").style.display = "block";
     }
     if(data == 2){
+        localStorage.setItem("premiumUser", "false");
+        document.getElementById("pushChoice").style.display = "none";
+        document.getElementById("editPushChoice").style.display = "none";
+        document.getElementById("pushable").checked = false;
+        document.getElementById("editPushable").checked = false;
+        document.getElementById("pushPermission").style.display = "none";
         return;
     }
 }
@@ -215,7 +230,20 @@ function getArchived(){
     var timeOffset = timezoneOffset();
     closeNav();
     if(navigator.onLine != true){
-        document.getElementById("tasks").innerHTML = "<div class='task' id='infoHeader' style='height:auto;'><h2 class='taskTitle'>Archive Unavailable Offline</h2><div class='taskBody'>I'm working on it, sorry 😞 </div><input type='button' id='archivedButton' value='Go Back' onclick='getAll();'></div>";
+        if(localStorage.getItem("premiumUser") == "true"){
+            document.getElementById("tasks").innerHTML = "<div class='task' id='infoHeader' style='height:auto;'><h2 class='taskTitle'>Archive Unavailable Offline</h2><div class='taskBody'>I'm working on it, sorry 😞 </div><input type='button' id='archivedButton' value='Go Back' onclick='getAll();'></div";
+            return;
+        }
+        else{
+            var infoTask = "<div class='signup' id='infoHeader' style='height:auto;'>";
+            infoTask += "<div>";
+            infoTask += "Oops, that's a premium feature, please <a href='upgrade.html'><b>Upgrade to Premium</b></a> to access your archive<br>"
+            infoTask += "<input type='button' value='Go Back' onclick='getAll();'></input>"
+            infoTask += "</div>";
+            infoTask += "</div>";
+            document.getElementById("tasks").innerHTML = infoTask;
+            return;
+        }
     }
     if(username == 0 || authCode == 0){
         openLoginBar();
@@ -1204,8 +1232,7 @@ function clearCachedRequests(){
         i = i + 1;
     }
     localStorage["duePosts"] = 0;
-    console.log(userBusy());
-    getAll();
+    window.setTimeout(getAll, 500);
     }
 }
 
@@ -1314,6 +1341,9 @@ function offlineDateSearch(day, month, year){
     while(i < tasks.length){
         var task = tasks[i];
         if(document.getElementById("tasks").innerHTML == "<div class=\"task\" style=\"height:auto;\"><h2 class=\"taskTitle\">All Done</h2></div>"){
+            break;
+        }
+        if(document.getElementById("tasks").innerHTML == "<div class='task' id='infoHeader' style='height:auto;'><h2 class='taskTitle'>Archive Unavailable Offline</h2><div class='taskBody'>I'm working on it, sorry 😞 </div><input type='button' id='archivedButton' value='Go Back' onclick='getAll();'></di"){
             break;
         }
         var taskString = "<div class=\"task\" id=\""+task.id+"\">" + task.innerHTML + "</div>";
