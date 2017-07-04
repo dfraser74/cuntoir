@@ -35,7 +35,7 @@ body {
     height: 200px;
     width: 24%;
     min-width: 200px;
-    transition: 0.5s;
+    transition: 0.1s;
 }
 .signup{
     display: inline-block;

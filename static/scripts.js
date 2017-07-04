@@ -480,7 +480,7 @@ function deleteTask(id){
 
 function handleDeleteTaskReturn(data){
     if(data == 1){
-        getArchived();
+        getAll();
     }
 }
 
@@ -507,7 +507,6 @@ function openNav() {
     closeSidebars();
     document.getElementById("navInfo").innerHTML = "";
     document.getElementById("searchInput").value = "";
-    document.getElementById("searchInput").focus();
     if(window.screen.availWidth < 500){
         document.getElementById("nav").style.width = "100%";
     }else{
@@ -581,7 +580,6 @@ function openAdd(){
         document.getElementById("add").style.width = "100%";
         renderDatePicker(new Date().getMonth(), 'addDatePicker', 'addDatePickerTable', 'addDatePickerHead', 'dateString', new Date().getFullYear());
     }else{
-        document.getElementById("title").focus();
         document.getElementById("add").style.width = "300px";
         document.getElementById("main").style.marginLeft = "300px";
         renderDatePicker(new Date().getMonth(), 'addDatePicker', 'addDatePickerTable', 'addDatePickerHead', 'dateString', new Date().getFullYear());
@@ -607,7 +605,6 @@ function openEdit(id){
         document.getElementById("edit").style.width = "100%";
         renderDatePicker(new Date().getMonth(), 'editDatePicker', 'editDatePickerTable', 'editDatePickerHead', 'editDateString', new Date().getFullYear());
     }else{
-        document.getElementById("editTitle").focus();
         document.getElementById("edit").style.width = "300px";
         document.getElementById("main").style.marginLeft = "300px";
         renderDatePicker(new Date().getMonth(), 'editDatePicker', 'editDatePickerTable', 'editDatePickerHead', 'editDateString', new Date().getFullYear());
@@ -1373,29 +1370,24 @@ function setupTouch(){
     console.log(task);
     task.addEventListener("touchstart", mainTouchStart, false);
     task.addEventListener("touchmove", mainTouchMove, false);
-    task.addEventListener("touchend", mainTouchStop, false);
+    task.addEventListener("touchend", mainTouchEnd, false);
 }
 var mainStartTouchX = 0;
 var mainCurrentTouchX = 0;
 var ignoreTouchArray = ["task", "taskTags", "taskTag", "dueTime", "tagAndDueTimeWrapper", "taskTitle", "taskBody", "archiveButton"];
 function mainTouchStart(evt){
-    console.log(evt.target.className);
     if(ignoreTouchArray.indexOf(evt.target.className) == -1){
-    console.log("touch Start");
     var task = evt.target;
     var touchList = evt.targetTouches;
-    console.log(touchList);
     if(touchList.length > 1){
         return;
     }
     var touch = touchList[0];
-    console.log(touch.screenX);
     mainStartTouchX = touch.screenX;
-    }
+    }else{taskTouchStart(evt);}
 }
 
 function mainTouchMove(evt){
-    console.log(evt.target.className);
     if(ignoreTouchArray.indexOf(evt.target.className) == -1){
     closeSidebars();
     var touchList = evt.targetTouches;
@@ -1404,10 +1396,8 @@ function mainTouchMove(evt){
     }
     var touch = touchList[0];
     var newTouchX = touch.screenX;
-    console.log(mainStartTouchX + ":" + newTouchX + ":" + (2*(newTouchX - mainStartTouchX)))
     if(Math.abs(newTouchX - mainStartTouchX) > 200){
         if((newTouchX - mainStartTouchX) < 0){
-            console.log("Closing Sidebars");
             closeSidebars();
             return;
         }
@@ -1423,13 +1413,11 @@ function mainTouchMove(evt){
         }
     }
     mainCurrentTouchX = newTouchX;
-    }
+    }else{taskTouchMove(evt);}
     return;
 }
-function mainTouchStop(evt){
-    console.log(evt.target.className);
+function mainTouchEnd(evt){
     if(ignoreTouchArray.indexOf(evt.target.className) == -1){
-    console.log("Main Touch end")
     if(mainCurrentTouchX - mainStartTouchX < 80){
         closeSidebars();
         mainCurrentTouchX = 0;
@@ -1443,6 +1431,91 @@ function mainTouchStop(evt){
         openAdd();
         return;
     }
+    }else{taskTouchEnd(evt);}
+    return;
+}
+
+var taskTouchStartX = 0;
+var taskTouchCurrentX = 0;
+
+function taskTouchStart(evt){
+    var touchList = evt.targetTouches;
+    if(touchList.length > 1){
+        return;
+    }else{
+        taskTouchStartX = touchList[0].screenX;
     }
     return;
+}
+
+function taskTouchMove(evt){
+    var touchList = evt.targetTouches;
+    if(touchList.length > 1){
+        return;
+    }else{
+        taskTouchCurrentX = touchList[0].screenX;
+    }
+    var taskId = getTouchedTaskId(evt);
+    if(taskId == false){return;}
+    if(taskTouchCurrentX > taskTouchStartX){
+        document.getElementById(taskId).style.marginLeft = (taskTouchCurrentX-taskTouchStartX) + "px";
+        if((taskTouchCurrentX-taskTouchStartX) > 0){
+            var newOpacity = (170/(taskTouchCurrentX-taskTouchStartX))-1;
+            console.log(newOpacity);
+            document.getElementById(taskId).style.opacity = newOpacity+"";
+        }else{
+            if(parseFloat(document.getElementById(taskId).style.opacity) < 1){
+                console.log(parseFloat(document.getElementById(taskId).style.opacity));
+                document.getElementById(taskId).style.opacity = "1";
+            }
+        }
+        if((taskTouchCurrentX-taskTouchStartX) > 120){
+            document.getElementById(taskId).style.backgroundColor = "red";
+        }else{
+            document.getElementById(taskId).style.backgroundColor = "white";
+        }
+    }else{
+        document.getElementById(taskId).style.backgroundColor = "white";
+        document.getElementById(taskId).style.marginLeft = "4px";
+    }
+    return;
+}
+
+function taskTouchEnd(evt){
+    var taskId = getTouchedTaskId(evt);
+    if(taskId == false){return;}
+    if(taskTouchCurrentX - taskTouchStartX > 120){
+        if(typeof taskId === "number"){
+            if(taskId > 10){
+                completeTaskPost(taskId);
+            }else{
+                fakeDeleteTask(taskId);
+            }
+        }else{
+            getAll();
+            return;
+        }
+    }else{
+        document.getElementById(taskId).style.marginLeft = "4px";
+        document.getElementById(taskId).style.opacity = "1";
+    }
+    return;
+}
+
+function getTouchedTaskId(evt){
+    target = evt.target;
+    targetClass = target.className;
+    if(targetClass == "task"){
+        return target.id;
+    }
+    if(["taskTitle", "taskBody"].indexOf(targetClass) != -1){
+        return target.parentNode.id;
+    }
+//    if(["dueTime", "taskTags"].indexOf(targetClass) != -1){
+//        return target.parentNode.parentNode.id;
+//    }
+//    if(targetClass == "taskTag"){
+//        return target.parentNode.parentNode.parentNode.id;
+//    }
+    else{return false;}
 }
