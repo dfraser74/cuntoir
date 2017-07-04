@@ -19,9 +19,10 @@ br {
     border: solid 1px #d9d9d9;
     border-radius: 2px;
     font-size: 1em;
-    transition: 0s;
+    transition: 1s;
     text-align: center;
     position: relative;
+    overflow-x: hidden;
 }
 .signup {
     display: block;
@@ -209,6 +210,7 @@ input[type=submit]:focus {
 .sidebar {
     height: 100%; /* 100% Full-height */
     width: 0px;
+    max-width: 100%;
     position: fixed;
     z-index: 1;
     top: 0;

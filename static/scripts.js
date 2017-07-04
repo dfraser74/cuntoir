@@ -579,11 +579,12 @@ function openAdd(){
     document.getElementById("pushable").checked = true;
     if(window.screen.availWidth < 500){
         document.getElementById("add").style.width = "100%";
-        document.getElementById("title").focus();
+        renderDatePicker(new Date().getMonth(), 'addDatePicker', 'addDatePickerTable', 'addDatePickerHead', 'dateString', new Date().getFullYear());
     }else{
         document.getElementById("title").focus();
         document.getElementById("add").style.width = "300px";
         document.getElementById("main").style.marginLeft = "300px";
+        renderDatePicker(new Date().getMonth(), 'addDatePicker', 'addDatePickerTable', 'addDatePickerHead', 'dateString', new Date().getFullYear());
     }
     document.getElementById("dateString").value = getCurrDateString();
     document.getElementById("timeString").value = getCurrTimeString();
@@ -604,11 +605,12 @@ function openEdit(id){
     document.getElementById("editInfo").innerHTML = "";
     if(window.screen.availWidth < 500){
         document.getElementById("edit").style.width = "100%";
-        document.getElementById("editTitle").focus();
+        renderDatePicker(new Date().getMonth(), 'editDatePicker', 'editDatePickerTable', 'editDatePickerHead', 'editDateString', new Date().getFullYear());
     }else{
         document.getElementById("editTitle").focus();
         document.getElementById("edit").style.width = "300px";
         document.getElementById("main").style.marginLeft = "300px";
+        renderDatePicker(new Date().getMonth(), 'editDatePicker', 'editDatePickerTable', 'editDatePickerHead', 'editDateString', new Date().getFullYear());
     }
     taskData = getTaskDataById(id);
     title = taskData[0];
@@ -1364,4 +1366,83 @@ function offlineDateSearch(day, month, year){
         returnString += "<div class='task' id='infoFooter' style='height:auto;'><input type='button' id='archiveButton' onclick='getAll();' value='Go Back'></div>";
         document.getElementById("tasks").innerHTML = returnString;
     }
+}
+
+function setupTouch(){
+    var task = document.getElementById("main");
+    console.log(task);
+    task.addEventListener("touchstart", mainTouchStart, false);
+    task.addEventListener("touchmove", mainTouchMove, false);
+    task.addEventListener("touchend", mainTouchStop, false);
+}
+var mainStartTouchX = 0;
+var mainCurrentTouchX = 0;
+var ignoreTouchArray = ["task", "taskTags", "taskTag", "dueTime", "tagAndDueTimeWrapper", "taskTitle", "taskBody", "archiveButton"];
+function mainTouchStart(evt){
+    console.log(evt.target.className);
+    if(ignoreTouchArray.indexOf(evt.target.className) == -1){
+    console.log("touch Start");
+    var task = evt.target;
+    var touchList = evt.targetTouches;
+    console.log(touchList);
+    if(touchList.length > 1){
+        return;
+    }
+    var touch = touchList[0];
+    console.log(touch.screenX);
+    mainStartTouchX = touch.screenX;
+    }
+}
+
+function mainTouchMove(evt){
+    console.log(evt.target.className);
+    if(ignoreTouchArray.indexOf(evt.target.className) == -1){
+    closeSidebars();
+    var touchList = evt.targetTouches;
+    if(touchList.length > 1){
+        return;
+    }
+    var touch = touchList[0];
+    var newTouchX = touch.screenX;
+    console.log(mainStartTouchX + ":" + newTouchX + ":" + (2*(newTouchX - mainStartTouchX)))
+    if(Math.abs(newTouchX - mainStartTouchX) > 200){
+        if((newTouchX - mainStartTouchX) < 0){
+            console.log("Closing Sidebars");
+            closeSidebars();
+            return;
+        }
+        if((2*(mainCurrentTouchX - mainStartTouchX)) > 100){
+            closeSidebars();
+            openAdd();
+            return;
+        }
+        document.getElementById("add").style.width = (2*(newTouchX - mainStartTouchX))+"px";
+    }else{
+        if(newTouchX - mainStartTouchX > 0){
+            document.getElementById("add").style.width = "90px";
+        }
+    }
+    mainCurrentTouchX = newTouchX;
+    }
+    return;
+}
+function mainTouchStop(evt){
+    console.log(evt.target.className);
+    if(ignoreTouchArray.indexOf(evt.target.className) == -1){
+    console.log("Main Touch end")
+    if(mainCurrentTouchX - mainStartTouchX < 80){
+        closeSidebars();
+        mainCurrentTouchX = 0;
+        mainStartTouchX = 0;
+        return;
+    }
+    if(mainCurrentTouchX - mainStartTouchX > 80){
+        mainCurrentTouchX = 0;
+        mainStartTouchX = 0;
+        closeSidebars();
+        openAdd();
+        return;
+    }
+    }
+    return;
 }
