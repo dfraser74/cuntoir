@@ -77,6 +77,10 @@ br {
     top: 0px;
     right: 0px;
     bottom: 0px;
+    transition: all 0.3 ease 0;
+}
+.archiveButton:active{
+    background-color: #888888;
 }
 .deleteButton{
     border: 0px;
@@ -91,6 +95,10 @@ br {
     position: absolute;
     right: 0px;
     bottom: 0px;
+    transition: all 0.3 ease 0;
+}
+.deleteButton:active{
+    background-color: #888888;
 }
 .restoreButton{
     border: 0px;
@@ -105,6 +113,10 @@ br {
     position: absolute;
     top: 0px;
     right: 0px;
+    transition: all 0.3 ease 0;
+}
+.restoreButton:active{
+    background-color: #888888;
 }
 button .fa{
     margin: 0px;
