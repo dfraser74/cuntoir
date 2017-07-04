@@ -1,2 +1,5 @@
 Improve offline functionality
 Improve ui
+build touch controls:
+    -swipe tasks away
+    -swipe in add task sidebar
