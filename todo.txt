@@ -1,3 +1,4 @@
-!!!!Improve offline functionality!!!!
+!!!!Improve offline functionality!!!!:
+    -!!!!SEARCH YOU DINGUS!!!!
 Improve ui
 Implement turning on and off task notifications, build selecting notify-before time;
