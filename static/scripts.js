@@ -16,20 +16,21 @@ if(localStorage["duePosts"] == null){
 
 setInterval(clearCachedRequests, 1000)
 
-thisBrowserSupportsPush = "true";
+localStorage["pushSupport"] = "true";
 
 function updateSubButton(){
     document.getElementById("pushPermission").style.display = "block";
     if("serviceWorker" in navigator){
         navigator.serviceWorker.getRegistration().then(function(reg){
             reg.pushManager.getSubscription().then(function(isSubbed){
-                if(isSubbed != null && getCookie("isPushSubscribed") == "true"){
+                if(isSubbed != null && localStorage.getItem("isPushSubscribed") == "true"){
                     document.getElementById("pushPermission").style.display = "none";
                 }
             });
-        })
+        });
+        localStorage.setItem("pushSupport", "true");
     }else{
-        thisBrowserSupportsPush = "false";
+        localStorage["pushSupport"] = "false";
         document.getElementById("pushChoice").style.display = "none";
         document.getElementById("editPushChoice").style.display = "none";
         document.getElementById("pushable").checked = false;
@@ -68,7 +69,7 @@ function handleUpdateUpgradeButtonReturn(data){
         document.getElementById("editPushChoice").style.display = "none";
         document.getElementById("pushable").checked = false;
         document.getElementById("editPushable").checked = false;
-        document.getElementById("pushPermission").style.display = "none";
+//        document.getElementById("pushPermission").style.display = "none";
         return;
     }
 }
@@ -633,7 +634,7 @@ function updateEditFields(title, description, timeString, tags, id){
     document.getElementById("editInfo").innerHTML = "";
     document.getElementById("editId").innerHTML = id;
     document.getElementById("editTags").value = tags;
-    if(thisBrowserSupportsPush == "true"){
+    if(localStorage["pushSupport"] == "true"){
         document.getElementById("editPushable").checked = true;
     }
 }
@@ -1021,7 +1022,6 @@ function subscribe(){
                 updateSubInfo(subInfo);
             });
         }).catch(function(err){console.log(err);})
-        setCookie("pnSubbed", "true");
         document.getElementById("pushPermission").style.display = "none";
 }
 
@@ -1171,7 +1171,8 @@ function deleteCustomerPost(){
 function handleDeleteCustomerPostReturn(data){
     console.log(data)
     if(data == 1){
-        setCookie("isPushSubscribed", "false");
+        localStorage.setItem("isPushSubscribed", "false");
+        localStorage.setItem("premiumUser", "false")
         updateSubButton();
         updateUpgradeButton();
         closeSidebars();
@@ -1204,10 +1205,7 @@ function handleUpdateSubReturn(data){
         logout();
     }
     if(data == 1){
-        var d = new Date();
-        d.setTime(d.getTime() + (1000*356*24*60*60*1000));
-        var expires = d.toUTCString();
-        setCookie("isPushSubscribed", "true")
+        localStorage.setItem("isPushSubscribed", "true");
     }
 }
 
@@ -1220,6 +1218,16 @@ function cacheRequest(data){
 }
 
 function clearCachedRequests(){
+    if(navigator.onLine == true && localStorage.getItem("lastOnlineCheck") == "false"){
+        runUpdateFunctions();
+        document.getElementById("changePassButton").style.display = "block";
+    }
+    if(navigator.onLine){
+        localStorage["lastOnlineCheck"] = "true";
+    }else{
+        localStorage["lastOnlineCheck"] = "false";
+    }
+    console.log(localStorage["lastOnlineCheck"]);
     var duePostCount = parseInt(localStorage["duePosts"]);
     if(navigator.onLine == true && duePostCount > 0){
     var i = 0;
@@ -1232,6 +1240,17 @@ function clearCachedRequests(){
     }
     localStorage["duePosts"] = 0;
     window.setTimeout(getAll, 500);
+    }
+    if(navigator.onLine == false){
+        localStorage["pushSupport"] = "false";
+        document.getElementById("changePassButton").style.display = "none";
+        document.getElementById("pushChoice").style.display = "none";
+        document.getElementById("editPushChoice").style.display = "none";
+        document.getElementById("pushable").checked = false;
+        document.getElementById("editPushable").checked = false;
+        document.getElementById("pushPermission").style.display = "none";
+        document.getElementById("upgrade").style.display = "none";
+        document.getElementById("downgrade").style.display = "none";
     }
 }
 
@@ -1295,7 +1314,8 @@ function fakeAddTask(data, id){
     }
     taskString += "</div>";
     taskString += "</div>";
-    taskString += "<button type='button' class='archiveButton' onclick='fakeDeleteTask(" + id + ");'><i class='fa fa-times' aria-hidden='true'></i></button>";
+    taskString += "<button type='button' class='deleteButton' onclick='fakeDeleteTask(" + id + ");'><i class='fa fa-times' aria-hidden='true'></i></button>";
+    taskString += "<button type='button' class='unsyncedWarning'><i class='fa fa-cloud-upload' aria-hidden='true'></i></button>";
     taskString += "</div>";
     localStorage["lastTaskGetReturn"] += taskString;
     closeSidebars();
@@ -1518,4 +1538,9 @@ function getTouchedTaskId(evt){
 //        return target.parentNode.parentNode.parentNode.id;
 //    }
     else{return false;}
+}
+
+function runUpdateFunctions(){
+    updateSubButton();
+    updateUpgradeButton();
 }

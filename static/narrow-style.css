@@ -25,6 +25,20 @@ br {
     position: relative;
     overflow-x: hidden;
 }
+.unsyncedWarning{
+    border: 0px;
+    background-color: white;
+    font-size: 3em; 
+    display: inline-block;
+    height: auto;
+    width: 15%;
+    padding: 0px;
+    margin: 0px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px; 
+}
 .signup {
     display: block;
     background-color: white;
