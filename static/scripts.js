@@ -1587,10 +1587,7 @@ function offlineSearch(searchString){
             var description = taskData[1].toLowerCase();
             var dueTimeString = taskData[2]
             var tagsString = taskData[3].toLowerCase();
-            if(title.indexOf(searchString) > -1 || description.indexOf(searchString) > -1 || tagsString.indexOf(searchString) > -1){
-                i += 1;
-                continue
-            }else{
+            if(title.indexOf(searchString) == -1 && description.indexOf(searchString) == -1 && tagsString.indexOf(searchString) == -1){
                 taskContainer.removeChild(tasks[i]);
             }
         }
