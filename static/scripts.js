@@ -485,7 +485,11 @@ function deleteTask(id){
 
 function handleDeleteTaskReturn(data){
     if(data == 1){
-        getAll();
+        if(document.getElementById("tasks").children.length < 3){
+            getAll();
+        }else{
+            getArchived();
+        }
     }
 }
 
@@ -585,6 +589,9 @@ function openAdd(){
         document.getElementById("add").style.width = "100%";
         renderDatePicker(new Date().getMonth(), 'addDatePicker', 'addDatePickerTable', 'addDatePickerHead', 'dateString', new Date().getFullYear());
     }else{
+        if(window.screen.availHeight > 500){
+            document.getElementById("title").focus();
+        }
         document.getElementById("add").style.width = "300px";
         document.getElementById("main").style.marginLeft = "300px";
         renderDatePicker(new Date().getMonth(), 'addDatePicker', 'addDatePickerTable', 'addDatePickerHead', 'dateString', new Date().getFullYear());
@@ -610,6 +617,9 @@ function openEdit(id){
         document.getElementById("edit").style.width = "100%";
         renderDatePicker(new Date().getMonth(), 'editDatePicker', 'editDatePickerTable', 'editDatePickerHead', 'editDateString', new Date().getFullYear());
     }else{
+        if(window.screen.availHeight > 500){
+            document.getElementById("editTitle").focus();
+        }
         document.getElementById("edit").style.width = "300px";
         document.getElementById("main").style.marginLeft = "300px";
         renderDatePicker(new Date().getMonth(), 'editDatePicker', 'editDatePickerTable', 'editDatePickerHead', 'editDateString', new Date().getFullYear());

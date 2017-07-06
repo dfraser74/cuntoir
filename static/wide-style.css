@@ -5,6 +5,7 @@
 #infoHeader{
     display: block;
     margin: 4px auto 4px auto;
+    height: auto;
     padding: 4px;
 }
 #infoFooter{
@@ -21,13 +22,13 @@ body {
 #tasks{
     text-align: center;
 }
-.task {
+.fakeTask {
     display: inline-block;
     background-color: white;
     padding: 10px;
     margin: 4px;
     border: solid 1px #d9d9d9;
-    border-radius: 20px;
+    border-radius: 2px;
     font-size: 15px;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -36,6 +37,24 @@ body {
     width: 24%;
     min-width: 200px;
     transition: 0.1s;
+    position: relative;
+}
+.task {
+    display: inline-block;
+    background-color: white;
+    padding: 10px;
+    margin: 4px;
+    border: solid 1px #d9d9d9;
+    border-radius: 2px;
+    font-size: 15px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    height: 200px;
+    width: 24%;
+    min-width: 200px;
+    transition: 0.1s;
+    position: relative;
 }
 .signup{
     display: inline-block;
@@ -52,9 +71,11 @@ body {
 }
 .taskTitle {
     display: block;
-    text-align: center;
-    font-size: 25px;
+    text-align: left;
+    font-size: 1.5em;
+    border-left: 4px solid #555555;
     margin: 4px 0px 4px 0px;
+    padding: 0px 4px 0px 4px;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
@@ -62,6 +83,8 @@ body {
 .taskBody{
     display: block;
     margin: 4px;
+    text-align: left;
+    font-size: 1em;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
@@ -112,7 +135,7 @@ a:hover{
     padding: 4px;
     background-color: #cccccc;
     border: 1px solid #555;
-    border-radius: 4px;
+    border-radius: 2px;
 }
 .dueTime:hover{
     background-color: #666666;    
@@ -265,7 +288,7 @@ i:hover {
     padding: 4px;
     margin: 4px;
     font-size: 15px;
-    border-radius: 4px;
+    border-radius: 2px;
     border: 1px solid #555;
 }
 
@@ -285,7 +308,7 @@ i:hover {
     padding: 4px;
     margin: 4px;
     font-size: 15px;
-    border-radius: 4px;
+    border-radius: 2px;
 }
 .italic {
     font-style: italic;
@@ -414,4 +437,55 @@ td:hover {
     color: white;
     opacity: 1;
     transform: translate(-50%,-50%);
+}
+.notificationToggle{
+    background-color: white;
+    border: 0px;
+    font-size: 2em;
+    padding: 0px;
+    margin: 0px;
+    position: absolute;
+    bottom: 6px;
+    right: 27%;
+}
+.archiveButton{
+    background-color: white;
+    border: 0px;
+    font-size: 2.5em;
+    padding: 0px;
+    margin: 0px;
+    position: absolute;
+    bottom: 0px;
+    left: 27%;
+}
+.deleteButton{
+    background-color: white;
+    border: 0px;
+    font-size: 2.7em;
+    padding: 0px;
+    margin: 0px;
+    position: absolute;
+    bottom: -1px;
+    right: 27%;
+}
+.restoreButton{
+    background-color: white;
+    border: 0px;
+    font-size: 2.5em;
+    padding: 0px;
+    margin: 0px;
+    position: absolute;
+    bottom: 0px;
+    left: 27%;
+}
+.unsyncedWarning{
+    background-color: white;
+    border: 0px;
+    font-size: 2.5em;
+    color: #888888;
+    padding: 0px;
+    margin: 0px;
+    position: absolute;
+    bottom: 0px;
+    left: 27%;
 }
