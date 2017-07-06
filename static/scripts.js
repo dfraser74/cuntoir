@@ -449,6 +449,12 @@ function completeTaskPost(id){
     var authCode = getCookie("authCode");
     var done = "true";
     document.getElementById(id).style.display = "none";
+    if(document.getElementById(id).className == "fakeTask"){
+        console.log(id);
+        console.log(document.getElementById(id).className)
+        fakeDeleteTask(id);
+        return;
+    }
     var data = {"method":"completeTask", "id":id, "username":username, "authCode":authCode, "done":done};
     window.setTimeout(function(){makePostRequest("/", data, "completeTask")}, 0);
 }
@@ -1324,24 +1330,35 @@ function fakeAddTask(data, id){
 
 function fakeDeleteTask(id){
     var postString = "duePost" + id;
-    var taskName = document.getElementById(id).className;
-    var taskString = "<div class=\"" + taskName + "\" id=\""+id+"\">"+document.getElementById(id).innerHTML+"</div>";
-    document.getElementById(id).style.display = "none";
-    var oldLastTaskGetReturn = localStorage.getItem("lastTaskGetReturn");
-    var newLastTaskGetReturn = oldLastTaskGetReturn.replace(taskString, "");
-    localStorage.setItem("lastTaskGetReturn", newLastTaskGetReturn);
+    var i = 0;
+    var tasks = document.getElementsByClassName("fakeTask");
+    while(i < tasks.length){
+        if(tasks[i].id == id){
+            var task = tasks[i];
+            break;
+        }
+        i += 1;
+    }
+    document.getElementById("tasks").removeChild(task);
+    localStorage.setItem("lastTaskGetReturn", document.getElementById("tasks").innerHTML);
     localStorage.removeItem(postString);
     localStorage["duePosts"] = parseInt(localStorage["duePosts"]) - 1;
     getAll();
 }
 
 function fakeCompleteTask(id){
-    var taskString = "<div class=\"task\" id=\""+id+"\">"+document.getElementById(id).innerHTML+"</div>";
-    document.getElementById(id).style.display = "none";
-    var oldLastTaskGetReturn = localStorage.getItem("lastTaskGetReturn");
-    var newLastTaskGetReturn = oldLastTaskGetReturn.replace(taskString, "");
-    localStorage.setItem("lastTaskGetReturn", newLastTaskGetReturn);
-    getAll(2);
+    var i = 0;
+    var tasks = document.getElementsByClassName("task");
+    while(i < tasks.length){
+        if(tasks[i].id == id){
+            var task = tasks[i];
+            break;
+        }
+        i += 1;
+    }
+    document.getElementById("tasks").removeChild(task);
+    localStorage.setItem("lastTaskGetReturn", document.getElementById("tasks").innerHTML);
+    getAll();
 }
 
 function offlineDateSearch(day, month, year){
@@ -1387,11 +1404,10 @@ function offlineDateSearch(day, month, year){
 }
 
 function setupTouch(){
-    var task = document.getElementById("main");
-    console.log(task);
-    task.addEventListener("touchstart", mainTouchStart, false);
-    task.addEventListener("touchmove", mainTouchMove, false);
-    task.addEventListener("touchend", mainTouchEnd, false);
+    var main = document.getElementById("main");
+    main.addEventListener("touchstart", mainTouchStart, false);
+    main.addEventListener("touchmove", mainTouchMove, false);
+    main.addEventListener("touchend", mainTouchEnd, false);
 }
 var mainStartTouchX = 0;
 var mainCurrentTouchX = 0;
