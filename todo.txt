@@ -1,4 +1,5 @@
 !!!!Improve offline functionality!!!!:
     -!!!!SEARCH YOU DINGUS!!!!
 Improve ui
-Implement turning on and off task notifications, build selecting notify-before time;
+Implement turning on and off task notifications (use spare space in non-arhived task returns), build selecting notify-before time
+Implement recurring tasks
