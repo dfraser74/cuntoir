@@ -25,9 +25,11 @@ def addSub(dataDict):
 def checkPushSubscribed(username):
     db = authLib.dbCon()
     c = db.cursor()
-    command = "SELECT * FROM pushInfo WHERE username = %s"
+    command = "SELECT * FROM pushInfo WHERE BINARY username = %s"
     c.execute(command, [username,])
-    if(len(c.fetchall()) == 0):
+    subs = c.fetchall()
+    print(len(subs))
+    if(len(subs) == 0):
         db.close()
         return 0
     else:
@@ -130,8 +132,6 @@ def schedulePush(dataDict):
     #hoursBefore = dataDict["hoursBefore"]
     hoursBefore = 2.0
     pushTime = dueTime - hoursBefore*60.0*60.0
-    if(checkPushSubscribed(username) == 0):
-        return(2)
     completePush(username, taskId)
     db = authLib.dbCon()
     c = db.cursor()

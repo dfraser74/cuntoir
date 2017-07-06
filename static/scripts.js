@@ -55,15 +55,12 @@ function updateUpgradeButton(){
 }
 
 function handleUpdateUpgradeButtonReturn(data){
-    if(data == 0){
-        return;
-    }
     if(data == 1){
         localStorage.setItem("premiumUser", "true");
         document.getElementById("upgrade").style.display = "none";
         document.getElementById("downgrade").style.display = "block";
     }
-    if(data == 2){
+    if(data == 0){
         localStorage.setItem("premiumUser", "false");
         document.getElementById("pushChoice").style.display = "none";
         document.getElementById("editPushChoice").style.display = "none";
@@ -1057,15 +1054,28 @@ function updateSubInfo(subInfo){
     console.log("Sub Info Updated");
 }
 
-function updatePushable(createTime){
+function updatePushable(id, pushable){
     username = getCookie("username");
     authCode = getCookie("authCode");
-    var data = {"method":"updatePushable", "username":username, "authCode":authCode, "createTime":createTime};
+    var data = {"method":"updatePushable", "username":username, "authCode":authCode, "id":id, "pushable":pushable};
     makePostRequest("/", data, "updatePushable");
 }
 
 function handleUpdatePushableReturn(data){
-    getAll();
+    console.log(data)
+    if(data == 1){
+        getAll();
+    }
+    if(data == 2){
+        var infoTask = "<div class='signup' id='infoHeader' style='height:auto;'>";
+        infoTask += "<div>";
+        infoTask += "To get notifications from us, you need to <a href='javascript: void(0)' onclick='subscribe();'>enable</a> them<br>";
+        infoTask += "<input type='button' value='Go Back' onclick='getAll();'></input>";
+        infoTask += "</div>";
+        infoTask += "</div>";
+        document.getElementById("tasks").innerHTML = infoTask;
+        return;
+    }
 }
 
 Date.prototype.stdTimezoneOffset = function() {

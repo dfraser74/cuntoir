@@ -49,6 +49,8 @@ def handlePostRequest(dataDict):
         returnCode = authLib.clientCheckIfPremium(dataDict)
     if(method == "clientDeleteCustomer"):
         returnCode = stripeLib.clientDeleteCustomer(dataDict)
+    if(method == "updatePushable"):
+        returnCode = taskLib.updatePushable(dataDict)
     return(returnCode)
 
 def handleGetRequest(dataDict):

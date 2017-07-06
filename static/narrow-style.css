@@ -100,14 +100,27 @@ br {
     background-color: white;
     font-size: 3em; 
     display: inline-block;
-    height: auto;
+    height: 50%;
     width: 15%;
     padding: 0px;
     margin: 0px;
     position: absolute;
-    top: 0px;
     right: 0px;
     bottom: 0px;
+    transition: all 0.3 ease 0;
+}
+.notificationToggle{
+    border: 0px;
+    background-color: white;
+    font-size: 3em; 
+    display: inline-block;
+    height: 50%;
+    width: 15%;
+    padding: 0px;
+    margin: 0px;
+    position: absolute;
+    right: 0px;
+    top: 0px;
     transition: all 0.3 ease 0;
 }
 .archiveButton:active{

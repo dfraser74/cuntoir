@@ -1,3 +1,4 @@
-Improve ui
-Implement turning on and off task notifications (use spare space in non-arhived task returns), build selecting notify-before time
+Improve desktop ui
+Build a utility to delete the completed tasks of non-premium users
+Implement selecting notify-before time
 Implement recurring tasks

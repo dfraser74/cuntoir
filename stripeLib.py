@@ -65,13 +65,13 @@ def subscribeCustomer(customerId, username):
 def customerSubscriptionWatcher():
     while(1):
         customers = getCustomers()
-#        if(len(customers) == 0):
-#            print("No customers in database")
         for customer in customers:
             username = customer[1]
             if(customer in authLib.getExemptUsers()):
                 continue
             customerInfo = getCustomerInfo(username)
+            if(customerInfo == 0):
+                continue
             stripeId = customerInfo[1]
             subId = customerInfo[4]
             try:
@@ -96,6 +96,8 @@ def getCustomerInfo(username):
     command = "SELECT * FROM stripe WHERE BINARY username = %s"
     c.execute(command, [username, ])
     customerInfo = c.fetchall()
+    if(len(customerInfo) == 0):
+        return 0
     customerInfo = customerInfo[0]
     db.close()
     return(customerInfo)

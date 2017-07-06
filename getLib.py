@@ -46,6 +46,7 @@ def getAll(dataDict):
         text = task[4]
         title = task[6]
         tags = task[7]
+        pushable = task[8]
         if("'" in title):
             title = title.replace("'", "&apos;")
         if("'" in text):
@@ -71,6 +72,11 @@ def getAll(dataDict):
         returnString += "<button type='button' " + buttonVal + " onclick='" + onClick +"(" + taskId + ");'>" + buttonText + "</button>"
         if(doneFlag == "true"):
             returnString += "<button type='button' class='deleteButton' onclick='deleteTask(" + taskId + ");'><i class='fa fa-times' aria-hidden='true'></i></button>"
+        else:
+            if(pushable == "true"):
+                returnString += "<button type='button' class='notificationToggle' onclick='updatePushable("+taskId+",\"true\");'><i class='fa fa-bell' aria-hidden='true'></i></button>"
+            else:
+                returnString += "<button type='button' class='notificationToggle' onclick='updatePushable(" + taskId + ",\"false\");'><i class='fa fa-bell-o' aria-hidden='true'></i></button>"
         returnString += "</div>"
     if(doneFlag == "true"):
         returnString += "<div class='task' id='infoFooter' style='height:auto;'><input type='button' id='archiveButton' onclick='getAll();' value='Go Back'></div>"
