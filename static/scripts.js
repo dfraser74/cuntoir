@@ -218,6 +218,7 @@ function handleGetAllReturn(data){
     }
     if(data == 2){
         document.getElementById("tasks").innerHTML = "<div class='task' style='height:auto;'><h2 class='taskTitle'>All Done</h2></div>";
+        localStorage.setItem("lastTaskGetReturn","");
     }
     if(data != 0 && data != 2){
         document.getElementById("tasks").innerHTML = data;
@@ -724,8 +725,12 @@ function searchPost(searchString){
     if(username == 0 || authCode == 0){
         openLoginBar();
     }else{
-        var data = {"username":username, "authCode":authCode, "method":"search", "sort":"default", "searchString":searchString, "timeOffset":timeOffset};
-        makePostRequest("/", data, "search");
+        if(navigator.onLine == true){
+            var data = {"username":username, "authCode":authCode, "method":"search", "sort":"default", "searchString":searchString, "timeOffset":timeOffset};
+            makePostRequest("/", data, "search");
+        }else{
+            offlineSearch(searchString);
+        }
     }
 }
 
@@ -1556,4 +1561,38 @@ function getTouchedTaskId(evt){
 function runUpdateFunctions(){
     updateSubButton();
     updateUpgradeButton();
+}
+
+function offlineSearch(searchString){
+    searchString = searchString.toLowerCase();
+    var taskContainer = document.getElementById("tasks");
+    var tasks = document.getElementById("tasks").children;
+    var i = 0;
+    while(i < tasks.length){
+        var taskId = tasks[i].id
+        console.log(taskId);
+        if(parseInt(taskId) != NaN && taskId != undefined){
+            var taskData = getTaskDataById(taskId);
+            var title = taskData[0].toLowerCase();
+            var description = taskData[1].toLowerCase();
+            var dueTimeString = taskData[2]
+            var tagsString = taskData[3].toLowerCase();
+            if(title.indexOf(searchString) > -1 || description.indexOf(searchString) > -1 || tagsString.indexOf(searchString) > -1){
+                i += 1;
+                continue
+            }else{
+                taskContainer.removeChild(tasks[i]);
+            }
+        }
+        i += 1;
+    }
+    if(taskContainer.children.length < 1){
+        handleSearchPostReturn(2);
+    }
+    else{
+        var returnString = taskContainer.innerHTML;
+        returnString = "<div class='task' style='height:auto;'><h2 class='taskTitle'>Tasks Matching \""+searchString+"\"</h2></div>" + returnString;
+        returnString += "<div class='task' style='height:auto;' id='infoFooter'><input type='button' id='archiveButton' value='Go Back' onclick='getAll();'></div>"
+        taskContainer.innerHTML = returnString;
+    }
 }
