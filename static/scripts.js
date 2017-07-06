@@ -1298,7 +1298,7 @@ function fakeAddTask(data, id){
         dueMonthString = "0" + dueMonth;
     }else{dueMonthString = dueMonth;}
     var dueString  = dueDayString + "/" + dueMonthString + "/" + dueYear + " " + dueHour + ":" + dueMinute;
-    var taskString = "<div class='task' id='"+id+"'><h2 class='taskTitle'>"+title+"</h2>";
+    var taskString = "<div class='fakeTask' id='"+id+"'><h2 class='taskTitle'>"+title+"</h2>";
     taskString += "<div class='taskBody'>" + description + "</div>";
     taskString += "<div class='tagAndDueTimeWrapper'>";
     taskString += "<div class='dueTime' onclick='dateSearch("+dueDay+","+(dueMonth-1)+","+dueYear+")'>"+dueString+"</div>";
@@ -1324,7 +1324,8 @@ function fakeAddTask(data, id){
 
 function fakeDeleteTask(id){
     var postString = "duePost" + id;
-    var taskString = "<div class=\"task\" id=\""+id+"\">"+document.getElementById(id).innerHTML+"</div>";
+    var taskName = document.getElementById(id).className;
+    var taskString = "<div class=\"" + taskName + "\" id=\""+id+"\">"+document.getElementById(id).innerHTML+"</div>";
     document.getElementById(id).style.display = "none";
     var oldLastTaskGetReturn = localStorage.getItem("lastTaskGetReturn");
     var newLastTaskGetReturn = oldLastTaskGetReturn.replace(taskString, "");
@@ -1394,7 +1395,7 @@ function setupTouch(){
 }
 var mainStartTouchX = 0;
 var mainCurrentTouchX = 0;
-var ignoreTouchArray = ["task", "taskTags", "taskTag", "dueTime", "tagAndDueTimeWrapper", "taskTitle", "taskBody", "archiveButton"];
+var ignoreTouchArray = ["fakeTask","task", "taskTags", "taskTag", "dueTime", "tagAndDueTimeWrapper", "taskTitle", "taskBody", "archiveButton"];
 function mainTouchStart(evt){
     if(ignoreTouchArray.indexOf(evt.target.className) == -1){
     var task = evt.target;
@@ -1505,12 +1506,8 @@ function taskTouchEnd(evt){
     var taskId = getTouchedTaskId(evt);
     if(taskId == false){return;}
     if(taskTouchCurrentX - taskTouchStartX > 120){
-        if(typeof taskId === "number"){
-            if(taskId > 10){
-                completeTaskPost(taskId);
-            }else{
-                fakeDeleteTask(taskId);
-            }
+        if(parseInt(taskId) != NaN){
+            completeTaskPost(taskId);
         }else{
             getAll();
             return;
@@ -1525,7 +1522,7 @@ function taskTouchEnd(evt){
 function getTouchedTaskId(evt){
     target = evt.target;
     targetClass = target.className;
-    if(targetClass == "task"){
+    if(targetClass == "task" || targetClass == "fakeTask"){
         return target.id;
     }
     if(["taskTitle", "taskBody"].indexOf(targetClass) != -1){
