@@ -1,4 +1,3 @@
-Improve desktop ui
 Build a utility to delete the completed tasks of non-premium users
 Implement selecting notify-before time
 Implement recurring tasks

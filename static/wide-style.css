@@ -91,6 +91,13 @@ body {
 }
 #archiveButton{
     margin: 6px 4px 4px 4px;
+    border-radius: 2px;
+    display: inline-block;
+    width: auto;
+}
+#archivedButton{
+    margin: 6px 4px 4px 4px;
+    border-radius: 2px;
     display: inline-block;
     width: auto;
 }
