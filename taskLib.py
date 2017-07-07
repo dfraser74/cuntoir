@@ -11,9 +11,9 @@ def addTask(dataDict):
     createTime = str(time.time())
     dataDict["createTime"] = createTime
     dueTime = dataDict["dueTime"]
-    description = dataDict["description"]
+    description = dataDict["description"].strip()
     done = "false"
-    title = dataDict["title"]
+    title = dataDict["title"].strip()
     tags = dataDict["tags"]
     if(pushLib.checkPushSubscribed(username) == 1):
         pushable = dataDict["pushable"]
@@ -60,10 +60,10 @@ def completeTask(dataDict):
 def editTask(dataDict):
     username = dataDict["username"]
     authCode = dataDict["authCode"]
-    title = dataDict["title"]
+    title = dataDict["title"].strip()
     dueTime = str(dataDict["dueTime"])
     taskId = str(dataDict["id"])
-    text = dataDict["description"]
+    text = dataDict["description"].strip()
     tags = dataDict["tags"]
     if(pushLib.checkPushSubscribed(username)):
         pushable = dataDict["pushable"]

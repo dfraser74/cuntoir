@@ -23,7 +23,7 @@ br {
     transition: background-color 0.1s ease;
     text-align: center;
     position: relative;
-    overflow-x: hidden;
+    overflow: hidden;
 }
 .fakeTask {
     display: block;
@@ -37,14 +37,14 @@ br {
     transition: background-color 0.1s ease;
     text-align: center;
     position: relative;
-    overflow-x: hidden;
+    overflow: hidden;
 }
 .unsyncedWarning{
     color: #cccccc;
     border: 0px;
     border-bottom: 1px dashed #888888;
     background-color: white;
-    font-size: 3em; 
+    font-size: 2.7em; 
     display: inline-block;
     height: 50%;
     width: 15%;
@@ -98,7 +98,7 @@ br {
 .archiveButton{
     border: 0px;
     background-color: white;
-    font-size: 3em; 
+    font-size: 2.7em; 
     display: inline-block;
     height: 50%;
     width: 15%;
@@ -112,7 +112,7 @@ br {
 .notificationToggle{
     border: 0px;
     background-color: white;
-    font-size: 3em; 
+    font-size: 2.7em; 
     display: inline-block;
     height: 50%;
     width: 15%;
@@ -130,7 +130,7 @@ br {
     border: 0px;
     border-top: 1px dashed #888888;
     background-color: white;
-    font-size: 3em; 
+    font-size: 2.7em; 
     display: inline-block;
     height: 50%;
     width: 15%;
