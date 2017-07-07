@@ -15,6 +15,7 @@ def addTask(dataDict):
     done = "false"
     title = dataDict["title"].strip()
     tags = dataDict["tags"]
+    hoursBefore = int(dataDict["hoursBefore"])
     if(pushLib.checkPushSubscribed(username) == 1):
         pushable = dataDict["pushable"]
     else:
@@ -27,8 +28,8 @@ def addTask(dataDict):
     tagString = tagString[:-1]
     db = authLib.dbCon()
     c = db.cursor()
-    command = "INSERT INTO tasks (username, createTime, dueTime, text, done, title, tags, pushScheduled) VALUES ( %s, %s, %s, %s, %s, %s, %s, %s)"
-    c.execute(command, [username, createTime, dueTime, description, done, title, tagString, pushable])
+    command = "INSERT INTO tasks (username, createTime, dueTime, text, done, title, tags, pushScheduled, notificationHours) VALUES ( %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    c.execute(command, [username, createTime, dueTime, description, done, title, tagString, pushable, hoursBefore])
     db.commit()
     db.close()
     db = authLib.dbCon()
@@ -65,6 +66,7 @@ def editTask(dataDict):
     taskId = str(dataDict["id"])
     text = dataDict["description"].strip()
     tags = dataDict["tags"]
+    hoursBefore = int(dataDict["hoursBefore"])
     if(pushLib.checkPushSubscribed(username)):
         pushable = dataDict["pushable"]
     else:
@@ -79,8 +81,8 @@ def editTask(dataDict):
         return(0)
     db = authLib.dbCon()
     c = db.cursor()
-    command = "UPDATE tasks SET title = %s, text = %s, dueTime = %s, tags = %s, done = %s, pushScheduled = %s WHERE BINARY username = %s AND id = %s"
-    c.execute(command, [title, text, dueTime, tagString, "false", pushable, username, taskId])
+    command = "UPDATE tasks SET title = %s, text = %s, dueTime = %s, tags = %s, done = %s, pushScheduled = %s, notificationHours=%s WHERE BINARY username = %s AND id = %s"
+    c.execute(command, [title, text, dueTime, tagString, "false", pushable, hoursBefore, username, taskId])
     db.commit()
     db.close()
     if(pushable == "true" and pushLib.checkPushSubscribed(username)):
@@ -107,8 +109,8 @@ def deleteTask(dataDict):
 def notifyUser(username, title, text):
     db = authLib.dbCon()
     c = db.cursor()
-    command = "INSERT INTO tasks (username, createTime, dueTime, text, done, title, tags, pushScheduled) VALUES ( %s, %s, %s, %s, %s, %s, %s)"
-    c.execute(command, [username, time.time(), 0, text, "false", title, "", "false"])
+    command = "INSERT INTO tasks (username, createTime, dueTime, text, done, title, tags, pushScheduled, notificationHours) VALUES ( %s, %s, %s, %s, %s, %s, %s)"
+    c.execute(command, [username, time.time(), 0, text, "false", title, "", "false", 2])
     db.commit()
     db.close()
     return(1)

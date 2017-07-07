@@ -303,6 +303,12 @@ function addTaskPost(title, description, dueTime, tags){
     tags = escapeHTML(tags);
     var username = getCookie("username");
     var authCode = getCookie("authCode");
+    var hoursBefore = parseInt(document.getElementById("addNotifyTime").value.trim());
+    console.log(hoursBefore);
+    if(isNaN(hoursBefore) != false){
+        document.getElementById("info").innerHTML = "Invalid notification time";
+        return;
+    }
     var pushable = "" + document.getElementById("pushable").checked;
     if(title == ""){
         document.getElementById("info").innerHTML = "Your task needs a title";
@@ -313,7 +319,8 @@ function addTaskPost(title, description, dueTime, tags){
                 "authCode":authCode, "dueTime":dueTime, 
                 "description":description, 
                 "title":title, 
-                "tags":tags, 
+                "tags":tags,
+                "hoursBefore":hoursBefore,
                 "pushable":pushable};
             makePostRequest("/", data, "addTaskPost");
         }
@@ -661,10 +668,11 @@ function editTaskPost(title, description, dueTime, tags){
     var authCode = getCookie("authCode");
     var id = document.getElementById("editId").innerHTML;
     var pushable = document.getElementById("editPushable").checked + "";
-//    if(title.includes("\"") || title.includes("\'") ||tags.includes("\"") || tags.includes("\'")){
-//        document.getElementById("info").innerHTML = "Title and tags cannot include quotation marks";
-//        return;
-//    }
+    var hoursBefore = parseInt(document.getElementById("editNotifyTime").value.trim());
+    if(isNaN(hoursBefore) == true){
+        document.getElementById("editInfo").innerHTML = "Invalid notification time";
+        return;
+    }
     if(title == ""){
         document.getElementById("editInfo").innerHTML = "Your task needs a title";
     }else{
@@ -677,6 +685,7 @@ function editTaskPost(title, description, dueTime, tags){
                 "description":description, 
                 "title":title, 
                 "tags":tags,
+                "hoursBefore":hoursBefore,
                 "pushable":pushable};
             makePostRequest("/", data, "editTaskPost");
         }
@@ -1547,7 +1556,7 @@ function taskTouchEnd(evt){
     var taskId = getTouchedTaskId(evt);
     if(taskId == false){return;}
     if(taskTouchCurrentX - taskTouchStartX > 120){
-        if(parseInt(taskId) != NaN){
+        if(isNaN(taskId) == false){
             completeTaskPost(taskId);
         }else{
             getAll();
@@ -1591,7 +1600,7 @@ function offlineSearch(searchString){
     while(i < tasks.length){
         var taskId = tasks[i].id
         console.log(taskId);
-        if(parseInt(taskId) != NaN && taskId != undefined){
+        if(isNaN(parseInt(taskId)) == false && taskId != undefined){
             var taskData = getTaskDataById(taskId);
             var title = taskData[0].toLowerCase();
             var description = taskData[1].toLowerCase();

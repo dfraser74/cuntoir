@@ -129,8 +129,7 @@ def schedulePush(dataDict):
     dueTime = float(dataDict["dueTime"])
     taskId = dataDict["id"]
 #TODO set up users picking time of notification
-    #hoursBefore = dataDict["hoursBefore"]
-    hoursBefore = 2.0
+    hoursBefore = getPushHours(taskId)
     pushTime = dueTime - hoursBefore*60.0*60.0
     completePush(username, taskId)
     db = authLib.dbCon()
@@ -167,3 +166,11 @@ def deleteAllSubs(username):
     db.commit()
     db.close()
     return(1)
+
+def getPushHours(taskId):
+    db = authLib.dbCon()
+    c = db.cursor()
+    command = "SELECT notificationHours FROM tasks WHERE id = %s"
+    c.execute(command, [taskId, ])
+    pushHours = int(c.fetchall()[0][0])
+    return(pushHours)
