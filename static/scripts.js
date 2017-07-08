@@ -36,6 +36,8 @@ function updateSubButton(){
         document.getElementById("pushable").checked = false;
         document.getElementById("editPushable").checked = false;
         document.getElementById("pushPermission").style.display = "none";
+        document.getElementById("addNotifyTimeSpan").style.display = "none";
+        document.getElementById("editNotifyTimeSpan").style.display = "none";
     }
 }
 
@@ -66,6 +68,8 @@ function handleUpdateUpgradeButtonReturn(data){
         document.getElementById("editPushChoice").style.display = "none";
         document.getElementById("pushable").checked = false;
         document.getElementById("editPushable").checked = false;
+        document.getElementById("addNotifyTimeSpan").style.display = "none";
+        document.getElementById("editNotifyTimeSpan").style.display = "none";
 //        document.getElementById("pushPermission").style.display = "none";
         return;
     }
@@ -592,6 +596,7 @@ function openAdd(){
     document.getElementById("tags").value = "";
     document.getElementById("info").value = "";
     document.getElementById("pushable").checked = true;
+    document.getElementById("addNotifyTime").value = "2";
     if(window.screen.availWidth < 500){
         document.getElementById("add").style.width = "100%";
         renderDatePicker(new Date().getMonth(), 'addDatePicker', 'addDatePickerTable', 'addDatePickerHead', 'dateString', new Date().getFullYear());
@@ -655,6 +660,7 @@ function updateEditFields(title, description, timeString, tags, id){
     document.getElementById("editInfo").innerHTML = "";
     document.getElementById("editId").innerHTML = id;
     document.getElementById("editTags").value = tags;
+    document.getElementById("editNotifyTime").value = "2";
     if(localStorage["pushSupport"] == "true"){
         document.getElementById("editPushable").checked = true;
     }
@@ -1291,6 +1297,8 @@ function clearCachedRequests(){
         document.getElementById("pushPermission").style.display = "none";
         document.getElementById("upgrade").style.display = "none";
         document.getElementById("downgrade").style.display = "none";
+        document.getElementById("addNotifyTimeSpan").style.display = "none";
+        document.getElementById("editNotifyTimeSpan").style.display = "none";
     }
 }
 
