@@ -520,3 +520,9 @@ td:hover {
     opacity: 1;
     transform: translate(-50%,-50%);
 }
+#editNotifyTimeSpan{
+    display: block;
+}
+#addNotifyTimeSpan{
+    display: block;
+}

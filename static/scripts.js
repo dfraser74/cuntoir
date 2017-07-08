@@ -20,6 +20,12 @@ localStorage["pushSupport"] = "true";
 
 function updateSubButton(){
     document.getElementById("pushPermission").style.display = "block";
+    document.getElementById("pushChoice").style.display = "inline";
+    document.getElementById("editPushChoice").style.display = "inline";
+    document.getElementById("pushable").checked = true;
+    document.getElementById("editPushable").checked = true;
+    document.getElementById("addNotifyTimeSpan").style.display = "block";
+    document.getElementById("editNotifyTimeSpan").style.display = "block";
     if("serviceWorker" in navigator){
         navigator.serviceWorker.getRegistration().then(function(reg){
             reg.pushManager.getSubscription().then(function(isSubbed){
@@ -51,7 +57,7 @@ function updateUpgradeButton(){
         if(localStorage.getItem("premiumUser") == "true"){
             handleUpdateUpgradeButtonReturn(1);
         }else{
-            handleUpdateUpgradeButtonReturn(2);
+            handleUpdateUpgradeButtonReturn(0);
         }
     }
 }
@@ -61,9 +67,17 @@ function handleUpdateUpgradeButtonReturn(data){
         localStorage.setItem("premiumUser", "true");
         document.getElementById("upgrade").style.display = "none";
         document.getElementById("downgrade").style.display = "block";
+        document.getElementById("pushChoice").style.display = "inline";
+        document.getElementById("editPushChoice").style.display = "inline";
+        document.getElementById("pushable").checked = true;
+        document.getElementById("editPushable").checked = true;
+        document.getElementById("addNotifyTimeSpan").style.display = "block";
+        document.getElementById("editNotifyTimeSpan").style.display = "block";
     }
     if(data == 0){
         localStorage.setItem("premiumUser", "false");
+        document.getElementById("upgrade").style.display = "block";
+        document.getElementById("downgrade").style.display = "none";
         document.getElementById("pushChoice").style.display = "none";
         document.getElementById("editPushChoice").style.display = "none";
         document.getElementById("pushable").checked = false;
