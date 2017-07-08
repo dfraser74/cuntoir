@@ -1,4 +1,2 @@
 Build a utility to delete the completed tasks of non-premium users
 Implement recurring tasks
-!!!!TODO BEFORE ROLLOUT TO PROD!!!!
-ALTER TABLe tasks ADD COLUMN notificationHours INT NOT NULL
