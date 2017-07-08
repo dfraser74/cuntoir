@@ -8,6 +8,8 @@ def addTask(dataDict):
     authCode = dataDict["authCode"].strip()
     if(authLib.checkAuthCode({"username":username, "authCode":authCode}) != 1):
         return(0)
+    if(dataDict["recurring"] not in ["false", "daily", "weekly", "monthly", "quarterly", "yearly"]):
+        return(2)
     createTime = str(time.time())
     dataDict["createTime"] = createTime
     dueTime = dataDict["dueTime"]
@@ -16,6 +18,7 @@ def addTask(dataDict):
     title = dataDict["title"].strip()
     tags = dataDict["tags"]
     hoursBefore = int(dataDict["hoursBefore"])
+    recurring = dataDict["recurring"]
     if(pushLib.checkPushSubscribed(username) == 1):
         pushable = dataDict["pushable"]
     else:
@@ -28,8 +31,8 @@ def addTask(dataDict):
     tagString = tagString[:-1]
     db = authLib.dbCon()
     c = db.cursor()
-    command = "INSERT INTO tasks (username, createTime, dueTime, text, done, title, tags, pushScheduled, notificationHours) VALUES ( %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-    c.execute(command, [username, createTime, dueTime, description, done, title, tagString, pushable, hoursBefore])
+    command = "INSERT INTO tasks (username, createTime, dueTime, text, done, title, tags, pushScheduled, notificationHours, recurring) VALUES ( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    c.execute(command, [username, createTime, dueTime, description, done, title, tagString, pushable, hoursBefore, recurring])
     db.commit()
     db.close()
     db = authLib.dbCon()
@@ -50,8 +53,16 @@ def completeTask(dataDict):
         return(0)
     db = authLib.dbCon()
     c = db.cursor()
-    command = "UPDATE tasks SET done = %s WHERE BINARY username = %s AND id = %s"
-    c.execute(command, [doneFlag, username, taskId])
+    recurring = getRecurring(taskId)
+    print(recurring)
+    if(recurring == 0):
+        command = "UPDATE tasks SET done = %s, pushScheduled = 'false' WHERE BINARY username = %s AND id = %s"
+        c.execute(command, [doneFlag, username, taskId])
+    else:
+        recurringDict = {"daily":24*60*60, "weekly":60*60*24*7, "monthly":60*60*24*30, "quarterly":60*60*24*91, "yearly":60*60*24*365}
+        recurringTime = recurringDict[recurring]
+        command = "UPDATE tasks SET dueTime = dueTime + %s, pushScheduled = 'false' WHERE BINARY username = %s AND id = %s"
+        c.execute(command, [recurringTime, username, taskId])
     db.commit()
     db.close()
     if(doneFlag == "true"):
@@ -67,6 +78,7 @@ def editTask(dataDict):
     text = dataDict["description"].strip()
     tags = dataDict["tags"]
     hoursBefore = int(dataDict["hoursBefore"])
+    recurring = dataDict["recurring"]
     if(pushLib.checkPushSubscribed(username)):
         pushable = dataDict["pushable"]
     else:
@@ -79,10 +91,12 @@ def editTask(dataDict):
     tagString = tagString[:-1]
     if(authLib.checkAuthCode({"username":username, "authCode":authCode}) != 1):
         return(0)
+    if(dataDict["recurring"] not in ["false", "daily", "weekly", "monthly", "quarterly", "yearly"]):
+        return(2)
     db = authLib.dbCon()
     c = db.cursor()
-    command = "UPDATE tasks SET title = %s, text = %s, dueTime = %s, tags = %s, done = %s, pushScheduled = %s, notificationHours=%s WHERE BINARY username = %s AND id = %s"
-    c.execute(command, [title, text, dueTime, tagString, "false", pushable, hoursBefore, username, taskId])
+    command = "UPDATE tasks SET title = %s, text = %s, dueTime = %s, tags = %s, done = %s, pushScheduled = %s, notificationHours = %s, recurring = %s WHERE BINARY username = %s AND id = %s"
+    c.execute(command, [title, text, dueTime, tagString, "false", pushable, hoursBefore, recurring, username, taskId])
     db.commit()
     db.close()
     if(pushable == "true" and pushLib.checkPushSubscribed(username)):
@@ -109,8 +123,8 @@ def deleteTask(dataDict):
 def notifyUser(username, title, text):
     db = authLib.dbCon()
     c = db.cursor()
-    command = "INSERT INTO tasks (username, createTime, dueTime, text, done, title, tags, pushScheduled, notificationHours) VALUES ( %s, %s, %s, %s, %s, %s, %s)"
-    c.execute(command, [username, time.time(), 0, text, "false", title, "", "false", 2])
+    command = "INSERT INTO tasks (username, createTime, dueTime, text, done, title, tags, pushScheduled, notificationHours, recurring) VALUES ( %s, %s, %s, %s, %s, %s, %s)"
+    c.execute(command, [username, time.time(), 0, text, "false", title, "", "false", 2, "false"])
     db.commit()
     db.close()
     return(1)
@@ -142,3 +156,13 @@ def updatePushable(dataDict):
     else:
         pushLib.completePush(username, taskId)
         return 1
+
+def getRecurring(taskId):
+    db = authLib.dbCon()
+    c = db.cursor()
+    command = "SELECT recurring FROM tasks WHERE id = %s"
+    c.execute(command, [taskId, ])
+    recurringString = c.fetchall()[0][0]
+    if(recurringString == "false"):
+        return(0)
+    return(recurringString)

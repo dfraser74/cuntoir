@@ -339,7 +339,8 @@ function addTaskPost(title, description, dueTime, tags){
                 "title":title, 
                 "tags":tags,
                 "hoursBefore":hoursBefore,
-                "pushable":pushable};
+                "pushable":pushable,
+                "recurring":"false"};
             makePostRequest("/", data, "addTaskPost");
         }
     }
@@ -706,7 +707,8 @@ function editTaskPost(title, description, dueTime, tags){
                 "title":title, 
                 "tags":tags,
                 "hoursBefore":hoursBefore,
-                "pushable":pushable};
+                "pushable":pushable,
+                "recurring":"false"};
             makePostRequest("/", data, "editTaskPost");
         }
     }
