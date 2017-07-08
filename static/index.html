@@ -84,6 +84,16 @@
         <input type="text" id="tags">
         <span id="pushChoice">Notify Me: <input type="checkbox" class="pushable" id="pushable" checked></span><br>
         <span id="addNotifyTimeSpan">Hours Before to notify:<input type="text" id="addNotifyTime" value="2"></span>
+        <div>Happens:
+            <select id="addRecurringChoice">
+                <option value="false" selected>Once</option>
+                <option value="daily">Every Day</option>
+                <option value="weekly">Every Week</option>
+                <option value="monthly">Every Month</option>
+                <option value="quarterly">Every Quarter</option>
+                <option value="yearly">Every Year</option>
+            </select>
+        </div>
         <input type="submit"  value="Add Task" onclick="addTaskPost(document.getElementById('title').value, document.getElementById('description').value, getDateTime(document.getElementById('dateString').value, document.getElementById('timeString').value), document.getElementById('tags').value); return false;" />
     </form>
     <p id="info"></p>
@@ -112,6 +122,16 @@
         <input type="text" id="editTags">
         <span id="editPushChoice">Notify Me: <input type="checkbox" class="pushable" id="editPushable" checked></span>
         <span id="editNotifyTimeSpan">Hours Before to notify:<input type="text" id="editNotifyTime" value="2"></span>
+        <div>Happens:
+            <select id="editRecurringChoice">
+                <option value="false" selected>Once</option>
+                <option value="daily">Every Day</option>
+                <option value="weekly">Every Week</option>
+                <option value="monthly">Every Month</option>
+                <option value="quarterly">Every Quarter</option>
+                <option value="yearly">Every Year</option>
+            </select>
+        </div>
         <input type="submit"  value="Update Task" onclick="editTaskPost(document.getElementById('editTitle').value, document.getElementById('editDescription').value, getDateTime(document.getElementById('editDateString').value, document.getElementById('editTimeString').value), document.getElementById('editTags').value); return false;" />
     </form>
     <p id="editId" style="display:none;"></p>

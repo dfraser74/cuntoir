@@ -322,7 +322,7 @@ function addTaskPost(title, description, dueTime, tags){
     var username = getCookie("username");
     var authCode = getCookie("authCode");
     var hoursBefore = parseInt(document.getElementById("addNotifyTime").value.trim());
-    console.log(hoursBefore);
+    var recurring = document.getElementById("addRecurringChoice").options[document.getElementById("addRecurringChoice").selectedIndex].value;
     if(isNaN(hoursBefore) != false){
         document.getElementById("info").innerHTML = "Invalid notification time";
         return;
@@ -340,7 +340,7 @@ function addTaskPost(title, description, dueTime, tags){
                 "tags":tags,
                 "hoursBefore":hoursBefore,
                 "pushable":pushable,
-                "recurring":"false"};
+                "recurring":recurring};
             makePostRequest("/", data, "addTaskPost");
         }
     }
@@ -612,6 +612,7 @@ function openAdd(){
     document.getElementById("info").value = "";
     document.getElementById("pushable").checked = true;
     document.getElementById("addNotifyTime").value = "2";
+    document.getElementById("addRecurringChoice").selectedIndex = 0;
     if(window.screen.availWidth < 500){
         document.getElementById("add").style.width = "100%";
         renderDatePicker(new Date().getMonth(), 'addDatePicker', 'addDatePickerTable', 'addDatePickerHead', 'dateString', new Date().getFullYear());
@@ -676,6 +677,7 @@ function updateEditFields(title, description, timeString, tags, id){
     document.getElementById("editId").innerHTML = id;
     document.getElementById("editTags").value = tags;
     document.getElementById("editNotifyTime").value = "2";
+    document.getElementById("editRecurringChoice").selectedIndex = 0;
     if(localStorage["pushSupport"] == "true"){
         document.getElementById("editPushable").checked = true;
     }
@@ -690,6 +692,7 @@ function editTaskPost(title, description, dueTime, tags){
     var id = document.getElementById("editId").innerHTML;
     var pushable = document.getElementById("editPushable").checked + "";
     var hoursBefore = parseInt(document.getElementById("editNotifyTime").value.trim());
+    var recurring = document.getElementById("editRecurringChoice").options[document.getElementById("editRecurringChoice").selectedIndex].value;
     if(isNaN(hoursBefore) == true){
         document.getElementById("editInfo").innerHTML = "Invalid notification time";
         return;
@@ -708,7 +711,7 @@ function editTaskPost(title, description, dueTime, tags){
                 "tags":tags,
                 "hoursBefore":hoursBefore,
                 "pushable":pushable,
-                "recurring":"false"};
+                "recurring":recurring};
             makePostRequest("/", data, "editTaskPost");
         }
     }

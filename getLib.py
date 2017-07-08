@@ -47,6 +47,11 @@ def getAll(dataDict):
         title = task[6]
         tags = task[7]
         pushable = task[8]
+        recurring = task[10]
+        if(recurring == "false"):
+            recurringString = ""
+        else:
+            recurringString = " <i class='fa fa-repeat' aria-hidden='true'></i>("+recurring.title()+")"
         if("'" in title):
             title = title.replace("'", "&apos;")
         if("'" in text):
@@ -59,7 +64,7 @@ def getAll(dataDict):
             returnString += "<div class='taskBody'>" + text + "</div>"
         else:
             returnString += "<div class='taskBody'><span class='italic'>No details</span></div>"
-        returnString += "<div class='tagAndDueTimeWrapper'><div class='dueTime' onclick='dateSearch("+dateSearchList[0]+","+dateSearchList[1]+","+dateSearchList[2]+");'>" + timeString
+        returnString += "<div class='tagAndDueTimeWrapper'><div class='dueTime' onclick='dateSearch("+dateSearchList[0]+","+dateSearchList[1]+","+dateSearchList[2]+");'>" + timeString + recurringString
         returnString += "</div>"
         returnString += "<div class='taskTags'>"
         if(len(tags) < 1):
@@ -116,6 +121,12 @@ def getTagged(dataDict):
         text = task[4]
         title = task[6]
         tags = task[7]
+        pushable = task[8]
+        recurring = task[10]
+        if(recurring == "false"):
+            recurringString = ""
+        else:
+            recurringString = " <i class='fa fa-repeat' aria-hidden='true'></i>("+recurring.title()+")"
         if("'" in title):
             title = title.replace("'", "&apos;")
         if("'" in text):
@@ -132,7 +143,7 @@ def getTagged(dataDict):
             returnString += "<div class='taskBody'>" + text + "</div>"
         else:
             returnString += "<div class='taskBody'><span class='italic'>No details</span></div>"
-        returnString += "<div class='tagAndDueTimeWrapper'><div class='dueTime' onclick='dateSearch("+dateSearchList[0]+","+dateSearchList[1]+","+dateSearchList[2]+");'>" + timeString
+        returnString += "<div class='tagAndDueTimeWrapper'><div class='dueTime' onclick='dateSearch("+dateSearchList[0]+","+dateSearchList[1]+","+dateSearchList[2]+");'>" + timeString + recurringString
         returnString += "</div>"
         returnString += "<div class='taskTags'>"
         if(len(tags) < 1):
@@ -142,6 +153,10 @@ def getTagged(dataDict):
                 continue
             returnString += "<span class='taskTag' onclick='getTagged(\""+tag+"\");'>"+tag+"</span>"
         returnString += "</div></div>"
+        if(pushable == "true"):
+            returnString += "<button type='button' class='notificationToggle' onclick='updatePushable("+taskId+",\"true\");'><i class='fa fa-bell' aria-hidden='true'></i></button>"
+        else:
+            returnString += "<button type='button' class='notificationToggle' onclick='updatePushable(" + taskId + ",\"false\");'><i class='fa fa-bell-o' aria-hidden='true'></i></button>"
         returnString += "<button type='button' class='archiveButton' onclick='completeTaskPost(" + taskId + ");'><i class='fa fa-check-square-o' aria-hidden='true'></i></button>"
         returnString += "</div>"
     if(returnString == infoString):
@@ -183,6 +198,12 @@ def search(dataDict):
         text = task[4]
         title = task[6]
         tags = task[7]
+        pushable = task[8]
+        recurring = task[10]
+        if(recurring == "false"):
+            recurringString = ""
+        else:
+            recurringString = " <i class='fa fa-repeat' aria-hidden='true'></i>("+recurring.title()+")"
         if("'" in title):
             title = title.replace("'", "&apos;")
         if("'" in text):
@@ -197,7 +218,7 @@ def search(dataDict):
             returnString += "<div class='taskBody'>" + text + "</div>"
         else:
             returnString += "<div class='taskBody'><span class='italic'>No details</span></div>"
-        returnString += "<div class='tagAndDueTimeWrapper'><div class='dueTime' onclick='dateSearch("+dateSearchList[0]+","+dateSearchList[1]+","+dateSearchList[2]+");'>" + timeString 
+        returnString += "<div class='tagAndDueTimeWrapper'><div class='dueTime' onclick='dateSearch("+dateSearchList[0]+","+dateSearchList[1]+","+dateSearchList[2]+");'>" + timeString + recurringString
         returnString += "</div>"
         returnString += "<div class='taskTags'>"
         if(len(tags) < 1):
@@ -207,6 +228,10 @@ def search(dataDict):
                 continue
             returnString += "<span class='taskTag' onclick='getTagged(\""+tag+"\");'>"+tag+"</span>"
         returnString += "</div></div>"
+        if(pushable == "true"):
+            returnString += "<button type='button' class='notificationToggle' onclick='updatePushable("+taskId+",\"true\");'><i class='fa fa-bell' aria-hidden='true'></i></button>"
+        else:
+            returnString += "<button type='button' class='notificationToggle' onclick='updatePushable(" + taskId + ",\"false\");'><i class='fa fa-bell-o' aria-hidden='true'></i></button>"
         returnString += "<button type='button' class='archiveButton' onclick='completeTaskPost(" + taskId + ");'><i class='fa fa-check-square-o' aria-hidden='true'></i></button>"
         returnString += "</div>"
     if(returnString == infoString):
@@ -247,6 +272,12 @@ def dateSearch(dataDict):
         text = task[4]
         title = task[6]
         tags = task[7]
+        pushable = task[8]
+        recurring = task[10]
+        if(recurring == "false"):
+            recurringString = ""
+        else:
+            recurringString = " <i class='fa fa-repeat' aria-hidden='true'></i>("+recurring.title()+")"
         if("'" in title):
             title = title.replace("'", "&apos;")
         if("'" in text):
@@ -262,7 +293,7 @@ def dateSearch(dataDict):
             returnString += "<div class='taskBody'>" + text + "</div>"
         else:
             returnString += "<div class='taskBody'><span class='italic'>No details</span></div>"
-        returnString += "<div class='tagAndDueTimeWrapper'><div class='dueTime' onclick='dateSearch("+dateSearchList[0]+","+dateSearchList[1]+","+dateSearchList[2]+");'>" + timeString
+        returnString += "<div class='tagAndDueTimeWrapper'><div class='dueTime' onclick='dateSearch("+dateSearchList[0]+","+dateSearchList[1]+","+dateSearchList[2]+");'>" + timeString + recurringString
         returnString += "</div>"
         returnString += "<div class='taskTags'>"
         if(len(tags) < 1):
@@ -272,6 +303,10 @@ def dateSearch(dataDict):
                 continue
             returnString += "<span class='taskTag' onclick='getTagged(\""+tag+"\");'>"+tag+"</span>"
         returnString += "</div></div>"
+        if(pushable == "true"):
+            returnString += "<button type='button' class='notificationToggle' onclick='updatePushable("+taskId+",\"true\");'><i class='fa fa-bell' aria-hidden='true'></i></button>"
+        else:
+            returnString += "<button type='button' class='notificationToggle' onclick='updatePushable(" + taskId + ",\"false\");'><i class='fa fa-bell-o' aria-hidden='true'></i></button>"
         returnString += "<button type='button' class='archiveButton' onclick='completeTaskPost(" + taskId + ");'><i class='fa fa-check-square-o' aria-hidden='true'></i></button>"
         returnString += "</div>"
     if(returnString == infoString):
