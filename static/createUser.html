@@ -15,16 +15,16 @@
         <div id="mainTitle"><a href="index.html">Cúntóir</a></div>
     </div>
     <div id="tasks">
-    <div class="signup">
+    <div class="task" style="height:auto;">
     <form>
-        Username:<br>
-        <input type="text" id="username"><br>
-        Password:<br>
-        <input type="password" id="pass"><br>
-        Repeat Password:<br>
-        <input type="password" id="pass2"><br>
+        <p>Username:<br>
+        <input type="text" id="username" style="width:80%;"></p>
+        <p>Password:<br>
+        <input type="password" id="pass" style="width:80%;"></p>
+        <p>Repeat Password:<br>
+        <input type="password" id="pass2" style="width:80%;"></p>
         <input type="text" id="inviteCode" style="display:none;">
-        <input type="submit"  value="Signup" onclick="createUser(document.getElementById('username').value, document.getElementById('pass').value, document.getElementById('pass2').value, document.getElementById('inviteCode').value);return false;"><br>
+        <input type="submit"  value="Signup" onclick="createUser(document.getElementById('username').value, document.getElementById('pass').value, document.getElementById('pass2').value, document.getElementById('inviteCode').value);return false;" style="width:80%;"><br>
     </form>
     <p id="info" style="text-align:center;"></p>
     <div>
