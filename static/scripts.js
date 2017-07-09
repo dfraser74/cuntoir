@@ -350,9 +350,13 @@ function handleAddTaskPostReturn(data){
     if(data == 1){
         closeAdd();
         getAll();
-    }else{
-        openLoginBar();;
+        return;
     }
+    if(data == 3){
+        document.getElementById("info").innerHTML = "Recurring tasks are a premium feature, <a href=\"upgrade.html\" style=\"display:inline;text-decoration:underline;\">upgrade</a> to use them"
+        return;
+    }
+    openLoginBar();;
 }
 
 function getDateTime(dateString, timeString){
@@ -723,6 +727,10 @@ function handleEditTaskPostReturn(data){
     }
     if(data == 0){
         openLoginBar();
+    }
+    if(data == 3){
+        document.getElementById("editInfo").innerHTML = "Recurring tasks are a premium feature, <a href=\"upgrade.html\" style=\"display:inline;text-decoration:underline;\">upgrade</a> to use them"
+        return;
     }
 }
 

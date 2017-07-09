@@ -11,6 +11,8 @@ def addTask(dataDict):
         return(0)
     if(dataDict["recurring"] not in ["false", "daily", "weekly", "monthly", "quarterly", "yearly"]):
         return(2)
+    if(dataDict["recurring"] != "false" and authLib.checkIfPremium(username) != 1):
+        return(3)
     createTime = str(time.time())
     dataDict["createTime"] = createTime
     dueTime = dataDict["dueTime"]
@@ -93,6 +95,8 @@ def editTask(dataDict):
         return(0)
     if(dataDict["recurring"] not in ["false", "daily", "weekly", "monthly", "quarterly", "yearly"]):
         return(2)
+    if(dataDict["recurring"] != "false" and authLib.checkIfPremium(username) != 1):
+        return(3)
     db = authLib.dbCon()
     c = db.cursor()
     command = "UPDATE tasks SET title = %s, text = %s, dueTime = %s, tags = %s, done = %s, pushScheduled = %s, notificationHours = %s, recurring = %s WHERE BINARY username = %s AND id = %s"

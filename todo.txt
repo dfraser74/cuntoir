@@ -1,6 +1,6 @@
 ??Build a utility to delete the completed tasks of non-premium users??(??After a set period of time??)
-Add "intro" tasks to new users due box
+Improve intro task
 Implement recurring tasks:
-    -Make them shits premium forreal tho $$$$
+    -Squash them bugs
 ALL THE FUCKING REFACTORING I MEAN GOD DAMN
     -Forreal tho have you seen escapeHTML()?
