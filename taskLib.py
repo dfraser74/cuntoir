@@ -168,28 +168,26 @@ def getRecurring(taskId):
         return(0)
     #daily
     if(recurringString == "daily"):
-        if(dueStruct[2] < 31):
-            dueStruct[2] += 1
-        else:
-            dueStruct[2] = 1
+        dueStruct[2] += 1
     #weekly
     if(recurringString == "weekly"):
         dueStruct[2] += 7
-        if(dueStruct[2] > 31):
-            dueStruct[2] -= 31
     #monthly
     if(recurringString == "monthly"):
-        if(dueStruct[1] < 12):
-            dueStruct[1] += 1
-        else:
-            dueStruct[1] = 1
+        dueStruct[1] += 1
     #quarterly
     if(recurringString == "quarterly"):
         dueStruct[1] += 3
-        if(dueStruct[1] > 12):
-            dueStruct[1] -= 12
     #yearly
     if(recurringString == "yearly"):
+        dueStruct[0] += 1
+    #check days
+    if(dueStruct[2] > 31):
+        dueStruct[2] -= 31
+        dueStruct[1] += 1
+    #check months
+    if(dueStruct[1] > 12):
+        dueStruct[1] -= 12
         dueStruct[0] += 1
     dueTime = calendar.timegm(tuple(dueStruct)) - dueTime
     return(dueTime)
