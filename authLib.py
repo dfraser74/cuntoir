@@ -1,5 +1,6 @@
 import hashlib, time, random
 import MySQLdb as mysql
+import taskLib
 
 def dbCon():
     with open("dbHosts.conf") as dbHostsFile:
@@ -97,6 +98,7 @@ def createUser(dataDict):
     c.execute(command, [username, userPass, "false", "false"])
     db.commit()
     db.close()
+    taskLib.notifyUser(username, "Hey There! Click this to edit!", "Things with a border are clickable, and so are icons (p.s. try swiping ;) )")
     return(1)
 
 def changePass(dataDict):
@@ -119,7 +121,10 @@ def checkIfPremium(username):
     c = db.cursor()
     command = "SELECT premium FROM users WHERE BINARY username = %s;"
     c.execute(command, [username, ])
-    premium = c.fetchall()[0][0]
+    users = c.fetchall()
+    if(len(users) < 1):
+        return(0)
+    premium = users[0][0]
     if(premium == "false"):
         db.close()
         return(0)

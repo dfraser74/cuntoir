@@ -123,7 +123,7 @@ def deleteTask(dataDict):
 def notifyUser(username, title, text):
     db = authLib.dbCon()
     c = db.cursor()
-    command = "INSERT INTO tasks (username, createTime, dueTime, text, done, title, tags, pushScheduled, notificationHours, recurring) VALUES ( %s, %s, %s, %s, %s, %s, %s)"
+    command = "INSERT INTO tasks (username, createTime, dueTime, text, done, title, tags, pushScheduled, notificationHours, recurring) VALUES ( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
     c.execute(command, [username, time.time(), 0, text, "false", title, "", "false", 2, "false"])
     db.commit()
     db.close()

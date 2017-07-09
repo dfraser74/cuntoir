@@ -1579,7 +1579,7 @@ function taskTouchMove(evt){
 }
 
 function taskTouchEnd(evt){
-    var taskId = parseInt(getTouchedTaskId(evt));
+    var taskId = getTouchedTaskId(evt);
     if(taskId == false){return;}
     if(taskTouchCurrentX - taskTouchStartX > 120){
         if(isNaN(taskId) == false){
@@ -1604,13 +1604,13 @@ function getTouchedTaskId(evt){
     if(["taskTitle", "taskBody"].indexOf(targetClass) != -1){
         return target.parentNode.id;
     }
-    if("italic".indexOf(targetClass) != -1){
+    if("italic".indexOf(targetClass) != -1 && target.parentNode.className != "noTaskTag"){
         return target.parentNode.parentNode.id;
     }
 //    if(targetClass == "taskTag"){
 //        return target.parentNode.parentNode.parentNode.id;
 //    }
-    else{return false;}
+    return false;
 }
 
 function runUpdateFunctions(){
