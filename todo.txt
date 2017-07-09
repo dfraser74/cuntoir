@@ -1,6 +1,7 @@
 ??Build a utility to delete the completed tasks of non-premium users??(??After a set period of time??)
 Implement recurring tasks:
     -Make them shits premium forreal tho $$$$
-Add notifitcation toggle to date search, search and tag search results
+ALL THE FUCKING REFACTORING I MEAN GOD DAMN
+    -Forreal tho have you seen escapeHTML()?
 !!!!TODO BEFORE PROD ROLLOUT!!!!
 ALTER TABLE tasks ADD COLUMN recurring TEXT NOT NULL;
