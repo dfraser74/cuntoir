@@ -1472,7 +1472,7 @@ function setupTouch(){
 }
 var mainStartTouchX = 0;
 var mainCurrentTouchX = 0;
-var ignoreTouchArray = ["fakeTask","task", "taskTags", "taskTag", "dueTime", "tagAndDueTimeWrapper", "taskTitle", "taskBody", "archiveButton"];
+var ignoreTouchArray = ["italic","fakeTask","task", "taskTags", "taskTag", "dueTime", "tagAndDueTimeWrapper", "taskTitle", "taskBody", "archiveButton"];
 function mainTouchStart(evt){
     if(ignoreTouchArray.indexOf(evt.target.className) == -1){
     var task = evt.target;
@@ -1559,7 +1559,6 @@ function taskTouchMove(evt){
         document.getElementById(taskId).style.marginLeft = (taskTouchCurrentX-taskTouchStartX) + "px";
         if((taskTouchCurrentX-taskTouchStartX) > 0){
             var newOpacity = (170/(taskTouchCurrentX-taskTouchStartX))-1;
-            console.log(newOpacity);
             document.getElementById(taskId).style.opacity = newOpacity+"";
         }else{
             if(parseFloat(document.getElementById(taskId).style.opacity) < 1){
@@ -1580,7 +1579,7 @@ function taskTouchMove(evt){
 }
 
 function taskTouchEnd(evt){
-    var taskId = getTouchedTaskId(evt);
+    var taskId = parseInt(getTouchedTaskId(evt));
     if(taskId == false){return;}
     if(taskTouchCurrentX - taskTouchStartX > 120){
         if(isNaN(taskId) == false){
@@ -1605,9 +1604,9 @@ function getTouchedTaskId(evt){
     if(["taskTitle", "taskBody"].indexOf(targetClass) != -1){
         return target.parentNode.id;
     }
-//    if(["dueTime", "taskTags"].indexOf(targetClass) != -1){
-//        return target.parentNode.parentNode.id;
-//    }
+    if("italic".indexOf(targetClass) != -1){
+        return target.parentNode.parentNode.id;
+    }
 //    if(targetClass == "taskTag"){
 //        return target.parentNode.parentNode.parentNode.id;
 //    }

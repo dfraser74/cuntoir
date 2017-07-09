@@ -1,3 +1,4 @@
+import calendar
 import time
 import authLib
 import pushLib
@@ -59,8 +60,7 @@ def completeTask(dataDict):
         command = "UPDATE tasks SET done = %s, pushScheduled = 'false' WHERE BINARY username = %s AND id = %s"
         c.execute(command, [doneFlag, username, taskId])
     else:
-        recurringDict = {"daily":24*60*60, "weekly":60*60*24*7, "monthly":60*60*24*30, "quarterly":60*60*24*91, "yearly":60*60*24*365}
-        recurringTime = recurringDict[recurring]
+        recurringTime = recurring
         command = "UPDATE tasks SET dueTime = dueTime + %s, pushScheduled = 'false' WHERE BINARY username = %s AND id = %s"
         c.execute(command, [recurringTime, username, taskId])
     db.commit()
@@ -160,9 +160,36 @@ def updatePushable(dataDict):
 def getRecurring(taskId):
     db = authLib.dbCon()
     c = db.cursor()
-    command = "SELECT recurring FROM tasks WHERE id = %s"
+    command = "SELECT recurring, dueTime FROM tasks WHERE id = %s"
     c.execute(command, [taskId, ])
-    recurringString = c.fetchall()[0][0]
+    recurringString, dueTime = c.fetchall()[0]
+    dueStruct = list(time.gmtime(dueTime))
     if(recurringString == "false"):
         return(0)
-    return(recurringString)
+    #daily
+    if(recurringString == "daily"):
+        if(dueStruct[2] < 31):
+            dueStruct[2] += 1
+        else:
+            dueStruct[2] = 1
+    #weekly
+    if(recurringString == "weekly"):
+        dueStruct[2] += 7
+        if(dueStruct[2] > 31):
+            dueStruct[2] -= 31
+    #monthly
+    if(recurringString == "monthly"):
+        if(dueStruct[1] < 12):
+            dueStruct[1] += 1
+        else:
+            dueStruct[1] = 1
+    #quarterly
+    if(recurringString == "quarterly"):
+        dueStruct[1] += 3
+        if(dueStruct[1] > 12):
+            dueStruct[1] -= 12
+    #yearly
+    if(recurringString == "yearly"):
+        dueStruct[0] += 1
+    dueTime = calendar.timegm(tuple(dueStruct)) - dueTime
+    return(dueTime)

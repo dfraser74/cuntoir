@@ -1,9 +1,5 @@
 ??Build a utility to delete the completed tasks of non-premium users??(??After a set period of time??)
 Implement recurring tasks:
-    -Improve Recurring Tasks Backend (better date handling)
-    -Build recurring tasks frontend:
-        -Add indication task is recurring
-    -Add recurring tasks to about page
     -Make them shits premium forreal tho $$$$
 Add notifitcation toggle to date search, search and tag search results
 !!!!TODO BEFORE PROD ROLLOUT!!!!
