@@ -47,9 +47,6 @@
     <p id="loginInfo"></p>
 </div>
 <div id="nav" class="sidebar" style="width:0px;">
-    <form id="searchForm">
-    <input type="text" id="searchInput" placeholder="Search..."><input type="submit" id="searchButton" onclick="searchPost(document.getElementById('searchInput').value);return false;" value="Search">
-    </form>
     <a href="javascript:void(0)" onclick="getArchived();">Archive</a>
     <a href="javascript:void(0)" id="pushPermission" onclick="subscribe();">Enable Notifications</a>
     <a href="javascript:void(0)" id="changePassButton" onclick="openChangePassBar();">Change Password</a>
@@ -137,6 +134,19 @@
     <p id="editId" style="display:none;"></p>
     <p id="editInfo"></p>
 </div>
+<div id="searchOverlay" class="modalBar">
+    <form id="searchForm">
+        <input type="text" id="searchInput" placeholder="Search..."><input type="submit" id="searchButton" onclick="searchPost(document.getElementById('searchInput').value);return false;" value="Search">
+        <div>
+            <input type="checkbox" id="searchChoiceTitle" checked>
+            <label for="searchChoiceTitle">Title</label>
+            <input type="checkbox" id="searchChoiceBody" checked>
+            <label for="searchChoiceBody">Details</label>
+            <input type="checkbox" id="searchChoiceTags" checked>
+            <label for="searchChoiceTags">Tags</label>
+        </div>
+    </form>
+</div>
 <div id="main" style="position:relative;height:100%;">
     <div id="overlay" style="height:100%;"><div id="overlayText">Loading...</div></div>
     <div id="header">
@@ -153,6 +163,7 @@
             <i class="fa fa-bars" id="navButton" onclick="openNav();"></i>
             <i class="fa fa-plus" id="addButton" onclick="openAdd();"></i>
             <i class="fa fa-calendar" id="calButton" onclick="openCalBar();"></i>
+            <i class="fa fa-search" id="calButton" onclick="openSearchBar();"></i>
         </div>
     </div>
     <script type="text/javascript">

@@ -766,11 +766,10 @@ function searchPost(searchString){
     var authCode = getCookie("authCode");
     var timeOffset = timezoneOffset();
     closeSidebars();
+    openSearchBar();
     if(searchString.length < 1){
-        document.getElementById("navInfo").innerHTML = "You need to search for something!";
         return;
     }
-    closeNav();
     if(username == 0 || authCode == 0){
         openLoginBar();
     }else{
@@ -1654,5 +1653,15 @@ function offlineSearch(searchString){
         returnString = "<div class='task' style='height:auto;'><h2 class='taskTitle'>Tasks Matching \""+searchString+"\"</h2></div>" + returnString;
         returnString += "<div class='task' style='height:auto;' id='infoFooter'><input type='button' id='archiveButton' value='Go Back' onclick='getAll();'></div>"
         taskContainer.innerHTML = returnString;
+    }
+}
+
+function openSearchBar(){
+    if(document.getElementById("searchOverlay").style.maxHeight != "65px"){
+        document.getElementById("searchOverlay").style.maxHeight = "65px";
+        document.getElementById("searchInput").focus();
+    }else{
+        document.getElementById("searchOverlay").style.maxHeight = "0px";
+        document.getElementById("searchOverlay").blur();
     }
 }

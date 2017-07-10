@@ -333,11 +333,6 @@ i:active {
     display: inline;
     width: auto;
 }
-#searchInput{
-    display: inline-block;
-    width: auto;
-}
-
 #searchButton{
     display: none;
     width: auto;
@@ -525,4 +520,36 @@ td:hover {
 }
 #addNotifyTimeSpan{
     display: block;
+}
+.modalBar{
+    width: 100%;
+    z-index: 2;
+    position: fixed;
+    display: block;
+    background-color: white;
+    border-radius: 2px;
+    text-align: center;
+    max-height: 0px;
+    height: 60px;
+    overflow: hidden;
+    bottom: 82px;
+    transition: max-height 0.5s ease;
+}
+.modalBar input{
+    display: inline-block;
+    width: auto;
+    height: auto;
+    margin: 2px;
+    padding: 2px;
+    border-radius: 2px;
+}
+label{
+    display: inline-block;
+    margin: 2px;
+    padding: 2px;
+}
+#searchInput{
+    display: block;
+    width: 98%;
+    margin: 4px auto 4px auto;
 }
