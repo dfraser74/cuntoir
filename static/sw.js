@@ -1,4 +1,4 @@
-cacheVersion = "v257";
+cacheVersion = "v258";
 swVersion = "v6";
 
 this.addEventListener("install", function(event){
