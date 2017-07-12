@@ -54,6 +54,8 @@ def completeTask(dataDict):
     doneFlag = dataDict["done"]
     if(authLib.checkAuthCode({"username":username, "authCode":authCode}) != 1):
         return(0)
+    if(authLib.checkIfPremium(username) != 1):
+        return(deleteTask(dataDict))
     db = authLib.dbCon()
     c = db.cursor()
     recurring = getRecurring(taskId)
