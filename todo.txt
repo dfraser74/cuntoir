@@ -1,7 +1,5 @@
 ??Build a utility to delete the completed tasks of non-premium users??(??After a set period of time??)
 Improve intro task
-Improve Search Ui:
-    -Build Desktop ui
 Implement recurring tasks:
     -Squash them bugs
 ALL THE FUCKING REFACTORING I MEAN GOD DAMN

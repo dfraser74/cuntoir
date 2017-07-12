@@ -1668,11 +1668,13 @@ function offlineSearch(searchString){
 }
 
 function openSearchBar(){
-    if(document.getElementById("searchOverlay").style.maxHeight != "65px"){
-        document.getElementById("searchOverlay").style.maxHeight = "65px";
-        document.getElementById("searchInput").focus();
-    }else{
-        document.getElementById("searchOverlay").style.maxHeight = "0px";
-        document.getElementById("searchOverlay").blur();
-    }
+//    if(window.screen.availWidth < 500){
+        if(document.getElementById("searchOverlay").style.maxHeight != "65px"){
+            document.getElementById("searchOverlay").style.maxHeight = "65px";
+            document.getElementById("searchInput").focus();
+        }else{
+            document.getElementById("searchOverlay").style.maxHeight = "0px";
+            document.getElementById("searchOverlay").blur();
+        }
+//    }
 }

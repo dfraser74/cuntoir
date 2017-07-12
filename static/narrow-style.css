@@ -523,10 +523,11 @@ td:hover {
 }
 .modalBar{
     width: 100%;
-    z-index: 2;
+    z-index: 1;
     position: fixed;
     display: block;
     background-color: white;
+    border-top: 2px solid #666666;
     border-radius: 2px;
     text-align: center;
     max-height: 0px;

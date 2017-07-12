@@ -264,12 +264,6 @@ i:hover {
     color: #eeeeee;
     font-size: 25px;
 }
-
-#searchInput{
-    display: inline-block;
-    width: auto;
-}
-
 #searchButton{
     display: none;
     width: auto;
@@ -497,4 +491,32 @@ td:hover {
     position: absolute;
     bottom: 0px;
     left: 27%;
+}
+.modalBar{
+    box-sizing: border-box;
+    width:auto;
+    display:block;
+    background-color: white;
+    border-bottom: 0px solid #666666;
+    z-index: 1;
+    overflow: hidden;
+    height: auto;
+    max-height: 0px;
+    transition: max-height 0.5s ease;
+}
+#searchInput{
+    display: block;
+    margin: 4px auto 4px auto;
+    width: 98%
+}
+.modalBar input{
+    display: inline-block;
+    width: auto;
+}
+label{
+    display: inline-block;
+}
+#searchChoices{
+    text-align: center;
+    margin:auto;
 }

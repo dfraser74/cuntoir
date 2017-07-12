@@ -137,7 +137,7 @@
 <div id="searchOverlay" class="modalBar">
     <form id="searchForm">
         <input type="text" id="searchInput" placeholder="Search..."><input type="submit" id="searchButton" onclick="searchPost(document.getElementById('searchInput').value);return false;" value="Search">
-        <div>
+        <div id="searchChoices">
             <input type="checkbox" id="searchChoiceTitle" checked>
             <label for="searchChoiceTitle">Title</label>
             <input type="checkbox" id="searchChoiceBody" checked>
@@ -155,6 +155,7 @@
             <i class="fa fa-bars" id="navButton" onclick="openNav();"></i>
             <i class="fa fa-plus" id="addButton" onclick="openAdd();"></i>
             <i class="fa fa-calendar" id="calButton" onclick="openCalBar();"></i>
+            <i class="fa fa-search" id="calButton" onclick="openSearchBar();"></i>
         </div>
     </div>
     <div id="tasks"></div>
