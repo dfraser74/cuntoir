@@ -30,3 +30,6 @@ h3{
     display: block;
     padding: 0px 0px 0px 8px;
 }
+.subHeading{
+    border: 0px;
+}

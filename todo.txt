@@ -1,3 +1,4 @@
+Consider including screen shots on about page
 Improve intro task
 Implement recurring tasks:
     -Squash them bugs

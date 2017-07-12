@@ -1,0 +1,39 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="../images/icon512-Rounded-Gray.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel='stylesheet' media='screen and (min-width: 0px) and (max-width: 499px)' href='../narrow-style.css' />
+<link rel='stylesheet' media='screen and (min-width: 500px)' href='../wide-style.css' />
+<link rel='stylesheet' href='../about-style.css'/>
+<title>Cúntóir - Get Things Done</title>
+</head>
+<body>
+    <div id="header">
+        <div id="mainTitle"><a href="../index.html">Cúntóir</a></div>
+    </div>
+    <div id="tasks">
+        <div class="card">
+            <h2>Hello World!</h2>
+            <p><span class="details">Cúntóir is live, and as far as I can tell, nothing has collapsed just yet, so that's nice. There's still an awful lot on the todo list left to be taken care of, but most of that is just cleaning up the code base for now, so I thought I'd take a minute to write down some of the things I've experienced while building Cúntóir.</span></p>
+            <p><h3 class="subHeading">Python</h3>
+            <span class="details">God I love Python. Cúntóir is built on the CherryPy engine, which is frankly delightful to use. CherryPy makes it stupid easy to get a simple web server serving static pages, and from there getting it to pass the body of post requests to a handler library was extremely straight-forward. I almost definitely wouldn't have built Cúntóir if CherryPy didn't exist, because I don't understand web backend well enough to handle http requests, cgi, or any of the other technologies that seem almost ubiquitous when I was trying to figure out just how web apps work. Even node.js was beyond me, at least not without a huge startup cost.</p><p> CherryPy meant I could just use jQuery requests to throw information at my server and let simple "method" (an identifier used in all Cúntóir requests to tell the backend what the client is trying to do) tags be used as the filtering method to figure out what my server was meant to do. Python's simplicity to learn, and I am probably biased because I've built a couple of bits and bobs with it before, meant that there was nothing that felt <i>technically</i> impossible as Cúntóir was being built. I always got the impression that something was doable, even if it wasn't clean or fast, and even clean and fast were often achievable with a little thought.</p><p>Also that auto-restart makes on the fly code deployment a dream, literally a single git command most of the time unless I've made modifications to the database setup in some way.</span></p>
+            <p><h3 class="subHeading">Javascript</h3>
+            <span class="details">Cúntóir's front-end client is written basically entirely in stock js, with jQuery used to make post requests to the server. This is mainly because:
+            <ol>
+                <li>The amount of external dependencies I was calling for things like fonts already made my slightly uncomfortable.</li>
+                <li>I have never written a web application before, so writing one in anything but the "O.G." language of the web felt wrong.</li>
+                <li>I'm already used to working in "easy" languages like Python, and plain old js let me iterate faster.</li>
+                <li>For the purpose of building Cúntóir, I couldn't see the value any plugin (framework, library, I don't know what to call these things in the js ecosystem) would bring me.</li>
+                <li>If there's an internet hall of fame, the people who maintain the Mozilla javascript documentation deserve induction. Seriously, those people are saints.</li>
+            </ol>Overall, I found javascript fairly newbie friendly, once you get past some weirdness and get used to factoring in it's quirks when writing code in it. I also found some parts of it deeply frustrating, specifically around cross-browser support for things like service workers. If anything building Cúntóir has further convinced me that Apples walled garden philosophy is anti-competitive in the extreme, especially when coupled with the fact I need a macOs device to even try developing a native app for iOs, and I need to pay Apple 100$ (99$) dollars a year for the privilege. It's a very good way to make sure beginners avoid your platform, especially when you consider the low market share iOs holds on mobile. It's absurdly frustrating.</span></p>
+            <p><h3 class="subHeading">Amazon Web Services</h3>
+            <span class="details">Wow. AWS is pretty great, right? Like, a year of of free database and server time is pretty great. Their DNS service is also straightforward enough to let someone who does not even slightly understand DNS get set up with domains, sub-domains and a custom email address. Pretty great. 10/10 service they're running over there, I do wish they didn't scare the shit out of me by sending me a more than 300 euro bill warning after I registered cuntoir.com with them though, it would be cool if they could differentiate between one time and rolling costs. But hey, still pretty great.<p>I'll likely switch server hosting providers once my twelve months are up, or at least diversify to Linode and maybe DigitalOcean if I have to scale outwards ever. AWS is great, but they cost a bomb compared to the other options available.</p></span></p>
+        </div>
+        <div class="card" onclick="window.location='/index.html'">
+            <p><span class="details"><a href="/index.html">Back to Cuntoir</a></span></p>
+        </div>
+    </div>
+</body>
+<html>
