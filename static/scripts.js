@@ -1679,7 +1679,6 @@ function openSearchBar(){
                 document.getElementById("searchInput").focus();
             }
         }else{
-            document.getElementById("searchInput").value = "";
             document.getElementById("searchOverlay").style.maxHeight = "0px";
             if(window.screen.availWidth > 500){
                 document.getElementById("searchOverlay").blur();

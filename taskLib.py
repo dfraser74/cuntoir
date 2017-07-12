@@ -57,7 +57,6 @@ def completeTask(dataDict):
     db = authLib.dbCon()
     c = db.cursor()
     recurring = getRecurring(taskId)
-    print(recurring)
     if(recurring == 0):
         command = "UPDATE tasks SET done = %s, pushScheduled = 'false' WHERE BINARY username = %s AND id = %s"
         c.execute(command, [doneFlag, username, taskId])
