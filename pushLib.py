@@ -147,6 +147,12 @@ def completePush(username, taskId):
     c.execute(command, [username, taskId])
     db.commit()
     db.close()
+    db = authLib.dbCon()
+    c = db.cursor()
+    command = "UPDATE tasks SET pushScheduled = %s WHERE BINARY username = %s AND id = %s"
+    c.execute(command, ["false", username, taskId])
+    db.commit()
+    db.close()
     return 0
 
 def deleteAllSubs(username):
