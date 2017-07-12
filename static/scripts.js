@@ -1671,10 +1671,15 @@ function openSearchBar(){
 //    if(window.screen.availWidth < 500){
         if(document.getElementById("searchOverlay").style.maxHeight != "65px"){
             document.getElementById("searchOverlay").style.maxHeight = "65px";
+            document.getElementById("searchInput").value = "";
+            document.getElementById("searchChoiceTitle").checked = true;
+            document.getElementById("searchChoiceBody").checked = true;
+            document.getElementById("searchChoiceTags").checked = true;
             if(window.screen.availWidth > 500){
                 document.getElementById("searchInput").focus();
             }
         }else{
+            document.getElementById("searchInput").value = "";
             document.getElementById("searchOverlay").style.maxHeight = "0px";
             if(window.screen.availWidth > 500){
                 document.getElementById("searchOverlay").blur();
