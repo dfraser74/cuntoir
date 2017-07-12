@@ -33,3 +33,11 @@ h3{
 .subHeading{
     border: 0px;
 }
+.postDate{
+    display: block;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    font-size: 0.8em;
+    color: #666666;
+}
