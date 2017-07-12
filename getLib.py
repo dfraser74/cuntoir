@@ -170,6 +170,9 @@ def search(dataDict):
     searchString = dataDict["searchString"].strip().lower()
     sort = dataDict["sort"]
     timeOffset = float(dataDict["timeOffset"])
+    searchTags = dataDict["searchTags"]
+    searchTitle = dataDict["searchTitle"]
+    searchBody = dataDict["searchBody"]
     auth = authLib.checkAuthCode(dataDict)
     if(auth != 1):
         return(0)
@@ -198,6 +201,9 @@ def search(dataDict):
         text = task[4]
         title = task[6]
         tags = task[7]
+        tagsToCompare = tags
+        titleToCompare = title
+        textToCompare = text
         pushable = task[8]
         recurring = task[10]
         if(recurring == "false"):
@@ -208,7 +214,14 @@ def search(dataDict):
             title = title.replace("'", "&apos;")
         if("'" in text):
             text = text.replace("'", "&apos;")
-        if(searchString not in tags.lower().split(",") and searchString not in title.lower() and searchString not in text.lower()):
+        #Re-write compared things to null if they shouldn't be searched
+        if(searchTitle == "false"):
+            titleToCompare = ""
+        if(searchBody == "false"):
+            textToCompare = ""
+        if(searchTags == "false"):
+            tagsToCompare = ""
+        if(searchString not in tagsToCompare.lower().split(",") and searchString not in titleToCompare.lower() and searchString not in textToCompare.lower()):
             continue
         timeString = time.strftime("%d/%m/%Y %H:%M", time.gmtime(dueTime - timeOffset))
         dateSearchList = time.strftime("%d/%m/%Y", time.gmtime(dueTime - float(timeOffset))).split("/")

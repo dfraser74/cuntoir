@@ -765,6 +765,9 @@ function searchPost(searchString){
     var username = getCookie("username");
     var authCode = getCookie("authCode");
     var timeOffset = timezoneOffset();
+    var searchTitle = document.getElementById("searchChoiceTitle").checked + "";
+    var searchBody = document.getElementById("searchChoiceBody").checked + "";
+    var searchTags = document.getElementById("searchChoiceTags").checked + "";
     closeSidebars();
     openSearchBar();
     if(searchString.length < 1){
@@ -774,7 +777,15 @@ function searchPost(searchString){
         openLoginBar();
     }else{
         if(navigator.onLine == true){
-            var data = {"username":username, "authCode":authCode, "method":"search", "sort":"default", "searchString":searchString, "timeOffset":timeOffset};
+            var data = {"username":username, 
+                        "authCode":authCode, 
+                        "method":"search", 
+                        "sort":"default", 
+                        "searchString":searchString, 
+                        "timeOffset":timeOffset,
+                        "searchTitle":searchTitle,
+                        "searchBody":searchBody,
+                        "searchTags":searchTags};
             makePostRequest("/", data, "search");
         }else{
             offlineSearch(searchString);
