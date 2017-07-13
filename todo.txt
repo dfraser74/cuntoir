@@ -1,3 +1,5 @@
+Android native app!! :O :O :O
+    -It begins...
 Consider including screen shots on about page
 Improve intro task
 Implement recurring tasks:
