@@ -1,8 +1,8 @@
-Android native app!! :O :O :O
+Android/iOs native app
     -It begins...
-    on prod server: 
-        -curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
-        -sudo apt-get install -y nodejs
+    -Adandon hope all ye who enter here
+    -Wrap your head around react native some time
+    -Turns out phonegap is kinda shitty
 
 
 
