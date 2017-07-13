@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html style="height:100%;">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="images/icon512-Rounded-Gray.png">
+<link rel="manifest" href="manifest.json">
+<link rel='stylesheet' media='screen and (min-width: 500px)' href='wide-style.css' />
+<link rel='stylesheet' media='screen and (min-width: 0px) and (max-width: 499px)' href='narrow-style.css' />
+<meta name="theme-color" content="#666666">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="jquery.min.js"></script>
+<script src="scripts.js"></script>
+<title>Cúntóir - Get Things Done</title>
+</head>
+<body style="height:100%;">
+<div id="calBar" class="sidebar" style="width:0px;">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeCalBar();">&times;</a>
+    <div id="cal">
+        <div id="calHead"></div>
+        <div id="calBodyDiv">
+            <table id="calBody">
+            </table>
+        </div>
+    </div>
+</div>
+<div id="changePassBar" class="sidebar" style="width:0px;">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeChangePassBar();">&times;</a>
+    <p>Change Password</p>
+    <form id="changePassForm">
+        <input type="password" id="oldPass" placeholder="Old Password">
+        <input type="password" id="newPass1" placeholder="New Password">
+        <input type="password" id="newPass2" placeholder="Repeat Password">
+        <input type="submit" value="Change Password" onclick="changePass(document.getElementById('oldPass').value, document.getElementById('newPass1').value, document.getElementById('newPass2').value);return false;">
+    </form>
+    <p id="changePassInfo"></p>
+</div>
+<div id="loginBar" class="sidebar" style="width:0px;">
+    <p>Log In</p>
+    <form id="loginForm">
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <input type="submit" value="Login" onclick="loginPost(document.getElementById('username').value, document.getElementById('password').value);return false;">
+    </form>
+    <a href="createUser.html">Sign Up</a>
+    <a href="about.html" id="about">About</a>
+    <p id="loginInfo"></p>
+</div>
+<div id="nav" class="sidebar" style="width:0px;">
+    <a href="javascript:void(0)" onclick="getArchived();">Archive</a>
+    <a href="javascript:void(0)" id="pushPermission" onclick="subscribe();">Enable Notifications</a>
+    <a href="javascript:void(0)" id="changePassButton" onclick="openChangePassBar();">Change Password</a>
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav();">&times;</a>
+    <a href="javascript:void(0)" onclick="logout();">Logout</a>
+    <a href="upgrade.html" id="upgrade">Upgrade to Premium</a>
+    <a href="javascript:void(0)" id="downgrade" onclick="deleteCustomerPost();" style="display:none;">Cancel Subscription</a>
+    <a href="blog.html" id="blog">Blog</a>
+    <a href="about.html" id="about">About</a>
+    <p id="navInfo"></p>
+</div>
+<div id="add" class="sidebar" style="width:0px;">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeAdd();">&times;</a>
+    <p>Add Task</p>
+    <form>
+        Task Title:
+        <input type="text" id="title">
+        Details:
+        <textarea id="description" rows=3></textarea>
+        Due:
+        <div>
+            <input type="text" class='dateField' id="dateString" onfocus="renderDatePicker(new Date().getMonth(), 'addDatePicker', 'addDatePickerTable', 'addDatePickerHead', 'dateString', new Date().getFullYear());";>
+            <div class="datePickerDiv" id="addDatePicker" style='display:none;'>
+                <div id="addDatePickerHead" class="datePickerHead"></div>
+                <div id="addDatePickerBody">
+                    <table class="datePickerTable" id="addDatePickerTable">
+                    </table>
+                </div>
+            </div>
+        </div>
+        <input type="text" id="timeString">
+        Comma Separated Tags:
+        <input type="text" id="tags">
+        <span id="pushChoice">Notify Me: <input type="checkbox" class="pushable" id="pushable" checked></span><br>
+        <span id="addNotifyTimeSpan">Hours Before to notify:<input type="text" id="addNotifyTime" value="2"></span>
+        <div>Happens:
+            <select id="addRecurringChoice">
+                <option value="false" selected>Once</option>
+                <option value="daily">Every Day</option>
+                <option value="weekly">Every Week</option>
+                <option value="monthly">Every Month</option>
+                <option value="quarterly">Every Quarter</option>
+                <option value="yearly">Every Year</option>
+            </select>
+        </div>
+        <input type="submit"  value="Add Task" onclick="addTaskPost(document.getElementById('title').value, document.getElementById('description').value, getDateTime(document.getElementById('dateString').value, document.getElementById('timeString').value), document.getElementById('tags').value); return false;" />
+    </form>
+    <p id="info"></p>
+</div>
+<div id="edit" class="sidebar" style="width:0px;">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeEdit();">&times;</a>
+    <p>Edit Task</p>
+    <form>
+        Task Title:
+        <input type="text" id="editTitle">
+        Details:
+        <textarea id="editDescription" rows=3></textarea>
+        Due:
+        <div>
+            <input type="text" class='dateField' id="editDateString" onfocus="renderDatePicker(new Date().getMonth(), 'editDatePicker', 'editDatePickerTable', 'editDatePickerHead', 'editDateString', new Date().getFullYear());";>
+            <div class="datePickerDiv" id="editDatePicker" style='display:none;'>
+                <div id="editDatePickerHead" class="datePickerHead"></div>
+                <div id="editDatePickerBody">
+                    <table class="datePickerTable" id="editDatePickerTable">
+                    </table>
+                </div>
+            </div>
+        </div>
+        <input type="text" id="editTimeString">
+        Comma Separated Tags:
+        <input type="text" id="editTags">
+        <span id="editPushChoice">Notify Me: <input type="checkbox" class="pushable" id="editPushable" checked></span>
+        <span id="editNotifyTimeSpan">Hours Before to notify:<input type="text" id="editNotifyTime" value="2"></span>
+        <div>Happens:
+            <select id="editRecurringChoice">
+                <option value="false" selected>Once</option>
+                <option value="daily">Every Day</option>
+                <option value="weekly">Every Week</option>
+                <option value="monthly">Every Month</option>
+                <option value="quarterly">Every Quarter</option>
+                <option value="yearly">Every Year</option>
+            </select>
+        </div>
+        <input type="submit"  value="Update Task" onclick="editTaskPost(document.getElementById('editTitle').value, document.getElementById('editDescription').value, getDateTime(document.getElementById('editDateString').value, document.getElementById('editTimeString').value), document.getElementById('editTags').value); return false;" />
+    </form>
+    <p id="editId" style="display:none;"></p>
+    <p id="editInfo"></p>
+</div>
+<div id="searchOverlay" class="modalBar">
+    <form id="searchForm">
+        <input type="text" id="searchInput" placeholder="Search..."><input type="submit" id="searchButton" onclick="searchPost(document.getElementById('searchInput').value);return false;" value="Search">
+        <div id="searchChoices">
+            <input type="checkbox" id="searchChoiceTitle" checked>
+            <label for="searchChoiceTitle">Title</label>
+            <input type="checkbox" id="searchChoiceBody" checked>
+            <label for="searchChoiceBody">Details</label>
+            <input type="checkbox" id="searchChoiceTags" checked>
+            <label for="searchChoiceTags">Tags</label>
+        </div>
+    </form>
+</div>
+<div id="main" style="position:relative;height:100%;">
+    <div id="overlay" style="height:100%;"><div id="overlayText">Loading...</div></div>
+    <div id="header">
+        <div id="mainTitle"><a href="javascript:void(0)" onclick="getAll();">Cúntóir</a></div>
+        <div class="topNavButtons">
+            <i class="fa fa-bars" id="navButton" onclick="openNav();"></i>
+            <i class="fa fa-plus" id="addButton" onclick="openAdd();"></i>
+            <i class="fa fa-calendar" id="calButton" onclick="openCalBar();"></i>
+            <i class="fa fa-search" id="calButton" onclick="openSearchBar();"></i>
+        </div>
+    </div>
+    <div id="tasks"></div>
+    <div id="footer">
+        <div class="bottomNavButtons">
+            <i class="fa fa-bars" id="navButton" onclick="openNav();"></i>
+            <i class="fa fa-plus" id="addButton" onclick="openAdd();"></i>
+            <i class="fa fa-calendar" id="calButton" onclick="openCalBar();"></i>
+            <i class="fa fa-search" id="calButton" onclick="openSearchBar();"></i>
+        </div>
+    </div>
+    <script type="text/javascript">
+        getAll();
+        updateSubButton();
+        updateUpgradeButton();
+        setupTouch();
+    </script>
+</div>
+</body>
+</html>

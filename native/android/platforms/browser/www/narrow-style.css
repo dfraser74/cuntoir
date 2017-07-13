@@ -1,0 +1,556 @@
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0px;
+    background-color: #f1f1f1;
+    font-family: 'Source Sans Pro', sans-serif;
+}
+br {
+    display: none;
+}
+.task {
+    display: block;
+    background-color: white;
+    padding: 2px 2px 0px 2px;
+    margin: 4px;
+    border: solid 1px #d9d9d9;
+    border-radius: 2px;
+    font-size: 1em;
+    transition: 0.1s;
+    transition: background-color 0.1s ease;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+.fakeTask {
+    display: block;
+    background-color: white;
+    padding: 2px 2px 0px 2px;
+    margin: 4px;
+    border: solid 1px #d9d9d9;
+    border-radius: 2px;
+    font-size: 1em;
+    transition: 0.1s;
+    transition: background-color 0.1s ease;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+.unsyncedWarning{
+    color: #cccccc;
+    border: 0px;
+    border-bottom: 1px dashed #888888;
+    background-color: white;
+    font-size: 2.7em; 
+    display: inline-block;
+    height: 50%;
+    width: 15%;
+    padding: 0px;
+    margin: 0px 0px 4px 0px;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+}
+.signup {
+    display: block;
+    background-color: white;
+    padding: 10px;
+    margin: 10px;
+    border: solid 1px #d9d9d9;
+    border-radius: 20px;
+    font-size: 15px;
+    transition: 0s;
+    text-align: center;
+}
+#tasks{
+    margin-bottom: 80px;
+}
+.taskTitle {
+    width: 84%;
+    display: block;
+    text-align: left;
+    font-size: 1.2em;
+    margin: 4px 0px 4px 4px;
+    padding: 0px 0px 0px 4px;
+    border-left: 4px solid #555555;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.taskBody{
+    display: block;
+    margin: 0px 0px 0px 10px;
+    padding: 4px;
+    word-wrap: break-word;
+    overflow: auto;
+    width: 83%;
+/*    max-height: 80px;*/
+    text-align: left;
+}
+#archiveButton{
+    display: inline-block;
+    width: auto;
+    margin: 0px;
+}
+.archiveButton{
+    border: 0px;
+    background-color: white;
+    font-size: 2.7em; 
+    display: inline-block;
+    height: 50%;
+    width: 15%;
+    padding: 0px;
+    margin: 0px;
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    transition: all 0.3 ease 0;
+}
+.notificationToggle{
+    border: 0px;
+    background-color: white;
+    font-size: 2.7em; 
+    display: inline-block;
+    height: 50%;
+    width: 15%;
+    padding: 0px;
+    margin: 0px;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    transition: all 0.3 ease 0;
+}
+.archiveButton:active{
+    background-color: #888888;
+}
+.deleteButton{
+    border: 0px;
+    border-top: 1px dashed #888888;
+    background-color: white;
+    font-size: 2.7em; 
+    display: inline-block;
+    height: 50%;
+    width: 15%;
+    padding: 0px;
+    margin: 0px 0px 4px 0px;
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    transition: all 0.3 ease 0;
+}
+.deleteButton:active{
+    background-color: #888888;
+}
+.restoreButton{
+    border: 0px;
+    border-bottom: 1px dashed #888888;
+    background-color: white;
+    font-size: 2.5em; 
+    display: inline-block;
+    height: 50%;
+    width: 15%;
+    padding: 0px;
+    margin: 0px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    transition: all 0.3 ease 0;
+}
+.restoreButton:active{
+    background-color: #888888;
+}
+button .fa{
+    margin: 0px;
+    padding: 0px;
+}
+#header {
+    background-color: white;
+    border: 2px #666666;
+    border-bottom-style: solid;
+    padding: 10px;
+    margin: 0px;
+    display: block;
+}
+#footer {
+    background-color: white;
+    border: 2px #666666;
+    border-top-style: solid;
+    padding: 10px;
+    margin: 0px;
+    display: block;
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+}
+#mainTitle {
+    text-align: center;
+    font-size: 2em;
+}
+img {
+    max-height: 500px;
+    max-width: 750px;
+    display: block;
+    margin: auto;
+}
+a {
+    border-radius: 4px;
+    color: black;
+    text-decoration: underline;
+}
+a:active{
+    background-color: #666666;
+}
+.dueTime {
+    font-weight: bold;
+    display: inline;
+    font-size: 0.8em;
+    margin: 4px;
+    padding: 4px;
+    background-color: #cccccc;
+    border: 1px solid #555;
+    border-radius: 4px;
+}
+.dueTime:active{
+    background-color: #666666;    
+}
+input, textarea {
+    width: 100%;
+    margin: 4px;
+    border: 1px solid #555;
+    border-radius: 4px;
+    box-sizing: border-box;
+    outline-width: 0;
+    resize: none;
+    padding: 5px;
+}
+input:focus, textarea:focus {
+    border: 2px solid #aaaaaa;
+}
+
+input[type=button]:active {
+    background-color: #666666;
+}
+
+input[type=button]:focus {
+    background-color: #666666;
+}
+
+input[type=submit] {
+    font-size: 15px;
+}
+
+input[type=submit]:active {
+    background-color: #666666;
+}
+
+input[type=submit]:focus {
+    background-color: #666666;
+}
+
+.sidebar {
+    height: 100%; /* 100% Full-height */
+    width: 0px;
+    max-width: 100%;
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    padding-top: 60px;
+    transition: 0.5s;
+    text-align: center;
+}
+
+#main{
+    transition: 0.5s;
+}
+
+/* Position and style the close button (top right corner) */
+.sidebar .closebtn {
+    position: absolute;
+    top: 0;
+    right: 20px;
+    font-size: 36px;
+    margin-left: 0px;
+}
+
+.sidebar a {
+    padding: 8px 8px 8px 8px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #eeeeee;
+    display: block;
+    transition: 0.3s
+}
+
+.sidebar a:active{
+    background-color: #666666;
+}
+.topNavButtons {
+    display: none;
+}
+.bottomNavButtons {
+    text-align: center;
+    font-size: 3em;
+}
+
+i {
+    padding:3px;
+    margin: 2px;
+    border-radius: 4px;
+}
+
+i:active {
+    background-color: #666666;
+}
+
+#addButton {
+    border-radius: 400px;
+}
+
+.sidebar form{
+    color: #eeeeee;
+    margin: 8px 8px 8px 0px;
+    padding:8px;
+    border-color: #818181;
+    font-size: 1em;
+}
+.sidebar input, textarea{
+    color: #eeeeee;
+    background-color: #666666;
+    font-size: 1em;
+}
+
+.sidebar p{
+    color: #eeeeee;
+    font-size: 25px;
+}
+.pushable{
+    display: inline;
+    width: auto;
+}
+#searchButton{
+    display: none;
+    width: auto;
+}
+
+#searchForm {
+    margin: 0px;
+    padding: 0px;
+}
+.tagAndDueTimeWrapper{
+    text-align: left;
+    display: block;
+    overflow: auto;
+    white-space: nowrap;
+    margin: 0px 4px 4px 4px;
+    padding: 0px;
+    position: relative;
+    left: 0px;
+    bottom: 0px;
+    width: 84%;
+}
+.taskTags{
+    display: inline-block;
+    border-left: 1px solid #666666;
+}
+.taskTag {
+    display: inline-block;
+    font-weight:bold;
+    background-color: #cccccc;
+    padding: 4px;
+    margin: 4px;
+    font-size: 0.8em;
+    border-radius: 4px;
+    border: 1px solid #555;
+}
+
+.taskTag:active {
+    background-color: #666666;
+}
+
+.topbar {
+    display: block;
+    line-height:0;
+    height: 0;
+    overflow: hidden;
+}
+.noTaskTag {
+    display: inline-block;
+    background-color: #cccccc;
+    padding: 4px;
+    margin: 4px;
+    font-size: 0.8em;
+    border-radius: 4px;
+}
+.italic {
+    font-style: italic;
+}
+#calHead {
+    display: block;
+    width: auto;
+    color: #eeeeee;
+    font-size: 30px;
+    background-color: #333;
+    border-radius: 4px;
+    margin: 4px;
+}
+#calBodyDiv {
+    display: block;
+    width: auto;
+    height: 260px;
+    padding: auto;
+    text-align: center;
+    background-color: #333;
+    margin: 4px;
+    border-radius: 4px;
+}
+table{
+    width: 100%;
+    height: 100%;
+    margin: auto;
+}
+th, td{
+    margin: 40px;
+    font-size: 15px;
+    text-align: center;
+    color: #eeeeee;
+}
+th{
+    max-width: 20px;
+}
+td {
+    border-radius: 4px;
+    border: 1px solid #cccccc;
+    background-color: #666666;
+}
+td:hover {
+    background-color: #999;
+}
+.noDate {
+    border: none;
+    background-color: #333;
+}
+.noDate:hover {
+    background-color: #333;
+}
+.todaysDate {
+    background-color: #3fa36a;
+}
+.dueToday{
+    background-color: #ff0000;
+    color: #eeeeee;
+}
+::-webkit-scrollbar{
+    width: 4px;
+    height: 4px;
+}
+::-webkit-scrollbar-track {
+    background-color: #eeeeee;
+}
+::-webkit-scrollbar-thumb {
+    background-color: #666666; 
+}
+::-webkit-scrollbar-button {
+    display:none;
+}   
+::-webkit-scrollbar-corner {
+    display:none;
+}
+.activeDate{
+    background-color: #ff7000;
+}
+.datePickerDiv{
+    margin: 4px;
+    width: 100%;
+    max-height: 300px;
+    border-radius: 4px;
+    background-color: #333;
+}
+.datePickerTable{
+    margin: auto;
+    width: 100%;
+    height: 240px;
+}
+.datePickerHead{
+    font-size: 20px;
+}
+.dayName{
+    font-weight: normal;
+}
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color: #aaaaaa;
+}
+::-moz-placeholder { /* Firefox 19+ */
+  color: #aaaaaa;
+}
+:-ms-input-placeholder { /* IE 10+ */
+  color: #aaaaaa;
+}
+:-moz-placeholder { /* Firefox 18- */
+  color: #aaaaaa;
+}
+#overlay {
+    position: absolute; /* Sit on top of the page content */
+    display: none; /* Hidden by default */
+    width: 100%; /* Full width (cover the whole page) */
+    height: 100%; /* Full height (cover the whole page) */
+    top: 0; 
+    left: 0;
+    opacity: 0.5;
+    background-color: #000000; /* Black background with opacity */
+    z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+    cursor: pointer; /* Add a pointer on hover */
+}
+#overlayText{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: 50px;
+    color: white;
+    opacity: 1;
+    transform: translate(-50%,-50%);
+}
+#editNotifyTimeSpan{
+    display: block;
+}
+#addNotifyTimeSpan{
+    display: block;
+}
+.modalBar{
+    width: 100%;
+    z-index: 1;
+    position: fixed;
+    display: block;
+    background-color: white;
+    border-top: 2px solid #666666;
+    border-radius: 2px;
+    text-align: center;
+    max-height: 0px;
+    height: 60px;
+    overflow: hidden;
+    bottom: 82px;
+    transition: max-height 0.5s ease;
+}
+.modalBar input{
+    display: inline-block;
+    width: auto;
+    height: auto;
+    margin: 2px;
+    padding: 2px;
+    border-radius: 2px;
+}
+label{
+    display: inline-block;
+    margin: 2px;
+    padding: 2px;
+}
+#searchInput{
+    display: block;
+    width: 98%;
+    margin: 4px auto 4px auto;
+}
