@@ -27,6 +27,7 @@
         <input type="text" id="inviteCode" style="display:none;">
         <input type="submit"  value="Signup" onclick="createUser(document.getElementById('username').value, document.getElementById('pass').value, document.getElementById('pass2').value, document.getElementById('inviteCode').value);return false;" style="width:80%;"><br>
     </form>
+    <p>Already have an account? <a href="index.html" onclick="localStorage['signedUp']='true';">Sign In</a><p>
     <p id="info" style="text-align:center;"></p>
     <div>
     </div>

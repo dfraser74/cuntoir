@@ -5,10 +5,8 @@ Android/iOs native app
     -Turns out phonegap is kinda shitty
 
 Implement new users splash page:
-    -Big, obvious call to action
-    -Short decription of what Cúntóir does
     -Redirect users who don't have a username to the splash screen
-    -Make it sexy ;) ;) ;)
+    -Make it look sexy ;) ;) ;)
 
 ALL THE FUCKING REFACTORING I MEAN GOD DAMN
     -Forreal tho have you seen escapeHTML()?

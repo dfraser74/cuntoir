@@ -219,7 +219,11 @@ function getAll(){
         return;
     }
     if(username == 0 || authCode == 0){
-        openLoginBar();
+        if(localStorage["signedUp"] == "true"){
+            openLoginBar();
+        }else{
+            window.location = "/splash.html";
+        }
     }else{
         var data = {"username":username, "authCode":authCode, "method":"getAll", "sort":"default", "archived":"false", "timeOffset":timeOffset};
         makePostRequest("/", data, "getAll");
@@ -409,6 +413,7 @@ function createUser(username, pass, pass2, inviteCode){
     if(pass == pass2 && username != "" && pass.length > 7 && username.length > 3){
         var data = {"method":"createUser", "username":username, "userPass":pass, "inviteCode":inviteCode};
         makePostRequest("/", data, "createUser");
+        localStorage["signedUp"] = "true";
         return;
     }
     if(pass != pass2){
@@ -524,8 +529,8 @@ function handleDeleteTaskReturn(data){
 }
 
 function logout(){
-    setCookie("authCode", "0");
     setCookie("username", "0");
+    setCookie("authCode", "0");
     closeNav();
     openLoginBar();
 }
