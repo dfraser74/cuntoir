@@ -12,11 +12,13 @@ Make swiping from right to left when a sidebar is open close it
 ALL THE FUCKING REFACTORING I MEAN GOD DAMN
     -Forreal tho have you seen escapeHTML()?
 
-Consider adding screenshots to intro page
+!!!!BUGFIXES!!!!
+    -Really old dated tasks move forward an hour when they're edited
 
 Marketing
     -Get in touch with inbox@wired.co.uk
-        -Set up premium account called "wired" with a password "99bdfc4f52dd3f77232ffd0cb3cfc9da3d6098feee807467e54b9fc6b8b8b448", which is marked as customerWatcher exempt in authLib.py
+        -Set up premium account called "wired" with a password "99bdfc4f52dd3f77232ffd0cb3cfc9da3d6098feee807467e54b9fc6b8b8b448"
+        -Sent email..... :/
     -get in touch with ars technica
         -Set up premium account called "arsTech" with a password "99bdfc4f52dd3f77232ffd0cb3cfc9da3d6098feee807467e54b9fc6b8b8b448", which is marked as customerWatcher exempt in authLib.py
     -find productivity blogs to get in touch with
