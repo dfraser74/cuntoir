@@ -159,4 +159,4 @@ def clientCheckIfPremium(dataDict):
     return(checkIfPremium(dataDict["username"]))
 
 def getExemptUsers():
-    return(["Oliver", ])
+    return(["Oliver", "wired", "arsTech"])
