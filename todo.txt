@@ -4,9 +4,13 @@ Android/iOs native app
     -Wrap your head around react native some time
     -Turns out phonegap is kinda shitty
 
-Consider including screen shots on about page
-Improve intro task
-Implement recurring tasks:
-    -Squash them bugs
+Implement new users splash page:
+    -Big, obvious call to action
+    -Short decription of what Cúntóir does
+    -Redirect users who don't have a username to the splash screen
+    -Make it sexy ;) ;) ;)
+
 ALL THE FUCKING REFACTORING I MEAN GOD DAMN
     -Forreal tho have you seen escapeHTML()?
+
+Consider adding screenshots to intro page
