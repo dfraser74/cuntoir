@@ -5,8 +5,9 @@ Android/iOs native app
     -Turns out phonegap is kinda shitty
 
 Implement new users splash page:
-    -Redirect users who don't have a username to the splash screen
     -Make it look sexy ;) ;) ;)
+
+Make swiping from right to left when a sidebar is open close it
 
 ALL THE FUCKING REFACTORING I MEAN GOD DAMN
     -Forreal tho have you seen escapeHTML()?
