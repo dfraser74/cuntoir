@@ -4,8 +4,6 @@ Android/iOs native app
     -Wrap your head around react native some time
     -Turns out phonegap is kinda shitty
 
-
-
 Consider including screen shots on about page
 Improve intro task
 Implement recurring tasks:
