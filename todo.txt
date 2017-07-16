@@ -4,6 +4,8 @@ Android/iOs native app
     -Wrap your head around react native some time
     -Turns out phonegap is kinda shitty
 
+Look into Electron for native desktop application
+
 Implement new users splash page:
     -Make it look sexy ;) ;) ;)
 
