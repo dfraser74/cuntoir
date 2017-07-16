@@ -9,8 +9,10 @@ Implement new users splash page:
 
 Make swiping from right to left when a sidebar is open close it
 
-ALL THE FUCKING REFACTORING I MEAN GOD DAMN
-    -Forreal tho have you seen escapeHTML()?
+Make shared tasks? Maybe?
+    -Need a level of authorisation that says can-edit or can-view
+    -Add tasks a user has had shared to them into getAll
+    -This is kinda a hard problem based on current infrastructure
 
 !!!!BUGFIXES!!!!
     -Really old dated tasks move forward an hour when they're edited
