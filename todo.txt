@@ -6,11 +6,6 @@ Android/iOs native app
 
 Look into Electron for native desktop application
 
-Implement new users splash page:
-    -Make it look sexy ;) ;) ;)
-
-Make swiping from right to left when a sidebar is open close it
-
 Make shared tasks? Maybe?
     -Need a level of authorisation that says can-edit or can-view
     -Add tasks a user has had shared to them into getAll

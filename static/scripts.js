@@ -1505,6 +1505,7 @@ function mainTouchStart(evt){
     }
     var touch = touchList[0];
     mainStartTouchX = touch.screenX;
+    mainCurrentTouchX = mainTouchStartX;
     }else{taskTouchStart(evt);}
 }
 
@@ -1565,6 +1566,7 @@ function taskTouchStart(evt){
         return;
     }else{
         taskTouchStartX = touchList[0].screenX;
+        taskTouchCurrentX = taskTouchStartX;
     }
     return;
 }
@@ -1606,6 +1608,8 @@ function taskTouchEnd(evt){
     if(taskId == false){return;}
     if(taskTouchCurrentX - taskTouchStartX > 120){
         if(isNaN(taskId) == false){
+            console.log(taskTouchStartX + " : " + taskTouchCurrentX);
+            console.log(taskId + " Completed")
             completeTaskPost(taskId);
         }else{
             getAll();
