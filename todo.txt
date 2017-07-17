@@ -24,3 +24,4 @@ Marketing
     -Commands to execute:
         -update users set premium="true" where username="wired";
         -update users set premium="true" where username="arsTech";
+        -update users set premium="true" where username="androidRun";
