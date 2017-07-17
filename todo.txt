@@ -20,6 +20,7 @@ Marketing
         -Sent email..... :/
     -get in touch with ars technica
         -Set up premium account called "arsTech" with a password "99bdfc4f52dd3f77232ffd0cb3cfc9da3d6098feee807467e54b9fc6b8b8b448", which is marked as customerWatcher exempt in authLib.py
+    -Sent an email to android rundown ... :/
     -find productivity blogs to get in touch with
     -Commands to execute:
         -update users set premium="true" where username="wired";
