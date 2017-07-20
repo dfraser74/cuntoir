@@ -144,12 +144,6 @@ def updatePushable(dataDict):
         return 0
     if(pushLib.checkPushSubscribed(username) != 1):
         return 2
-    db = authLib.dbCon()
-    c = db.cursor()
-    command = "UPDATE tasks SET pushScheduled = %s WHERE BINARY username = %s AND id = %s"
-    c.execute(command, [pushable, username, taskId])
-    db.commit()
-    db.close()
     if(pushable == "true"):
         db = authLib.dbCon()
         c = db.cursor()

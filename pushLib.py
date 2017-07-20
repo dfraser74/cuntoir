@@ -28,7 +28,6 @@ def checkPushSubscribed(username):
     command = "SELECT * FROM pushInfo WHERE BINARY username = %s"
     c.execute(command, [username,])
     subs = c.fetchall()
-    print(len(subs))
     if(len(subs) == 0):
         db.close()
         return 0
@@ -128,7 +127,6 @@ def schedulePush(dataDict):
     text = "This task is due soon"
     dueTime = float(dataDict["dueTime"])
     taskId = dataDict["id"]
-#TODO set up users picking time of notification
     hoursBefore = getPushHours(taskId)
     pushTime = dueTime - hoursBefore*60.0*60.0
     completePush(username, taskId)
@@ -136,6 +134,12 @@ def schedulePush(dataDict):
     c = db.cursor()
     command = "INSERT INTO duePushes (title, username, pushTime, text, taskId) VALUES (%s, %s, %s, %s, %s)"
     c.execute(command, [title, username, pushTime, text, taskId])
+    db.commit()
+    db.close()
+    db = authLib.dbCon()
+    c = db.cursor()
+    command = "UPDATE tasks SET pushScheduled = %s WHERE BINARY username = %s AND id = %s"
+    c.execute(command, ["true", username, taskId])
     db.commit()
     db.close()
     return(1)
