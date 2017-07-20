@@ -39,7 +39,7 @@ def getAll(dataDict):
     if(doneFlag == "true"):
         returnString += "<div class='task' style='height:auto;' id='infoHeader'><h2 style='margin:auto;'>Archived Tasks:</h2></div>"
     for task in tasks:
-        print(task)
+#        print(task)
         taskId = str(task[0])
         username = task[1]
         createTime = float(task[2])
