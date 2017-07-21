@@ -33,11 +33,17 @@ class finServer(object):
         print("User served in " + str(totalTime) + " seconds")
         return(str(returnCode))
 
+@cherrypy.expose()
+class playServer(object):
+    @cherrypy.tools.accept(media="text/plain")
+    def GET(self, **params):
+        print("Test Server Hit")
+        return("Hello World")
 
 
 if __name__ == '__main__' :
     main.startThreads()
-    conf = {
+    finConf = {
         '/': {
             'request.dispatch': cherrypy.dispatch.MethodDispatcher(),
             'tools.sessions.on': True,
@@ -52,4 +58,13 @@ if __name__ == '__main__' :
 #            'tools.proxy.base': 'http://pihome.zapto.org/dev/'
         }
     }
-    cherrypy.quickstart(finServer(), "/", conf)
+    playConf = {
+        "/": {
+            "request.dispatch": cherrypy.dispatch.MethodDispatcher()
+        }
+    }
+
+    cherrypy.tree.mount(finServer(), "/", finConf)
+#    cherrypy.tree.mount(playServer(), "/play", playConf)
+    cherrypy.engine.start()
+    cherrypy.engine.block()
