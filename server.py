@@ -4,6 +4,7 @@ import cherrypy
 import main
 import os
 import time
+import sys
 
 sslConf = {
     'server.ssl_module':'pyopenssl',
@@ -33,12 +34,16 @@ class finServer(object):
         print("User served in " + str(totalTime) + " seconds")
         return(str(returnCode))
 
-@cherrypy.expose()
+@cherrypy.expose
 class playServer(object):
     @cherrypy.tools.accept(media="text/plain")
     def GET(self, **params):
-        print("Test Server Hit")
-        return("Hello World")
+        print("Get request on play server")
+        return("This is not where you belong friend")
+   
+    def POST(self, **params):
+        print("Post requests on play server")
+        return("This is not where you belong friend")
 
 
 if __name__ == '__main__' :
@@ -60,11 +65,12 @@ if __name__ == '__main__' :
     }
     playConf = {
         "/": {
-            "request.dispatch": cherrypy.dispatch.MethodDispatcher()
+            "request.dispatch": cherrypy.dispatch.MethodDispatcher(),
+            "tools.sessions.on": True
         }
     }
 
     cherrypy.tree.mount(finServer(), "/", finConf)
-#    cherrypy.tree.mount(playServer(), "/play", playConf)
+    cherrypy.tree.mount(playServer(), "/play", playConf)
     cherrypy.engine.start()
     cherrypy.engine.block()
