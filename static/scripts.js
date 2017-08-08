@@ -219,11 +219,11 @@ function getAll(){
         return;
     }
     if(username == 0 || authCode == 0){
-        if(localStorage["signedUp"] == "true"){
+//        if(localStorage["signedUp"] == "true"){
             openLoginBar();
-        }else{
-            window.location = "/splash.html";
-        }
+//        }else{
+//            window.location = "/splash.html";
+//        }
     }else{
         var data = {"username":username, "authCode":authCode, "method":"getAll", "sort":"default", "archived":"false", "timeOffset":timeOffset};
         makePostRequest("/", data, "getAll");
