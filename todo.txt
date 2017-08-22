@@ -1,3 +1,16 @@
+//Reddits suggestions
+Build a setup utility
+    Generate placeholder keyfiles
+    Create a dump of the database framework that can be auto-loaded into mysql to get the app up and running
+
+Build a database connection handler class
+
+Unify configuration files somehow
+
+Refactor code base at some point
+\\
+
+//Probably going to discard in future
 Android/iOs native app
     -It begins...
     -Adandon hope all ye who enter here
@@ -10,6 +23,9 @@ Make shared tasks? Maybe?
     -Need a level of authorisation that says can-edit or can-view
     -Add tasks a user has had shared to them into getAll
     -This is kinda a hard problem based on current infrastructure
+\\
 
+//low on the priority list as tasks more than a couple of years old shouldn't be common
 !!!!BUGFIXES!!!!
     -Really old dated tasks move forward an hour when they're edited
+\\
