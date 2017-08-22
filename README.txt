@@ -5,6 +5,8 @@ Usage:
     -Run setup.py
     -Create a MySQL Database from fin.sql, called fin
     -Create a MySQL user called "fin" with the password you gave in setup.py
+    -Run 'sudo python server.py' in a screen session
+    -Run 'sudo python redirectServer.py' in a screen session
 
 Main items on the to-do list:
     -Remove stripe integration, all feature lockoff

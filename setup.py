@@ -1,5 +1,5 @@
 import os
-import OpenSSL
+#import OpenSSL
 
 def createConfigs():
     #create dbHosts.conf
