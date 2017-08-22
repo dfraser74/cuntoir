@@ -1,13 +1,20 @@
 //Reddits suggestions
 Build a setup utility
-    Generate placeholder keyfiles
-    Create a dump of the database framework that can be auto-loaded into mysql to get the app up and running
+    -Generate placeholder keyfiles
+    -Create a dump of the database framework that can be auto-loaded into mysql to get the app up and running
+    -Re-build support for invite codes
+    -Write custom api request using requests to set up new users if there's an invite code in place
 
 Build a database connection handler class
 
 Unify configuration files somehow
 
 Refactor code base at some point
+\\
+
+//To make self hosting worth it, and becuase I want this to be free now
+Remove stripe integration, or atleast just make it non-functional for now
+    -Can probably make all "premium" checks return true, and then just slowly phase it out
 \\
 
 //Probably going to discard in future
