@@ -7,6 +7,13 @@ Usage:
     -Create a MySQL user called "fin" with the password you gave in setup.py
     -Run 'sudo python server.py' in a screen session
     -Run 'sudo python redirectServer.py' in a screen session
+    -If you're using an invite code, do the following in a python REPL:
+        -import requests as r
+        -r.post("https://localhost", data={
+                "method":"createUser", 
+                "username":"YOUR_USERNAME_HERE", 
+                "userPass":"YOUR_PASS_HERE",
+                "inviteCode":"YOUR_INVITECODE_HERE"})
 
 Main items on the to-do list:
     -Remove stripe integration, all feature lockoff
