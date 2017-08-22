@@ -95,7 +95,7 @@ def createUser(dataDict):
             db.close()
             return(2)
     command = "INSERT INTO users (username, pass, sendPushes, premium) VALUES (%s, %s, %s, %s);"
-    c.execute(command, [username, userPass, "false", "false"])
+    c.execute(command, [username, userPass, "false", "true"])
     db.commit()
     db.close()
     taskLib.notifyUser(username, "Hey There! Click this to edit!", "Things with a border are clickable, and so are icons (p.s. try swiping ;) )")
@@ -116,6 +116,7 @@ def changePass(dataDict):
     return(1)
 
 def checkIfPremium(username):
+    return(1)
     username = username.strip()
     db = dbCon()
     c = db.cursor()
