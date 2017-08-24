@@ -1,7 +1,6 @@
 //Reddits suggestions
 Build a setup utility
     -Generate placeholder keyfiles (Might be better not to do)
-    -Re-build support for invite codes
 
 Build a database connection handler class
 
